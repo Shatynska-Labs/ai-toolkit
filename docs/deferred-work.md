@@ -2,7 +2,7 @@
 
 What this repository has deliberately not done, and why. Each entry names the change that argued it rather than repeating the argument.
 
-This is not `docs/change-queue.md`. An entry here is deleted when it stops being true; an entry there is deleted when its change is archived. An entry filed in the wrong one is swept early or kept forever.
+This is not `docs/backlog.md`. An entry here is deleted when it stops being true; an entry there is deleted when its change is archived. An entry filed in the wrong one is swept early or kept forever.
 
 This file exists outside any change because a deferral recorded only inside one stops being findable when that change is archived — it is the change *succeeding*, not the session ending, that loses it.
 

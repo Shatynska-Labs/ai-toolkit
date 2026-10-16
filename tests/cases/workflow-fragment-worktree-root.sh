@@ -21,7 +21,7 @@
 # mention of one. Verified by reading.
 #
 # This case follows the normative sentence — the one that says what the
-# fragment SHALL name. Two back-references in the change-queue requirement
+# fragment SHALL name. Two back-references in the backlog requirement
 # once cited the harness path instead; both now cite `.worktrees/`, so the
 # conflict this comment recorded no longer exists.
 # shellcheck disable=SC1090 # $TESTLIB is set by tests/run.sh at runtime, not statically resolvable

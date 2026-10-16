@@ -6,7 +6,7 @@
 # `handoff.md` and no proposal — a proposal written in passing draws the
 # review before it has earned it. The specification fixes both the artifact's
 # name and its location ("`handoff.md` SHALL sit at the identified change's
-# root"), and fixes them for the same stated reason the change queue's path
+# root"), and fixes them for the same stated reason the backlog's path
 # is fixed: a location stated only in a change's own artifacts is archived
 # with them. Asserting the name verbatim is the half a case can reach.
 #
@@ -21,10 +21,10 @@ source "$TESTLIB"
 fragment="$TOOLKIT_ROOT/rules/development-workflow.md"
 assert_file "$fragment" "the fragment this case reads"
 
-# Vacuity guard: the handoff belongs to the change-queue rule, so a fragment
+# Vacuity guard: the handoff belongs to the backlog rule, so a fragment
 # stating no such rule states nothing this case is about.
-assert_contains "$fragment" "docs/change-queue.md" \
-  "the change-queue rule the handoff obligation sits inside"
+assert_contains "$fragment" "docs/backlog.md" \
+  "the backlog rule the handoff obligation sits inside"
 
 assert_contains "$fragment" "handoff.md" \
   "an identified change is opened with a handoff and no proposal, at a path the specification fixes"
