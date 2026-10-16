@@ -150,4 +150,4 @@ Full scenario-to-test mapping, assertion provenance and the two disclosures that
 
 The `ERROR` clause for a failed branch step is covered by `initial-branch-set-failure-errors.sh`, which assumes the mechanism `design.md` names (`git symbolic-ref`).
 
-Code review found a target reached through a symlink bypassing the repository check; `initial-branch-existing-via-symlink-cwd-untouched.sh` and `initial-branch-existing-via-symlink-arg-untouched.sh` cover that path under the same scenario.
+Code review found a target reached through a symlink bypassing the repository check; `initial-branch-existing-via-symlink-{cwd,arg}-untouched.sh` (branch) and `initial-branch-existing-via-symlink-{cwd,arg}-reported.sh` (`already present`) cover that path under the same scenario. `initial-branch-empty-dotgit-dir-initialized.sh` covers an empty `.git` taking the created path, and `initial-branch-invalid-configured-name-errors.sh` the `ERROR` clause for a configured name that is not a valid branch.

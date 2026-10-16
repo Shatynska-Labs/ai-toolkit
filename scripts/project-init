@@ -94,7 +94,9 @@ finish_error() {
 
 # --- Target validation, reported before anything else -----------------------
 if [ -d "$target" ]; then
-  target="$(cd "$target" && pwd)"
+  # Physical path: git rev-parse --show-toplevel resolves symlinks, so a
+  # logical path would miss an existing repository reached through one.
+  target="$(cd "$target" && pwd -P)"
 fi
 echo "Target: $target"
 
@@ -171,19 +173,19 @@ fi
 
 # --- Attempt each outstanding concern, in order. No rollback on failure. ----
 if [ "$repo_outstanding" -eq 1 ]; then
-  # A .git the toplevel check missed (e.g. a target reached through a symlink)
-  # is reinitialized by git init, but its branch is not the tool's to change.
-  had_git_dir=0
-  [ -e "$target/.git" ] && had_git_dir=1
+  # A repository the toplevel check missed is reinitialized by git init, but
+  # its branch is not the tool's to change. A .git that is not a repository is.
+  had_repo=0
+  git --git-dir="$target/.git" rev-parse --git-dir >/dev/null 2>&1 && had_repo=1
   if ! git -C "$target" init -q >/dev/null 2>&1; then
     finish_error "repository: git init failed"
   fi
   # Set the initial branch explicitly: before git 2.28, git init ignores
   # init.defaultBranch and always starts on master.
-  if [ "$had_git_dir" -eq 0 ]; then
+  if [ "$had_repo" -eq 0 ]; then
     initial_branch="$(git -C "$target" config --get init.defaultBranch 2>/dev/null)"
     [ -n "$initial_branch" ] || initial_branch="main"
-    if ! git check-ref-format --branch "$initial_branch" >/dev/null 2>&1 \
+    if ! git -C "$target" check-ref-format --branch "$initial_branch" >/dev/null 2>&1 \
       || ! git -C "$target" symbolic-ref HEAD "refs/heads/$initial_branch" >/dev/null 2>&1; then
       finish_error "repository: initial branch could not be set to '$initial_branch'; re-running will not fix it — run \`git symbolic-ref HEAD refs/heads/<branch>\` in the target"
     fi
