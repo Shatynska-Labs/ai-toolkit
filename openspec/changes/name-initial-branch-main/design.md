@@ -17,3 +17,9 @@ Renaming the branch of a repository the tool did not create would violate the to
 ## Decision 4: The report does not name the branch
 
 Adding the branch to the report would change the report contract every consumer greps, for a fact `git branch --show-current` already answers. Not done.
+
+## Decision 5: A `.git` present before `git init` is never given a branch
+
+The repository concern is evaluated by comparing the target with `git rev-parse --show-toplevel`, and that comparison can miss a repository that is there — a target reached through a symlink resolves to a different path, a corrupt `HEAD` fails the lookup. `git init` then reinitializes the existing repository, which was harmless before this change; with the branch step after it, the project's `HEAD` would be moved to an empty `main`. Code review reproduced this. The script therefore records whether `$target/.git` existed before `git init` and sets the initial branch only where it did not. Fixing the concern's detection itself is out of scope here: it changes what the report says, and this change keeps the report contract.
+
+The configured name is checked with `git check-ref-format --branch` before it is written, because `git symbolic-ref` accepts names such as `-x` that are not valid branches, and a pre-2.28 `git init` never validates the setting.

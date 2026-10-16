@@ -149,3 +149,5 @@ Full scenario-to-test mapping, assertion provenance and the two disclosures that
 - **An existing repository's branch is left alone** — `initial-branch-existing-unborn-untouched.sh` and `initial-branch-existing-with-commits-untouched.sh`.
 
 The `ERROR` clause for a failed branch step is covered by `initial-branch-set-failure-errors.sh`, which assumes the mechanism `design.md` names (`git symbolic-ref`).
+
+Code review found a target reached through a symlink bypassing the repository check; `initial-branch-existing-via-symlink-cwd-untouched.sh` and `initial-branch-existing-via-symlink-arg-untouched.sh` cover that path under the same scenario.
