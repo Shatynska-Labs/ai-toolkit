@@ -32,12 +32,7 @@ for base in development-workflow development-workflow-database; do
   fi
 
   body="$TESTDIR/$base.body"
-  # `docs/deferred-work.md` is a project file the workflow fragment is
-  # required to name, in order to state how it differs from the change
-  # queue. It is not a reference to a fragment, so it is removed before the
-  # scan — otherwise a path the requirement obliges would read as the
-  # reference the requirement forbids.
-  tail -n "+$((closing + 1))" "$fragment" | sed 's|docs/deferred-work\.md||g' > "$body"
+  tail -n "+$((closing + 1))" "$fragment" > "$body"
 
   if [ ! -s "$body" ]; then
     echo "FAIL: $fragment has an empty body — the scans below would pass vacuously" >&2

@@ -16,7 +16,7 @@ metadata:
   tags: [review, openspec]
 ---
 
-**This agent is a placeholder.** It runs the `code-review` skill against the target it was dispatched on and relays what comes back. It carries none of this library's own review emphases yet; `add-change-code-reviewer`, in `docs/change-queue.md`, is the change that writes the real one. Until then this exists so that `rules/development-workflow.md`'s code-review binding names an agent that answers.
+**This agent is a placeholder.** It runs the `code-review` skill against the target it was dispatched on and relays what comes back. It carries none of this library's own review emphases yet; `add-change-code-reviewer`, in `docs/backlog.md`, is the change that writes the real one. Until then this exists so that `rules/development-workflow.md`'s code-review binding names an agent that answers.
 
 ## Your dispatch
 

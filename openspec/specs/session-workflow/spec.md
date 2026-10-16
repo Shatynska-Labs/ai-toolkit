@@ -319,7 +319,7 @@ Where the deploy is healthy and the intended effect is absent, the fragment SHAL
 
 **The wrong change is the confirmation gate's second waivable class**, named in advance on the same terms as the first: a change whose proposed observation was made, whose effect is absent, and which is **not to be corrected in place**. Being superseded by a new proposal is the typical case and SHALL NOT be a defining condition — a change judged wrong and reverted, or simply dropped, satisfies the class as fully, and a definition requiring a successor would leave it in neither class and back at the dead end this exemption exists to close.
 
-The session says so plainly and names the class, the operator waives, the waiver is recorded in the change's own artifacts, and the record proceeds on it. **Where a successor is intended, the waiver SHALL name its change-queue entry or the branch it was opened on.** This class is the one whose defining fact is a decision rather than an observation, so what it leaves behind is the only trace of why a change was archived as shipped while its effect was confirmed absent — and the specification the archive step writes to the trunk then describes behaviour production does not have. A reader meeting that specification later is owed the pointer.
+The session says so plainly and names the class, the operator waives, the waiver is recorded in the change's own artifacts, and the record proceeds on it. **Where a successor is intended, the waiver SHALL name its backlog entry or the branch it was opened on.** This class is the one whose defining fact is a decision rather than an observation, so what it leaves behind is the only trace of why a change was archived as shipped while its effect was confirmed absent — and the specification the archive step writes to the trunk then describes behaviour production does not have. A reader meeting that specification later is owed the pointer.
 
 Without that terminal the path dead-ends. The record cannot be written, because the effect is unconfirmed. The first waivable class does not reach it, because an observation *was* proposed and made — and improvising an exemption at the gate is what stating exemptions in advance forbids. The abandonment route does not reach it either, because that record must assert the work on the change's branch is not wanted, and this work is merged, deployed and running. A compliant session would stop with a branch and a working tree it can never remove, which is the accumulation this capability exists to prevent, reached down a path the fragment itself names.
 
@@ -412,7 +412,7 @@ Stated as a single instruction that stops at the push, the rule leaves a session
 
 Reusing the branch is stated rather than left open because the alternative a session would otherwise reach for is a second branch, and the reasoning against it is not obvious: a branch left at its pre-merge tip re-presents the whole work diff in the record's pull request under a squash or rebase merge, and a trunk that advanced while the deploy ran is diverged from rather than fetched. Returning to the trunk answers both, and one branch per change makes the teardown gate a check on one branch rather than on a set no later session can enumerate.
 
-The obligation that a session carries only one change at a time belongs to the change-queue requirement below and is not restated here.
+The obligation that a session carries only one change at a time belongs to the backlog requirement below and is not restated here.
 
 It SHALL name the location of a change's working tree as a fixed path within the repository — `.worktrees/`, one directory per working tree — rather than describing it as a path the project chooses, since the containment obligations below are checks against a path and a path left to choice makes them uncheckable.
 
@@ -509,7 +509,7 @@ Teardown SHALL cover the change's branch, locally and on the remote, and the wor
 - **WHEN** a change is delivered through the pull requests the delivery requirement states
 - **THEN** the change's branch and working tree are removed once the last pull request — the one carrying the record — has merged, since the change is not delivered until its record is on the trunk
 
-### Requirement: A second change surfacing in a session is recorded in the change queue
+### Requirement: A second change surfacing in a session is recorded in the backlog
 
 The workflow fragment SHALL state that a session works on one change, and SHALL state what happens when a second change is identified while the first is in progress.
 
@@ -525,26 +525,23 @@ The name SHALL NOT be reserved to this use. A change that already has a proposal
 
 **The fragment SHALL direct proposing a commit on that branch as soon as it is opened**, and SHALL state what happens where that commit is declined: report that the handoff is unsaved and stop, as the plan-commit rule does, rather than continuing and leaving it to be lost. The session that opened it is by definition not returning to it, so no later commit will carry the handoff and an uncommitted one is lost with the session. It is proposed rather than made, per the fragment's commit rule.
 
-The path SHALL be fixed here, at the identified change's root, for the reason `docs/change-queue.md` and `.worktrees/` are fixed: a location stated only in a change's own artifacts is archived with them.
+The path SHALL be fixed here, at the identified change's root, for the reason `docs/backlog.md` and `.worktrees/` are fixed: a location stated only in a change's own artifacts is archived with them.
 
-Where the change in progress does not depend on the identified change, the fragment SHALL require that it is either opened on a branch of its own, carrying the handoff the clauses above state, or recorded as an entry in the project's **change queue**.
+Where the change in progress does not depend on the identified change, the fragment SHALL require that it is either opened on a branch of its own, carrying the handoff the clauses above state, or recorded as an entry in the project's **backlog**.
 
 Where such a branch is created by either path, the fragment SHALL state that it is created and left: it does not become the session's working branch and gets no working tree of its own here. The branch carries the identified change's handoff and no proposal, so it is not named for a proposal — the term this requirement's predecessor used, and the one this change replaces.
 
-**The fragment SHALL name the change queue's path as `docs/change-queue.md`, and SHALL NOT name `docs/deferred-work.md` for this purpose.** The two are distinct artifacts with distinct lifecycles, and the fragment SHALL state the distinction rather than leave a project to discover it:
+**The fragment SHALL name the backlog's path as `docs/backlog.md`.** A backlog entry names an identified change and what it depends on, and is deleted when that change is archived.
 
-- a **change queue** entry names an identified change and what it depends on, and is deleted when that change is archived. The working order is the file's own ordering of its entries, so deleting one closes the gap and no entry carries a position that another entry's deletion would falsify;
-- a **deferred-work** entry names something the project has deliberately not done, and is deleted when it stops being true.
+**The fragment SHALL state that an entry's number is an identifier, not a priority, and is not stable, and SHALL direct citing an entry by name, never by number.** Entries are deleted as their changes are archived and renumbered as the file is reordered, so a number cited elsewhere comes to point at a different entry or at none, while the name stays with the change it names.
 
-One entry is swept on being shipped and the other on being fixed, so an entry filed in the wrong artifact is either deleted early or kept forever. A project may hold both files; the fragment directs identified changes to the queue only.
-
-The fragment SHALL state what happens where the adopting project has no change queue: it is created. An option that silently reduces to no option in a project lacking a file the fragment never told it to create is not an option.
+The fragment SHALL state what happens where the adopting project has no backlog: it is created. An option that silently reduces to no option in a project lacking a file the fragment never told it to create is not an option.
 
 The path is fixed here rather than left to the fragment's author for the reason `.worktrees/` is fixed above: a path stated only in a change's own artifacts is archived with them, and a requirement whose subject is then unnameable cannot be checked against the fragment afterwards.
 
-The fragment SHALL reconcile the second route against its own scope rule, which obliges out-of-scope work noticed during a change to become a separate proposed change rather than being folded in. The reconciliation SHALL be stated against that obligation rather than against a quoted string, since both now live in one document that will be reworded. The seam is that a change-queue entry *is* that separate proposed change, recorded rather than opened, and the obligation both rules share is that the work leaves the change in progress.
+The fragment SHALL reconcile the second route against its own scope rule, which obliges out-of-scope work noticed during a change to become a separate proposed change rather than being folded in. The reconciliation SHALL be stated against that obligation rather than against a quoted string, since both now live in one document that will be reworded. The seam is that a backlog entry *is* that separate proposed change, recorded rather than opened, and the obligation both rules share is that the work leaves the change in progress.
 
-The fragment SHALL state that recording is the obligation and branching is the option. It SHALL give the reason the change queue exists outside the change: a deferral recorded only inside a change becomes unfindable when that change is archived, so it is the change succeeding, not the session ending, that loses it.
+The fragment SHALL state that recording is the obligation and branching is the option. It SHALL give the reason the backlog exists outside the change: a deferral recorded only inside a change becomes unfindable when that change is archived, so it is the change succeeding, not the session ending, that loses it.
 
 #### Scenario: A blocking dependency survives the session ending
 
@@ -554,19 +551,19 @@ The fragment SHALL state that recording is the obligation and branching is the o
 #### Scenario: An unrelated improvement is recorded rather than implemented
 
 - **WHEN** a session identifies work outside its change's scope that nothing in the current change depends on
-- **THEN** it is opened on a branch of its own carrying a handoff, or recorded as an entry in the change queue, and is not implemented in the session that found it
+- **THEN** it is opened on a branch of its own carrying a handoff, or recorded as an entry in the backlog, and is not implemented in the session that found it
 
-#### Scenario: An identified change is not filed as deferred work
+#### Scenario: A backlog entry is cited by name
 
-- **WHEN** a session records an identified change in a project that holds both `docs/change-queue.md` and `docs/deferred-work.md`
-- **THEN** the entry goes to the change queue, where it will be deleted when that change is archived, rather than to the deferred-work file, where nothing would delete it
+- **WHEN** a session refers to a `docs/backlog.md` entry from anywhere outside that file — a waiver, a handoff, another entry
+- **THEN** it cites the entry by name, so deleting or reordering other entries does not make the reference point elsewhere
 
-#### Scenario: The scope rule and the queue are one obligation
+#### Scenario: The scope rule and the backlog are one obligation
 
-- **WHEN** a session records out-of-scope work as a change-queue entry
+- **WHEN** a session records out-of-scope work as a backlog entry
 - **THEN** it has satisfied the fragment's scope rule too, because the fragment states that such an entry is that rule's separate proposed change recorded rather than opened
 
-#### Scenario: The change queue does not yet exist
+#### Scenario: The backlog does not yet exist
 
 - **WHEN** a project carrying these rules has no file at the named path
 - **THEN** the fragment directs creating it, rather than leaving the independent path with one route where it stated two
@@ -589,7 +586,7 @@ The fragment SHALL state that recording is the obligation and branching is the o
 #### Scenario: A deferral outlives the change that recorded it
 
 - **WHEN** a change that recorded a deferral inside its own artifacts is archived
-- **THEN** the fragment has already directed the deferral into the project's change queue, so archiving the change does not remove it from view
+- **THEN** the fragment has already directed the deferral into the project's backlog, so archiving the change does not remove it from view
 
 ### Requirement: A one-time setup obligation does not belong in the fragment
 

@@ -28,12 +28,12 @@ source "$TESTLIB"
 fragment="$TOOLKIT_ROOT/rules/development-workflow.md"
 assert_file "$fragment" "the fragment this case reads"
 
-# Vacuity guards: the branch is one of the two routes the change-queue rule
+# Vacuity guards: the branch is one of the two routes the backlog rule
 # states, and what it carries is the handoff. A fragment stating neither
 # states nothing this case is about, and the absence below would be evidence
 # of nothing.
-assert_contains "$fragment" "docs/change-queue.md" \
-  "the change-queue rule whose branching option this branch is"
+assert_contains "$fragment" "docs/backlog.md" \
+  "the backlog rule whose branching option this branch is"
 assert_contains "$fragment" "handoff.md" \
   "what the opened-and-left branch carries in place of a proposal"
 
