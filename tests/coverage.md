@@ -138,3 +138,14 @@ A note on what a case here may assert, learned by writing one that failed: the *
 **Twelve uncovered**, in two kinds. Six are scenarios the `MODIFIED` operation carries through verbatim — behaviour this change does not alter, and its scope clause owes no retrofit. Six are propositions the delta obliges without fixing any token to scan for; they are of the same kind this file names once above, a property of prose rather than of behaviour.
 
 Full scenario-to-test mapping, assertion provenance and the two disclosures that pass recorded are in `state-the-committed-artifact-situation`'s `test-plan.md`, which archives with the change; this section is what survives it.
+
+## specs/project-bootstrap/spec.md — initial branch (4 delta scenarios)
+
+`name-initial-branch-main` adds *A repository the tool creates starts on a stated branch*. All four scenarios are covered, each case isolating git configuration under `$TESTDIR`:
+
+- **No configured default yields main** — `initial-branch-unconfigured-main.sh`; the caller's-directory clause by `initial-branch-caller-config-ignored.sh`.
+- **A configured default is honoured** — `initial-branch-configured-honoured.sh` on the installed git, and `initial-branch-pre-2-28-git-emulated.sh` with a fake `git` whose `init` ignores `init.defaultBranch`, which is the case that discriminates on a git 2.28 or newer.
+- **A configured default in an enclosing repository is not read** — `initial-branch-enclosing-config-ignored.sh`.
+- **An existing repository's branch is left alone** — `initial-branch-existing-unborn-untouched.sh` and `initial-branch-existing-with-commits-untouched.sh`.
+
+The `ERROR` clause for a failed branch step is covered by `initial-branch-set-failure-errors.sh`, which assumes the mechanism `design.md` names (`git symbolic-ref`).
