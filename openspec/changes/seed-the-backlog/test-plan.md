@@ -78,7 +78,7 @@ Deliberately untested, with reasons:
 - That the fragment *states* the backlog file carries the entry rules (scenario 12, positive half). The requirement fixes no wording for it, so it is verified by reading.
 - The deletion and keep-when-empty statements as *behavior* (deleting entries, keeping the file). These are session conduct and cannot be observed by a test.
 - `--help` mentioning the backlog (tasks 1.3). It is conditional ("if the wording needs it") and no spec states it.
-- The fragment `version` going from 4 to 5 (tasks 2.3). The fragment-version requirement is not in this change's deltas. The existing `managed-block-current-version` and `inlined-body-matches-fragment` cases read the version through `fragment_version` and will follow it.
+- The fragment `version` going from 5 to 6 (tasks 2.3). The fragment-version requirement is not in this change's deltas. The existing `managed-block-current-version` and `inlined-body-matches-fragment` cases read the version through `fragment_version` and will follow it.
 - Whether a BLOCKED run creates `docs/` or `docs/backlog.md`. No delta scenario states it. The existing BLOCKED cases assert other paths are absent but not `docs/`. The implementer may want to extend them; that is outside this pass's additive scope for existing files.
 
 ### Static-read discriminators

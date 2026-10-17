@@ -164,3 +164,15 @@ Code review found a target reached through a symlink bypassing the repository ch
 - **The backlog does not yet exist**, **A backlog entry is cited by name**, **Entry rules are read from the backlog, not the fragment** — `workflow-fragment-backlog-not-created-by-fragment.sh`, `workflow-fragment-backlog-no-entry-numbers.sh`, `workflow-fragment-backlog-rules-not-restated.sh`, each checked against a violating and a compliant fixture, plus the seeded-file cases above.
 
 `workflow-fragment-fixed-paths.sh` lost its cite-by-number assertion, which the revised requirement forbids. `backlog-report-line-after-ignore-file.sh` and `backlog-write-failure-errors.sh` trace to `design.md` and `tasks.md` rather than to a scenario. The remaining session-workflow scenarios are unchanged by this delta and keep their accounting above.
+
+## specs/change-code-review/spec.md (25 delta scenarios)
+
+`add-change-code-reviewer` adds the `change-code-review` capability. Its scenarios describe what a code review establishes and what a session does with the verdict, so what a case can reach is the fixed vocabulary and sentence each outcome requires to exist in `agents/change-code-reviewer.md` or `rules/development-workflow.md`, not the review itself. 13 are covered in part, 12 uncovered. Each case runs its check over `$TOOLKIT_ROOT` and over a fixture it writes that the check must reject:
+
+- `change-code-reviewer-verdict-set.sh` — the four verdicts.
+- `change-code-reviewer-finding-vocabulary.sh` — the three severities and seven kinds.
+- `change-code-reviewer-traceability-markers.sh` — the implementation and coverage marks, the reason-bearing `[Uncovered —` and `[Exempt —` forms included.
+- `change-code-reviewer-no-edit-grant.sh` — no edit-capable tool in the grant (derived from the frontmatter in the change's design, not from the spec).
+- `workflow-fragment-build-binding-verdict-acts.sh` — `build`'s binding names the act for each verdict.
+
+The 12 uncovered scenarios are the reviewer's conduct on a dispatch — blocking, restoring, locating, judging a quoted instruction — which no program here runs; the cold-run check exercises them instead. Full scenario-to-test mapping is in `add-change-code-reviewer`'s `test-plan.md`, which archives with the change; this section is what survives it.

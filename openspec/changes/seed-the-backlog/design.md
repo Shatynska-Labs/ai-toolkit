@@ -42,7 +42,7 @@ What the change is and why it is needed, written for a session that has not seen
 
 The example heading sits inside a fence, so a heading scan of the file finds only `# Backlog` and no entry.
 
-**The fragment's backlog paragraphs become one.** The routing bullet keeps "record it in `docs/backlog.md`, or open the identified change", without "creating that file if absent". The three closing paragraphs are replaced by one: the backlog holds identified changes recorded rather than opened — the scope rule's separate proposed change — sits outside any change because a note kept inside one is archived with it, and states itself how an entry is written and when it is deleted. The waiver sentence's "its backlog entry" stays. Version 4 → 5.
+**The fragment's backlog paragraphs become one.** The routing bullet keeps "record it in `docs/backlog.md`, or open the identified change", without "creating that file if absent". The three closing paragraphs are replaced by one: the backlog holds identified changes recorded rather than opened — the scope rule's separate proposed change — sits outside any change because a note kept inside one is archived with it, and states itself how an entry is written and when it is deleted. The waiver sentence's "its backlog entry" stays. Version 5 → 6.
 
 **Report line:** `backlog: created | already present`, printed after the ignore file line. The backlog is checked before any write, like the other concerns, as `[ -e ] || [ -L ]`, so a dangling link counts as present and is never written through. A `docs/` that is itself a link is followed: where a project keeps its documents is its own decision, and the backlog belongs with them.
 

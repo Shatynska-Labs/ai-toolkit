@@ -8,7 +8,7 @@
 
 - [x] 2.1 In `rules/development-workflow.md`, drop "creating that file if absent" from the routing bullet
 - [x] 2.2 Replace the three closing backlog paragraphs with the single paragraph `design.md` describes; no mention of entry numbers remains
-- [x] 2.3 Increment `version` from 4 to 5
+- [x] 2.3 Increment `version` from 5 to 6
 
 ## 3. Tests and docs
 

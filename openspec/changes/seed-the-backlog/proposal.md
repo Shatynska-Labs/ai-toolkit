@@ -22,5 +22,5 @@ None.
 ## Impact
 
 - `scripts/project-init`, `tests/cases/`, `tests/README.md` (report contract), `tests/coverage.md`, `skills/project-init/SKILL.md`.
-- `rules/development-workflow.md` (version 4 → 5); every adopting project sees a version skew on the next run, which the tool already reports.
+- `rules/development-workflow.md` (version 5 → 6); every adopting project sees a version skew on the next run, which the tool already reports.
 - Existing projects' backlogs are untouched; their numbered headings and number paragraphs stay until edited by hand.
