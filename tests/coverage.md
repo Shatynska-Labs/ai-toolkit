@@ -151,3 +151,16 @@ Full scenario-to-test mapping, assertion provenance and the two disclosures that
 The `ERROR` clause for a failed branch step is covered by `initial-branch-set-failure-errors.sh`, which assumes the mechanism `design.md` names (`git symbolic-ref`).
 
 Code review found a target reached through a symlink bypassing the repository check; `initial-branch-existing-via-symlink-{cwd,arg}-untouched.sh` (branch) and `initial-branch-existing-via-symlink-{cwd,arg}-reported.sh` (`already present`) cover that path under the same scenario. `initial-branch-empty-dotgit-dir-initialized.sh` covers an empty `.git` taking the created path, and `initial-branch-invalid-configured-name-errors.sh` the `ERROR` clause for a configured name that is not a valid branch. Round 3 added `initial-branch-caller-git-dir-env-untouched.sh` (inherited `GIT_DIR` does not reach the caller's repository), `initial-branch-missing-head-not-rewritten.sh` and `initial-branch-corrupted-head-not-rewritten.sh` (a `.git` with content is not given a branch), and `target-line-symlink-as-given.sh` (`Target:` keeps the path as given).
+
+## specs/project-bootstrap/spec.md and specs/session-workflow/spec.md — seeded backlog (16 delta scenarios)
+
+`seed-the-backlog` adds *A backlog is seeded where none exists*, adds the backlog to *Each concern is checked independently and is safe to repeat*, and revises *A second change surfacing in a session is recorded in the backlog*. Its cases were derived by `ai-toolkit:change-test-writer`; the per-scenario accounting, and which assertions are derived from `design.md` rather than the specification, are in the change's `test-plan.md`.
+
+- **A project without a backlog receives the seeded file** — `backlog-seeded-new-project.sh`, `backlog-seeded-adoption.sh`.
+- **An existing backlog is preserved exactly** — `backlog-existing-preserved.sh`, and `backlog-dangling-symlink-not-written-through.sh` for a link that does not resolve.
+- **The seeded file carries no numbering** — `backlog-seeded-no-numbering.sh`.
+- **Repeated execution is not destructive** — `repeated-execution-backlog.sh` for the backlog, `repeated-execution-idempotent.sh` for the rest.
+- **A partially initialized directory is completed, not refused** — `partial-init-reports-backlog.sh`.
+- **The backlog does not yet exist**, **A backlog entry is cited by name**, **Entry rules are read from the backlog, not the fragment** — `workflow-fragment-backlog-not-created-by-fragment.sh`, `workflow-fragment-backlog-no-entry-numbers.sh`, `workflow-fragment-backlog-rules-not-restated.sh`, each checked against a violating and a compliant fixture, plus the seeded-file cases above.
+
+`workflow-fragment-fixed-paths.sh` lost its cite-by-number assertion, which the revised requirement forbids. `backlog-report-line-after-ignore-file.sh` and `backlog-write-failure-errors.sh` trace to `design.md` and `tasks.md` rather than to a scenario. The remaining session-workflow scenarios are unchanged by this delta and keep their accounting above.

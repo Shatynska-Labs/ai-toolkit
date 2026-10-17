@@ -9,8 +9,9 @@ description: >
   root, invokes the deterministic `scripts/project-init` tool, relays its
   report verbatim, offers an initial commit, and names foundation discovery
   as the next step without starting it. It performs only deterministic
-  setup — Git, OpenSpec, a managed workflow block in `AGENTS.md` — and
-  makes no judgment about the project's identity, scope, or architecture;
+  setup — Git, OpenSpec, a seeded `docs/backlog.md`, a managed workflow
+  block in `AGENTS.md` — and makes no judgment about the project's
+  identity, scope, or architecture;
   for those, see `project-foundation`, which it never invokes itself. Not
   for authoring library assets (`create-skill`, `create-agent`) and not for
   proposing an OpenSpec change once a project already has a foundation

@@ -1,6 +1,6 @@
 ---
 kind: standing-constraint
-version: 4
+version: 5
 ---
 
 ## Development workflow
@@ -123,17 +123,13 @@ While applying, the derived tests fail by design until the implementation is com
 **A second change surfacing.** You work on one change at a time. Record the second before doing anything else about it.
 
 - Where the change in progress **depends** on it: record the dependency and the wait in the current change's own artifacts, then at most open the identified change and recommend it be continued in a separate session.
-- Where it **does not**: record it in `docs/backlog.md`, creating that file if absent, or open the identified change.
+- Where it **does not**: record it in `docs/backlog.md`, or open the identified change.
 
 *Opening* one means a branch of its own and a `handoff.md`, with no proposal — why the change was identified, what bears on it, and what it must not undo. Place it in the new change's own directory in this project's change-record layout — for OpenSpec, `openspec/changes/<name>/handoff.md`. The session that takes it up writes the proposal. Commit that branch at once: the session that opened it is not returning to it, so no later commit of its own will carry the handoff.
 
 Such a branch is created and left: it takes no working tree and does not become the branch this session works on.
 
-`docs/backlog.md` holds identified changes, deleted when archived; an entry there is the separate proposed change the scope rule calls for, recorded rather than opened.
-
-It sits outside the change that recorded it, because a note kept inside one is archived with it: it is the change succeeding, not the session ending, that would lose it.
-
-**A `docs/backlog.md` entry's number is an identifier, not a priority, and it is not stable.** The names are stable; cite an entry by name, never by number.
+`docs/backlog.md` holds identified changes, each the separate proposed change the scope rule calls for, recorded rather than opened. It sits outside any change, because a note kept inside one is archived with it. The file itself states how an entry is written and when it is deleted.
 
 **Assumptions.** Do not silently invent a requirement that was not stated and cannot reasonably be inferred; where an important decision cannot be inferred, ask rather than guess. Record significant decisions in this project's own artifacts rather than in conversation history alone.
 

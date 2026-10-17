@@ -163,6 +163,14 @@ else
   gitignore_outstanding=1
 fi
 
+# A dangling link counts as present: writing to it would follow it.
+backlog_path="$target/docs/backlog.md"
+if [ -e "$backlog_path" ] || [ -L "$backlog_path" ]; then
+  backlog_outstanding=0
+else
+  backlog_outstanding=1
+fi
+
 agents_path="$target/AGENTS.md"
 claude_path="$target/CLAUDE.md"
 
@@ -241,6 +249,38 @@ GITIGNORE
   echo "ignore file: created"
 else
   echo "ignore file: already present"
+fi
+
+if [ "$backlog_outstanding" -eq 1 ]; then
+  if ! mkdir -p "$target/docs" 2>/dev/null || ! cat > "$backlog_path" 2>/dev/null <<'BACKLOG'
+# Backlog
+
+Changes this project has identified and not yet archived. Each entry is a change recorded here instead of being folded into the change that found it, or opened on a branch of its own.
+
+An entry's heading is the change's name in kebab-case — the name its branch and change directory will take. Refer to an entry only by that name.
+
+The order of entries carries no meaning. If an entry waits on another change, or should come before or after one, it says so itself.
+
+Delete an entry when its change is archived, when the operator takes it as a fix rather than a change, or when the operator decides the change will not be made. Keep this file when it has no entries.
+
+An entry takes this shape:
+
+```
+## `change-name`
+
+What the change is and why it is needed, written for a session that has not seen the work that found it.
+
+**Recorded by**: the change that identified it, and why it was not done there.
+
+**Depends on**: the changes that must land first, or nothing.
+```
+BACKLOG
+  then
+    finish_error "backlog: docs/backlog.md could not be written"
+  fi
+  echo "backlog: created"
+else
+  echo "backlog: already present"
 fi
 
 build_block() {
