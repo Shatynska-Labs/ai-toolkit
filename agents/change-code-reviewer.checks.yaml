@@ -52,11 +52,11 @@ trigger_check:
       assets. What separates them is the moment — before the pull request here,
       before archiving there — so the probe names the archive moment and must
       not land on this agent.
-  also_verified: >-
+  also_run: >-
     A description edit to this agent can move prompts recorded against the
-    assets it competes with, so the same evaluator run re-ran
-    change-plan-reviewer's positive and negative and change-test-writer's
-    positive, negative and displacement probe alongside this file's prompts.
+    assets it competes with, so re-run change-plan-reviewer's positive and
+    negative and change-test-writer's positive, negative and displacement
+    probe in the same evaluator run as this file's prompts.
 
 cold_run_check:
   form: >-
@@ -65,7 +65,11 @@ cold_run_check:
     (.claude-plugin, agents, skills) copied into `.agent-under-test/`, which
     the fixture's committed .gitignore excludes so the tree stays clean, and
     its plugin.json name changed to `ai-toolkit-coldrun` so it cannot collide
-    with an installed ai-toolkit. Permission mode: --allowedTools limited to
+    with an installed ai-toolkit. The rename puts the drafted skills under
+    `ai-toolkit-coldrun:`, so the body's `ai-toolkit:<skill>` names cannot
+    reach them: whether the practice skills load under their real names is
+    outside this check's reach, and a run that loads them under the renamed
+    prefix has adapted rather than followed the body. Permission mode: --allowedTools limited to
     Agent, Read, Grep, Glob, Skill, Bash(git:*), Bash(gh:*) and the fixture's
     test command, by relative and by absolute path. No Write or Edit, so a file
     write through those tools would be denied; Bash(git:*) still permits commit,

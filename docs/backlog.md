@@ -92,6 +92,14 @@ The first three want a home: `project-foundation`'s checklist, `scripts/project-
 
 **Depends on**: `add-change-code-reviewer` having archived.
 
+## `harden-build-binding-verdict-acts-case`
+
+`tests/cases/workflow-fragment-build-binding-verdict-acts.sh` passes the binding text to `awk -v`, which interprets backslash escapes, so a binding containing a backslash would be checked against altered text; and its `has` helper matches act words as case-insensitive substrings, so "nonstop" satisfies "stop". Correct against today's fragment, but weaker as a discriminator than it reads. Pass the text through `ENVIRON` or stdin and match whole words.
+
+**Argued in**: `add-change-code-reviewer`'s code review, rounds 1 and 2. Not applied there because the case was derived by a separate test author.
+
+**Depends on**: nothing.
+
 ## `evaluate-an-openspec-schema-for-our-artifacts`
 
 OpenSpec supports custom schemas, and the `anvil` schema — listed in OpenSpec's own documentation table — declares artifacts this repository already produces: `review.md` carrying a machine-readable `VERDICT:` line, `test-plan.md`, and `verify.md` carrying `DECISION:`.
