@@ -17,13 +17,13 @@
 
 ## 4. Checks
 
-- [ ] 4.1 Run the trigger check against the evaluator composition `agent-authoring` requires, with a positive, a negative (`change-plan-reviewer`'s territory) and the recorded displacement probe; re-run `change-plan-reviewer`'s and `change-test-writer`'s fixtures, which the description edit can affect.
-- [ ] 4.2 Run the cold-run check per `skills/create-agent/references/cold-run-check.md` and `agent-authoring`'s isolation requirement for a shell-granted agent:
+- [x] 4.1 Run the trigger check against the evaluator composition `agent-authoring` requires, with a positive, a negative (`change-plan-reviewer`'s territory) and the recorded displacement probe; re-run `change-plan-reviewer`'s and `change-test-writer`'s fixtures, which the description edit can affect.
+- [x] 4.2 Run the cold-run check per `skills/create-agent/references/cold-run-check.md` and `agent-authoring`'s isolation requirement for a shell-granted agent:
   - Build a fixture repository, outside this one, as the isolation root. It holds a committed `AGENTS.md` naming a test command, a committed change directory (proposal, tasks, a delta spec with at least two scenarios, a test plan) and, on a branch, a committed implementation with one planted spec violation, one correct behaviour-preserving out-of-scope edit and one task marked done with nothing behind it. Give it a remote whose recorded default branch resolves.
   - Populate the drafted plugin into a path inside the fixture that the fixture's committed ignore file excludes, so it is neither tracked nor reported as uncommitted, and register the plugin from there rather than from the authoring checkout.
   - Launch from the fixture root, with every writable payload path inside it; abort if any is not. Review the payload and the permission mode before launching, since the grant includes `Bash`.
   - The run counts only if it returns the ordinary report shape; a blocked report fails the check.
-- [ ] 4.3 Rewrite `agents/change-code-reviewer.checks.yaml` with the inputs of both checks and no outcomes.
+- [x] 4.3 Rewrite `agents/change-code-reviewer.checks.yaml` with the inputs of both checks and no outcomes.
 
 ## 5. Verification
 

@@ -44,41 +44,81 @@ trigger_check:
       outcome from the live run: the evaluator routed it to none and named what
       would have changed that — a file extension would have pulled in `python`
       or `bash`.
+  adjacency_probe:
+    prompt: >-
+      All tasks in add-payment-retry are checked off. Before I archive it,
+      verify the implementation actually matches the change artifacts.
+    expected_routing: openspec-verify-change
+    why_this_prompt: >-
+      openspec-verify-change also checks an implementation against a change's
+      artifacts, so it is this agent's nearest competitor among the .claude/
+      assets. What separates them is the moment — before the pull request here,
+      before archiving there — so the probe names the archive moment and must
+      not land on this agent.
   also_verified: >-
-    Adding this agent invalidates the recorded trigger checks of the assets it
-    competes with, per agent-authoring. The same live run therefore re-ran the
-    existing fixtures against the three-agent roster: change-plan-reviewer's
-    positive and negative, and change-test-writer's positive, all still route as
-    their own files record.
+    A description edit to this agent can move prompts recorded against the
+    assets it competes with, so the same evaluator run re-ran
+    change-plan-reviewer's positive and negative and change-test-writer's
+    positive, negative and displacement probe alongside this file's prompts.
 
 cold_run_check:
-  status: >-
-    NOT RUN. Owed. This body is a placeholder that delegates to the code-review
-    skill and carries none of the library's own review emphases, so a cold run
-    against it would verify a body that add-change-code-reviewer is expected to
-    replace outright. The check belongs to the change that writes the real body;
-    until then this agent is not reported complete, which is what
-    agent-authoring requires of an agent whose fixtures record no run.
-  payload_recipe_when_written:
-    - Needs a change whose implementation is committed and whose delta specs
-      state what that implementation was supposed to do, so that "each
-      requirement implemented" and "the derived tests cover what changed" are
-      both falsifiable. An ADDED-only change with no tests cannot exercise
-      either.
-    - Plant one defect the diff shows and the specs forbid, and one change that
-      is correct but out of the change's stated scope, so the report has to
-      distinguish a defect from scope.
-    - Dispatch for real — `claude -p --plugin-dir <repo>` — since the grant
-      includes Bash and Skill and a simulation would not enforce it.
-    - Launch with edits permitted only if the target requires writing; this
-      agent reports and never applies, so a denied write is a finding rather
-      than a broken run.
-  pass_criteria_when_written:
-    - Invoked the code-review skill rather than reviewing from its own judgment,
-      verified in the tool trace.
-    - Reported findings and applied none; no file modified, verified by diffing
-      the target against its pre-dispatch state.
-    - Distinguished a finding that bears on a stated requirement from one that
-      bears on the code in general, where the change name was supplied.
-    - Terminated because the body directed it to, not because a budget ran out.
+  form: >-
+    Real dispatch — `claude -p --plugin-dir <fixture>/.agent-under-test`,
+    prompt on stdin, launched from the fixture root — with the drafted plugin
+    (.claude-plugin, agents, skills) copied into `.agent-under-test/`, which
+    the fixture's committed .gitignore excludes so the tree stays clean, and
+    its plugin.json name changed to `ai-toolkit-coldrun` so it cannot collide
+    with an installed ai-toolkit. Permission mode: --allowedTools limited to
+    Agent, Read, Grep, Glob, Skill, Bash(git:*), Bash(bash tests/run.sh) and
+    Bash(gh:*) — no write-capable tool, so a write the body attempted would be
+    denied and surface in the report.
+  payload: >-
+    working tree: <fixture absolute path> ; change name: add-greet ; target:
+    not named (default).
+  fixture_recipe:
+    - >-
+      A bare repository as `origin`, with `git remote set-head origin main`
+      so the trunk resolves from origin/HEAD.
+    - >-
+      On main, committed — `.gitignore` (`.agent-under-test/`); `AGENTS.md`
+      requiring bash scripts with `set -euo pipefail`, ShellCheck-clean, and
+      naming `bash tests/run.sh` as verification; `tests/run.sh` running
+      `tests/test_*.sh`; `bin/util.sh` with a `trim` function.
+    - >-
+      On main, a second commit — `openspec/changes/add-greet/` with
+      proposal.md (adds `bin/greet.sh`; "No other file changes"), no
+      design.md, a delta spec with two requirements — greet prints
+      `Hello, <name>!` and exits 0; a blank name prints `error: name required`
+      to stderr, nothing to stdout, and exits 2 — tasks.md with 1.1 greet,
+      1.2 reject blank with exit 2, 2.1 add `--help`, 3.1 tests, all `[x]`,
+      and test-plan.md mapping both scenarios to `tests/test_greet.sh`.
+    - >-
+      On branch add-greet, one commit — `bin/greet.sh` exiting 1 on a blank
+      name (the planted violation); `tests/test_greet.sh` asserting the greeting
+      but only a non-zero exit for the blank name (a scenario mapped to a test
+      that does not assert it); `bin/util.sh` with a local variable renamed
+      (a correct behaviour-preserving out-of-scope edit); no `--help` (a task
+      marked done with nothing behind it). Pushed, and checked out.
+  pass_criteria:
+    - >-
+      Returned the ordinary report shape — target, summary, traceability, task
+      audit, findings, considered, verification and writes, one recommended
+      action. A blocked report fails the check.
+    - >-
+      Needed nothing the payload did not supply, and invented no path or trunk
+      name.
+    - >-
+      Distinguished the scope edit (kind `scope`) from the planted violation
+      (kind `requirement`) and the missing `--help` (kind `task`).
+    - >-
+      Reported any verification it could not run as not run, never as passed.
+    - >-
+      Wrote nothing; the fixture's `git status --porcelain` is empty after the
+      run.
+    - >-
+      Terminated because the body directed it to, not because a budget ran out.
+  static_half: >-
+    Every tool the body directs the agent to use — git and gh and the project's
+    verification through Bash, the practice skills through Skill, reads through
+    Read, Grep and Glob — is in the tools field, and the body directs no edit.
   not_graded: The quality of the review the agent produced.
