@@ -129,7 +129,7 @@ While applying, the derived tests fail by design until the implementation is com
 
 Such a branch is created and left: it takes no working tree and does not become the branch this session works on.
 
-`docs/backlog.md` holds identified changes, each the separate proposed change the scope rule calls for, recorded rather than opened. It sits outside any change, because a note kept inside one is archived with it. The file itself states how an entry is written and when it is deleted.
+`docs/backlog.md` holds identified changes, each the separate proposed change the scope rule calls for, recorded rather than opened. It sits outside any change, because a note kept inside one is archived with it: it is the change succeeding, not the session ending, that would lose it. The file itself states how an entry is written and when it is deleted.
 
 **Assumptions.** Do not silently invent a requirement that was not stated and cannot reasonably be inferred; where an important decision cannot be inferred, ask rather than guess. Record significant decisions in this project's own artifacts rather than in conversation history alone.
 

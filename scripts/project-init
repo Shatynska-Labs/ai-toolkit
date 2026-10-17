@@ -252,7 +252,7 @@ else
 fi
 
 if [ "$backlog_outstanding" -eq 1 ]; then
-  if ! mkdir -p "$target/docs" 2>/dev/null || ! cat > "$backlog_path" 2>/dev/null <<'BACKLOG'
+  if ! mkdir -p "$target/docs" 2>/dev/null || ! { cat > "$backlog_path"; } 2>/dev/null <<'BACKLOG'
 # Backlog
 
 Changes this project has identified and not yet archived. Each entry is a change recorded here instead of being folded into the change that found it, or opened on a branch of its own.
