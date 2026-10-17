@@ -76,10 +76,12 @@ cold_run_check:
     not named (default).
   fixture_recipe:
     - >-
-      A bare repository as `origin`, pushed to without `git remote set-head`,
-      so `refs/remotes/origin/HEAD` does not exist — the state `git init`,
-      `git remote add` and `git push` leave, and the one the trunk resolution
-      has to get past through its fallbacks.
+      A bare repository as `origin` whose own HEAD names `main`, as a forge's
+      does — `git init --bare` alone leaves it naming a `master` that never
+      exists, and the reviewer then rightly blocks. Pushed to without
+      `git remote set-head`, so `refs/remotes/origin/HEAD` does not exist —
+      the state `git init`, `git remote add` and `git push` leave, and the one
+      the trunk resolution has to get past through its fallbacks.
     - >-
       On main, committed — `.gitignore` (`.agent-under-test/`); `AGENTS.md`
       requiring bash scripts with `set -euo pipefail`, ShellCheck-clean, and
