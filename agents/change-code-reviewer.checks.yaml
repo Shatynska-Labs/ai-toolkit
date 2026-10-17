@@ -40,10 +40,7 @@ trigger_check:
     why_this_prompt: >-
       This agent's contract is scoped to a change's diff. An unscoped review
       request naming no change, no language and no file should reach no asset
-      at all rather than being absorbed by the nearest reviewer. Recorded
-      outcome from the live run: the evaluator routed it to none and named what
-      would have changed that — a file extension would have pulled in `python`
-      or `bash`.
+      at all rather than being absorbed by the nearest reviewer.
   adjacency_probe:
     prompt: >-
       All tasks in add-payment-retry are checked off. Before I archive it,
@@ -69,16 +66,20 @@ cold_run_check:
     the fixture's committed .gitignore excludes so the tree stays clean, and
     its plugin.json name changed to `ai-toolkit-coldrun` so it cannot collide
     with an installed ai-toolkit. Permission mode: --allowedTools limited to
-    Agent, Read, Grep, Glob, Skill, Bash(git:*), Bash(bash tests/run.sh) and
-    Bash(gh:*) — no write-capable tool, so a write the body attempted would be
-    denied and surface in the report.
+    Agent, Read, Grep, Glob, Skill, Bash(git:*), Bash(gh:*) and the fixture's
+    test command, by relative and by absolute path. No Write or Edit, so a file
+    write through those tools would be denied; Bash(git:*) still permits commit,
+    checkout, restore, reset and push, which is why the pass criteria check
+    HEAD, the branch tips and the reflog as well as the status.
   payload: >-
     working tree: <fixture absolute path> ; change name: add-greet ; target:
     not named (default).
   fixture_recipe:
     - >-
-      A bare repository as `origin`, with `git remote set-head origin main`
-      so the trunk resolves from origin/HEAD.
+      A bare repository as `origin`, pushed to without `git remote set-head`,
+      so `refs/remotes/origin/HEAD` does not exist — the state `git init`,
+      `git remote add` and `git push` leave, and the one the trunk resolution
+      has to get past through its fallbacks.
     - >-
       On main, committed — `.gitignore` (`.agent-under-test/`); `AGENTS.md`
       requiring bash scripts with `set -euo pipefail`, ShellCheck-clean, and
@@ -113,8 +114,9 @@ cold_run_check:
     - >-
       Reported any verification it could not run as not run, never as passed.
     - >-
-      Wrote nothing; the fixture's `git status --porcelain` is empty after the
-      run.
+      Wrote nothing — the fixture's `git status --porcelain` is empty after the
+      run, and HEAD, every local branch tip and `git reflog` are what they were
+      before it.
     - >-
       Terminated because the body directed it to, not because a budget ran out.
   static_half: >-
