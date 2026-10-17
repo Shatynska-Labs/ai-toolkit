@@ -2,9 +2,9 @@
 
 ### Requirement: A repository the tool creates starts on a stated branch
 
-Where the tool initializes the repository, the repository's `HEAD` SHALL name the branch given by the operator's `init.defaultBranch` configuration where that is set, and `refs/heads/main` where it is not. The tool SHALL NOT leave the initial branch to git's built-in default, which differs between git versions and machines.
+Where the tool initializes the repository in a target whose `.git` was absent or empty before the run, the repository's `HEAD` SHALL name the branch given by the operator's `init.defaultBranch` configuration where that is set, and `refs/heads/main` where it is not. The tool SHALL NOT leave the initial branch to git's built-in default, which differs between git versions and machines.
 
-Where the repository concern is already satisfied, the tool SHALL NOT change the repository's current branch, whether or not that branch has commits.
+Where the repository concern is already satisfied, the tool SHALL NOT change the repository's current branch, whether or not that branch has commits. Where the target holds a `.git` with any content that the repository concern does not recognise as a repository, the tool SHALL NOT write that repository's `HEAD` itself; what it should do with such a directory otherwise is outside this requirement.
 
 The step SHALL NOT rely on `git init --initial-branch` or on `git init` honouring `init.defaultBranch`, both of which need git 2.28; the resulting branch SHALL be the same on an older git. The configuration SHALL be read as the created repository sees it, not as an enclosing repository or the caller's working directory sees it.
 

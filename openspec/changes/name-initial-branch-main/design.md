@@ -29,3 +29,7 @@ The repository concern compares the target with `git rev-parse --show-toplevel`,
 What the tool should do with a `.git` it cannot read, and why the repository check and an explicit `--git-dir` probe can disagree (an ownership refusal under `safe.directory` reports such a repository `created` and routes it to the new-project ending), are recorded in `docs/backlog.md` (`decide-unreadable-git-dir-handling`). Neither is introduced by this change.
 
 The configured name is checked with `git -C "$target" check-ref-format --branch` before it is written, because `git symbolic-ref` accepts names such as `-x` that are not valid branches, and a pre-2.28 `git init` never validates the setting. Where the step fails, the reason names the manual command and says that a re-run then completes the remaining concerns.
+
+## Decision 6: Scope stops at an absent or empty `.git`
+
+Four code-review rounds each found another state of `.git` — non-repository content, a missing `HEAD`, an unreadable directory — where the repository concern's check and the branch step disagree. Each arises from the check, not from the branch step, and patching them one by one kept producing new cases. The requirement is therefore narrowed to a `.git` that was absent or empty; for any other `.git` the tool only promises not to write `HEAD` itself. Redesigning the check into one pre-init probe is `decide-unreadable-git-dir-handling` in `docs/backlog.md`. Repository-local git variables are cleared using git's own list (`git rev-parse --local-env-vars`), and `cd` runs with `CDPATH` cleared.
