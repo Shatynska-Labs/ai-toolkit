@@ -36,8 +36,10 @@ assert_contains "$backlog" "instead of being folded into the change that found i
   "statement 1: each recorded instead of being folded into the change that found it"
 assert_contains "$backlog" "kebab-case" \
   "statement 2: an entry's heading is the change's kebab-case name"
-assert_contains "$backlog" "the name its branch and change directory will take" \
-  "statement 2: the name its branch and change directory will take"
+assert_contains "$backlog" "the name its branch and change directory are expected to take" \
+  "statement 2: the name its branch and change directory are expected to take"
+assert_contains "$backlog" "may rename it if the work turns out different" \
+  "statement 2: the name is not binding on the change that is opened"
 assert_contains "$backlog" "only by that name" \
   "statement 2: an entry is referred to only by that name"
 assert_contains "$backlog" "carries no meaning" \

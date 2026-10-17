@@ -9,7 +9,7 @@ The workflow fragment routes out-of-scope work to that path and defers to the fi
 The created file SHALL state, as prose a session reads before adding an entry:
 
 - that it lists changes the project has identified and not yet archived, each recorded instead of being folded into the change that found it;
-- that an entry's heading is the change's kebab-case name — the name its branch and change directory will take — and that an entry is referred to only by that name;
+- that an entry's heading is the change's kebab-case name — the name its branch and change directory are expected to take, which the session that opens the change may revise if the work turns out different — and that an entry is referred to only by that name;
 - that the order of entries carries no meaning, and that an entry states for itself what it waits on or should precede;
 - that an entry is deleted when its change is archived, when the operator takes it as a fix rather than a change, or when the operator decides the change will not be made;
 - that the file is kept when it has no entries;

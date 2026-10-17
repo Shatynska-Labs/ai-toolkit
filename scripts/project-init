@@ -257,7 +257,7 @@ if [ "$backlog_outstanding" -eq 1 ]; then
 
 Changes this project has identified and not yet archived. Each entry is a change recorded here instead of being folded into the change that found it, or opened on a branch of its own.
 
-An entry's heading is the change's name in kebab-case — the name its branch and change directory will take. Refer to an entry only by that name.
+An entry's heading is the change's name in kebab-case — the name its branch and change directory are expected to take, though the session that opens the change may rename it if the work turns out different. Refer to an entry only by that name.
 
 The order of entries carries no meaning. If an entry waits on another change, or should come before or after one, it says so itself.
 
