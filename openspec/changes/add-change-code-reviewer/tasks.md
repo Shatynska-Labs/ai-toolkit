@@ -1,19 +1,19 @@
 ## 1. The agent
 
-- [ ] 1.1 Rewrite the body of `agents/change-code-reviewer.md` to the outline in `design.md`, satisfying every requirement in `specs/change-code-review/spec.md` and `agent-authoring`'s five system-prompt elements.
-- [ ] 1.2 Replace the description with the one drafted in `design.md`; keep `name`, `model`, `color`, `tools` and `metadata.tags`.
-- [ ] 1.3 Run `create-agent`'s post-write validation and report each item.
+- [x] 1.1 Rewrite the body of `agents/change-code-reviewer.md` to the outline in `design.md`, satisfying every requirement in `specs/change-code-review/spec.md` and `agent-authoring`'s five system-prompt elements.
+- [x] 1.2 Replace the description with the one drafted in `design.md`; keep `name`, `model`, `color`, `tools` and `metadata.tags`.
+- [x] 1.3 Run `create-agent`'s post-write validation and report each item.
 
 ## 2. The workflow binding
 
-- [ ] 2.1 Amend `build`'s Claude Code binding in `rules/development-workflow.md` to state the act for each verdict (`design.md` Decision 7).
-- [ ] 2.2 Increment the fragment's `version` from 4 to 5.
+- [x] 2.1 Amend `build`'s Claude Code binding in `rules/development-workflow.md` to state the act for each verdict (`design.md` Decision 7).
+- [x] 2.2 Increment the fragment's `version` from 4 to 5.
 
 ## 3. Backlog
 
-- [ ] 3.1 Move the "Extend the dangling-reference case" paragraph out of `add-change-code-reviewer` in `docs/backlog.md` into its own entry (`design.md` Decision 8).
-- [ ] 3.2 Move the note on re-examining `plan`'s negative binding against `/code-review` into its own entry (`design.md` Decision 8).
-- [ ] 3.3 Add an entry asking the next change that modifies `session-workflow`'s publication requirement to name `change-code-review` as a third owner of the fragment (`design.md` Risks).
+- [x] 3.1 Move the "Extend the dangling-reference case" paragraph out of `add-change-code-reviewer` in `docs/backlog.md` into its own entry (`design.md` Decision 8).
+- [x] 3.2 Move the note on re-examining `plan`'s negative binding against `/code-review` into its own entry (`design.md` Decision 8).
+- [x] 3.3 Add an entry asking the next change that modifies `session-workflow`'s publication requirement to name `change-code-review` as a third owner of the fragment (`design.md` Risks).
 
 ## 4. Checks
 
@@ -27,6 +27,6 @@
 
 ## 5. Verification
 
-- [ ] 5.1 Run `bash tests/run.sh`; every case, including the derived ones, passes.
-- [ ] 5.2 Run `openspec validate add-change-code-reviewer --strict`.
-- [ ] 5.3 Map the derived cases in `tests/coverage.md`.
+- [x] 5.1 Run `bash tests/run.sh`; every case, including the derived ones, passes.
+- [x] 5.2 Run `openspec validate add-change-code-reviewer --strict`.
+- [x] 5.3 Map the derived cases in `tests/coverage.md`.

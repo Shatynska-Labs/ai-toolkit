@@ -1,6 +1,6 @@
 ---
 kind: standing-constraint
-version: 4
+version: 5
 ---
 
 ## Development workflow
@@ -83,7 +83,7 @@ _Claude Code binding:_ dispatch `ai-toolkit:change-test-writer` after the verdic
 
 Dispatch against a diff that already passes verification. Re-review only where the fixes were substantial enough to warrant it, bounded at three rounds; past three, report where the loop stands and ask rather than dispatching a fourth. A review judging the implemented change unsound rather than defective exits immediately and is raised.
 
-_Claude Code binding:_ run `ai-toolkit:change-code-reviewer` over the change's committed diff.
+_Claude Code binding:_ run `ai-toolkit:change-code-reviewer` over the change's committed diff. On `FIX REQUIRED` fix and re-dispatch where the fixes were substantial; on `CONDITIONALLY APPROVED` apply the `[MINOR]` fixes and continue; on `APPROVED` continue; on `REJECTED` stop and raise it.
 
 ### ship
 
