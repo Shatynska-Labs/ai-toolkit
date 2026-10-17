@@ -162,3 +162,11 @@ The table below is the review's enumeration and is one short of the accumulation
 Two remedies were identified and neither was taken, pending that answer: require the attributed reason to be the *only* rejection reason, by building each fixture to trip exactly one scan; or add one fixture per scan.
 
 **Argued in**: `state-the-committed-artifact-situation`'s third code review; the accounting limit is stated in `tests/coverage.md`, which survives that change's archiving, and in its `test-plan.md`, which does not.
+
+## `decide-unreadable-git-dir-handling`
+
+`scripts/project-init` does not specify what happens when the target holds a `.git` git cannot open (for example a corrupt `HEAD`): the repository concern reads as unsatisfied, `git init` reinitializes it, and the initial-branch step then treats it as created. Whether the tool should refuse, report, or leave such a directory alone is undecided. The same check also misreports a readable repository it is refused access to — `safe.directory` on a repository owned by another user, common on WSL `/mnt/c` — as `created`, routing it to the new-project ending; a single repository probe used for both the report and the mode would remove the disagreement. `name-initial-branch-main` code review also found: a `.git` with only non-repository content (an empty `hooks/`) is created on git's built-in default branch with `SUCCESS`; a missing `HEAD` is recreated by `git init` on the configured default, moving the branch. Two of its test cases need hardening as part of this change: `initial-branch-missing-head-not-rewritten.sh` asserts only `!= main` and passes when `HEAD` moved to `master` (assert it is not moved off `develop`, and add an `init.defaultBranch=main` variant), and its guards and those of `initial-branch-corrupted-head-not-rewritten.sh` use `git -C`, which can discover a repository above `$TESTDIR` (use `--git-dir` or `GIT_CEILING_DIRECTORIES`).
+
+**Argued in**: `name-initial-branch-main` (design decision 5; `test-plan.md`, open questions).
+
+**Depends on**: nothing.
