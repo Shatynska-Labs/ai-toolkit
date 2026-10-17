@@ -64,15 +64,41 @@ The first three want a home: `project-foundation`'s checklist, `scripts/project-
 
 ## `add-change-code-reviewer`
 
-**A placeholder has landed.** `agents/change-code-reviewer.md` exists and dispatches the `code-review` skill against the target it is given, so `rules/development-workflow.md`'s binding now names an agent that answers. It carries none of this library's own review emphases, which is what this entry still owes.
-
-What the real agent adds, and the placeholder does not: the emphases that make a code review this library's rather than a generic one — a diff read against the change's own delta specs requirement by requirement, the derived tests checked for the scenarios they were written from, unrelated scope reported as scope rather than as a defect, and a severity vocabulary that maps onto the review loop's exits. `skills/create-agent`'s cold-run check applies to that body and has not been run; the placeholder's own `.checks.yaml` records the trigger check that was, and states the cold-run check as owed.
-
-Once the real body exists, the negative binding on the plan-review gate can be re-examined: it currently excludes `/code-review` because that command sounds general enough to reach for before any diff exists.
+**In progress** on the branch of the same name. The placeholder at `agents/change-code-reviewer.md` is being replaced by a reviewer that traces a change's committed diff against its delta specs, derived tests and tasks, reports scope as scope, and concludes in the plan reviewer's verdict set. This entry is deleted when that change archives.
 
 **Argued in**: `consolidate-development-workflow`, alongside the rename of `openspec-change-reviewer` to `change-plan-reviewer`. The placeholder was landed separately, at the operator's request, once that change had archived.
 
-**Extend the dangling-reference case.** `tests/cases/workflow-fragment-no-dangling-reference.sh` scans for `rules/` paths, fragment filenames and `@` imports; it does not scan for an `ai-toolkit:` agent name with no file behind it. That gap is why nothing in the suite reported the binding while it dangled, and nothing would report its recurrence. It is addable now that the agent exists, and belongs here.
+## `extend-dangling-reference-to-agent-names`
+
+`tests/cases/workflow-fragment-no-dangling-reference.sh` scans for `rules/` paths, fragment filenames and `@` imports; it does not scan for an `ai-toolkit:` agent name with no file behind it. That gap is why nothing in the suite reported `build`'s binding while it named a code reviewer that did not exist, and nothing would report its recurrence. It amends `session-workflow`'s publication requirement and its test case.
+
+**Argued in**: the `add-change-code-reviewer` backlog entry, which carried it until `add-change-code-reviewer` split it out (its design, Decision 8).
+
+**Depends on**: nothing.
+
+## `reexamine-plan-gate-code-review-exclusion`
+
+`plan`'s Claude Code binding in `rules/development-workflow.md` says not to use `/code-review` for the plan-review gate, because that command sounds general enough to reach for before any diff exists. With a real `change-code-reviewer` in place for `build`'s gate, re-examine whether that negative binding is still needed or should name the code reviewer instead.
+
+**Argued in**: the `add-change-code-reviewer` backlog entry, split out by `add-change-code-reviewer` (its design, Decision 8).
+
+**Depends on**: `add-change-code-reviewer` having archived, so the question is asked against a reviewer that is in use.
+
+## `name-the-fragments-third-owner`
+
+`session-workflow`'s Purpose and its publication requirement describe the workflow fragment as governed by `session-workflow` and `project-bootstrap`, with a stated seam. `change-code-review` now also governs one sentence of it — the content of `build`'s Claude Code binding. An editor starting from `session-workflow` will not learn that. The next change that modifies `session-workflow`'s publication requirement for its own reason names the third owner there; this is not worth a change of its own.
+
+**Argued in**: `add-change-code-reviewer` (its design, Decision 7 and Risks).
+
+**Depends on**: `add-change-code-reviewer` having archived.
+
+## `harden-build-binding-verdict-acts-case`
+
+`tests/cases/workflow-fragment-build-binding-verdict-acts.sh` passes the binding text to `awk -v`, which interprets backslash escapes, so a binding containing a backslash would be checked against altered text; and its `has` helper matches act words as case-insensitive substrings, so "nonstop" satisfies "stop". Correct against today's fragment, but weaker as a discriminator than it reads. Pass the text through `ENVIRON` or stdin and match whole words.
+
+**Argued in**: `add-change-code-reviewer`'s code review, rounds 1 and 2. Not applied there because the case was derived by a separate test author.
+
+**Depends on**: nothing.
 
 ## `evaluate-an-openspec-schema-for-our-artifacts`
 

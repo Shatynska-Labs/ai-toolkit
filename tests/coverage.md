@@ -151,3 +151,15 @@ Full scenario-to-test mapping, assertion provenance and the two disclosures that
 The `ERROR` clause for a failed branch step is covered by `initial-branch-set-failure-errors.sh`, which assumes the mechanism `design.md` names (`git symbolic-ref`).
 
 Code review found a target reached through a symlink bypassing the repository check; `initial-branch-existing-via-symlink-{cwd,arg}-untouched.sh` (branch) and `initial-branch-existing-via-symlink-{cwd,arg}-reported.sh` (`already present`) cover that path under the same scenario. `initial-branch-empty-dotgit-dir-initialized.sh` covers an empty `.git` taking the created path, and `initial-branch-invalid-configured-name-errors.sh` the `ERROR` clause for a configured name that is not a valid branch. Round 3 added `initial-branch-caller-git-dir-env-untouched.sh` (inherited `GIT_DIR` does not reach the caller's repository), `initial-branch-missing-head-not-rewritten.sh` and `initial-branch-corrupted-head-not-rewritten.sh` (a `.git` with content is not given a branch), and `target-line-symlink-as-given.sh` (`Target:` keeps the path as given).
+
+## specs/change-code-review/spec.md (25 delta scenarios)
+
+`add-change-code-reviewer` adds the `change-code-review` capability. Its scenarios describe what a code review establishes and what a session does with the verdict, so what a case can reach is the fixed vocabulary and sentence each outcome requires to exist in `agents/change-code-reviewer.md` or `rules/development-workflow.md`, not the review itself. 13 are covered in part, 12 uncovered. Each case runs its check over `$TOOLKIT_ROOT` and over a fixture it writes that the check must reject:
+
+- `change-code-reviewer-verdict-set.sh` — the four verdicts.
+- `change-code-reviewer-finding-vocabulary.sh` — the three severities and seven kinds.
+- `change-code-reviewer-traceability-markers.sh` — the implementation and coverage marks, the reason-bearing `[Uncovered —` and `[Exempt —` forms included.
+- `change-code-reviewer-no-edit-grant.sh` — no edit-capable tool in the grant (derived from the frontmatter in the change's design, not from the spec).
+- `workflow-fragment-build-binding-verdict-acts.sh` — `build`'s binding names the act for each verdict.
+
+The 12 uncovered scenarios are the reviewer's conduct on a dispatch — blocking, restoring, locating, judging a quoted instruction — which no program here runs; the cold-run check exercises them instead. Full scenario-to-test mapping is in `add-change-code-reviewer`'s `test-plan.md`, which archives with the change; this section is what survives it.
