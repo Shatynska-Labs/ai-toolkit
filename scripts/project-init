@@ -4,6 +4,10 @@
 # contract this script implements against.
 set -u
 
+# Inherited from a hook or wrapper, these would point every git call below at
+# the caller's repository instead of the target.
+unset GIT_DIR GIT_WORK_TREE GIT_COMMON_DIR GIT_INDEX_FILE
+
 print_help() {
   cat <<'HELP'
 project-init — deterministic project initialization for the ai-toolkit development workflow
@@ -94,9 +98,12 @@ finish_error() {
 
 # --- Target validation, reported before anything else -----------------------
 if [ -d "$target" ]; then
-  # Physical path: git rev-parse --show-toplevel resolves symlinks, so a
-  # logical path would miss an existing repository reached through one.
-  target="$(cd "$target" && pwd -P)"
+  target="$(cd "$target" && pwd)"
+  # git rev-parse --show-toplevel resolves symlinks, so the repository check
+  # compares against the physical path; the report keeps the path as given.
+  target_physical="$(cd "$target" && pwd -P)"
+else
+  target_physical="$target"
 fi
 echo "Target: $target"
 
@@ -128,7 +135,7 @@ fragment_body="$(tail -n "+$((closing_line + 1))" "$FRAGMENT")"
 
 # --- Determine which concerns are outstanding (filesystem reads only). ------
 repo_root="$(git -C "$target" rev-parse --show-toplevel 2>/dev/null || true)"
-if [ "$repo_root" = "$target" ]; then
+if [ "$repo_root" = "$target_physical" ]; then
   repo_outstanding=0
   if git -C "$target" rev-parse HEAD >/dev/null 2>&1; then
     has_commit=1
@@ -173,21 +180,21 @@ fi
 
 # --- Attempt each outstanding concern, in order. No rollback on failure. ----
 if [ "$repo_outstanding" -eq 1 ]; then
-  # A repository the toplevel check missed is reinitialized by git init, but
-  # its branch is not the tool's to change. A .git that is not a repository is.
-  had_repo=0
-  git --git-dir="$target/.git" rev-parse --git-dir >/dev/null 2>&1 && had_repo=1
+  # Only a .git that is absent or empty is the tool's to give a branch: one
+  # with any content may be a repository the check above could not read.
+  had_git_content=0
+  [ -n "$(ls -A "$target/.git" 2>/dev/null)" ] && had_git_content=1
   if ! git -C "$target" init -q >/dev/null 2>&1; then
     finish_error "repository: git init failed"
   fi
   # Set the initial branch explicitly: before git 2.28, git init ignores
   # init.defaultBranch and always starts on master.
-  if [ "$had_repo" -eq 0 ]; then
+  if [ "$had_git_content" -eq 0 ]; then
     initial_branch="$(git -C "$target" config --get init.defaultBranch 2>/dev/null)"
     [ -n "$initial_branch" ] || initial_branch="main"
     if ! git -C "$target" check-ref-format --branch "$initial_branch" >/dev/null 2>&1 \
       || ! git -C "$target" symbolic-ref HEAD "refs/heads/$initial_branch" >/dev/null 2>&1; then
-      finish_error "repository: initial branch could not be set to '$initial_branch'; re-running will not fix it — run \`git symbolic-ref HEAD refs/heads/<branch>\` in the target"
+      finish_error "repository: initial branch could not be set to '$initial_branch'; set it with \`git symbolic-ref HEAD refs/heads/<branch>\` in the target, then re-run to complete the remaining steps"
     fi
   fi
   echo "repository: created"

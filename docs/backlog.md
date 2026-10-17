@@ -165,7 +165,7 @@ Two remedies were identified and neither was taken, pending that answer: require
 
 ## `decide-unreadable-git-dir-handling`
 
-`scripts/project-init` does not specify what happens when the target holds a `.git` git cannot open (for example a corrupt `HEAD`): the repository concern reads as unsatisfied, `git init` reinitializes it, and the initial-branch step then treats it as created. Whether the tool should refuse, report, or leave such a directory alone is undecided.
+`scripts/project-init` does not specify what happens when the target holds a `.git` git cannot open (for example a corrupt `HEAD`): the repository concern reads as unsatisfied, `git init` reinitializes it, and the initial-branch step then treats it as created. Whether the tool should refuse, report, or leave such a directory alone is undecided. The same check also misreports a readable repository it is refused access to — `safe.directory` on a repository owned by another user, common on WSL `/mnt/c` — as `created`, routing it to the new-project ending; a single repository probe used for both the report and the mode would remove the disagreement.
 
 **Argued in**: `name-initial-branch-main` (design decision 5; `test-plan.md`, open questions).
 
