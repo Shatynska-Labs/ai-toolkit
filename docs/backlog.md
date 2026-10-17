@@ -196,3 +196,19 @@ Two remedies were identified and neither was taken, pending that answer: require
 **Argued in**: `name-initial-branch-main` (design decision 5; `test-plan.md`, open questions).
 
 **Depends on**: nothing.
+
+## `state-recording-as-the-obligation`
+
+`session-workflow`'s backlog requirement says the fragment "SHALL state that recording is the obligation and branching is the option". `rules/development-workflow.md`'s routing bullet offers the two as equals — "record it in `docs/backlog.md`, or open the identified change" — and nothing in the fragment states the clause.
+
+**Argued in**: `seed-the-backlog`'s code review, which found the gap predates that change.
+
+**Depends on**: nothing.
+
+## `count-a-dangling-ignore-file-link-as-present`
+
+`scripts/project-init` tests the ignore file with `-f`, so a dangling `.gitignore` link reads as absent and the heredoc writes through it to wherever it points. `seed-the-backlog` tests `docs/backlog.md` with `[ -e ] || [ -L ]` for exactly this reason; the ignore file should match.
+
+**Argued in**: `seed-the-backlog`'s code review; outside that change's scope.
+
+**Depends on**: nothing.
