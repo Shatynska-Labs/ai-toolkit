@@ -44,3 +44,7 @@ Both dependencies the handoff named have settled: `name-initial-branch-main` arc
 ## Plan review
 
 Round 1: `CONDITIONALLY APPROVED`, eight `[MINOR]` findings, all applied without a further round — the state a failed push leaves, a declined commit, staged paths in the listing, an adoption with no remote, the re-initialization claim, the skill's opening paragraph and how it learns the mode, the cold-run fixture, and the proposal's step numbering.
+
+## Code review
+
+Round 1: `FIX REQUIRED`. One `[MAJOR]` — the literal git commands in steps 4 and 5 ran in the current directory although step 2 passes through another target — and one `[MINOR]` — `git status --short` hides untracked paths under `status.showUntrackedFiles=no`. Both fixed by running every command as `git -C <target>` and listing with `--untracked-files=normal`; the fixes were mechanical, so no second round was dispatched.
