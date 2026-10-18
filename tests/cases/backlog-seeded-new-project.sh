@@ -3,8 +3,10 @@
 # mode). Change: seed-the-backlog.
 #
 # SPECIFIED: the file is created where `docs/` does not exist, the report
-# states it was created, the file states each of the six statements the
-# requirement lists, and it contains no entry.
+# states it was created, the file states each statement carried over from
+# seed-the-backlog, and it contains no entry. The statement N labels below
+# follow seed-the-backlog's order; the statements add-backlog-skill added or
+# revised are asserted by backlog-seeded-structured-statements.sh.
 #
 # DERIVED (wording): the requirement fixes what the text states, not the
 # text. Each statement is asserted by one stable phrase taken from the seeded
@@ -56,8 +58,6 @@ assert_contains "$backlog" "has not seen the work that found it" \
   "statement 6: the shape — what and why, for a session that has not seen the work"
 assert_contains "$backlog" "Recorded by" \
   "statement 6: the shape — what recorded it"
-assert_contains "$backlog" "Depends on" \
-  "statement 6: the shape — what it depends on"
 
 # No entry: outside fenced blocks, no level-2-or-deeper heading exists. The
 # example entry's heading sits inside a fence (design.md), so it is skipped.

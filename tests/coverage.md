@@ -177,7 +177,7 @@ Code review found a target reached through a symlink bypassing the repository ch
 
 - **A project without a backlog receives the seeded file** — `backlog-seeded-new-project.sh`, `backlog-seeded-adoption.sh`.
 - **An existing backlog is preserved exactly** — `backlog-existing-preserved.sh`, and `backlog-dangling-symlink-not-written-through.sh` for a link that does not resolve.
-- **The seeded file carries no numbering** — `backlog-seeded-no-numbering.sh`.
+- **The seeded file carries no numbering** — `backlog-seeded-no-entry-numbering.sh` (`add-backlog-skill` retired `backlog-seeded-no-numbering.sh`, whose scan for the word `number` anywhere failed the revised file's "line numbers").
 - **Repeated execution is not destructive** — `repeated-execution-backlog.sh` for the backlog, `repeated-execution-idempotent.sh` for the rest.
 - **A partially initialized directory is completed, not refused** — `partial-init-reports-backlog.sh`.
 - **The backlog does not yet exist**, **A backlog entry is cited by name**, **Entry rules are read from the backlog, not the fragment** — `workflow-fragment-backlog-not-created-by-fragment.sh`, `workflow-fragment-backlog-no-entry-numbers.sh`, `workflow-fragment-backlog-rules-not-restated.sh`, each checked against a violating and a compliant fixture, plus the seeded-file cases above.
@@ -208,6 +208,15 @@ The 12 uncovered scenarios are the reviewer's conduct on a dispatch — blocking
 - `workflow-fragment-first-commit-exception.sh`, `workflow-fragment-first-commit-by-observable.sh` — the exception sits beside the delivery rule and is identified by there being no commit before it, naming no class of commit.
 
 Full scenario-to-test mapping is in the change's `test-plan.md`, which archives with it.
+
+## add-backlog-skill (30 delta scenarios)
+
+`add-backlog-skill` adds the `backlog-maintenance` capability (17 scenarios), modifies *A backlog is seeded where none exists* in `project-bootstrap` (5), and in `session-workflow` modifies *A rule states an action and a defect appears only as its reason* and adds *Archiving a change re-reads the backlog against it* (8). Its cases were derived by `ai-toolkit:change-test-writer`; the per-scenario accounting, the half of each scenario a case does not reach, and which assertions are derived rather than specified are in the change's `test-plan.md`. 9 are covered, 18 covered in part, 3 uncovered.
+
+- **Seeded backlog** — `backlog-seeded-structured-statements.sh`, `backlog-seeded-structured-fields.sh`, `backlog-seeded-kind-definition.sh`, `backlog-seeded-no-entry-numbering.sh`, with `backlog-seeded-new-project.sh` (its `Depends on` assertion removed, as the revised shape no longer names it) and the existing preservation cases.
+- **Archive re-read** — `workflow-fragment-archive-backlog-reread.sh`, `workflow-fragment-archive-reread-names-no-field.sh`.
+- **The skill** — `backlog-skill-*.sh`, one or two per requirement (identity and absent-backlog share the first, restates-no-entry-rule and no-audit-cadence the second), each a static scan of `skills/backlog/SKILL.md` or `skills/backlog/references/audit.md` through `tests/cases/lib/static-scan.sh`, checked against a conforming fixture and one mutant per scan. What a session does when it runs an operation is not reachable by a scan.
+- **Uncovered** — the three scenarios *A rule states an action…* carries over verbatim; their accounting above is unchanged.
 
 ## retire-the-claude-md-import-notice (1 MODIFIED requirement, 8 scenarios)
 
