@@ -66,3 +66,7 @@ Round 2: `CONDITIONALLY APPROVED`, five `[MINOR]`, applied without a further rou
 ## Code review
 
 Round 1: `CONDITIONALLY APPROVED`, two `[MINOR]`, applied — the ancestor walk now covers the physical path as well as the given one, so a symlinked target cannot hide a shadowing file, and `HOME` is normalised so a trailing slash does not make the user's own `~/.claude/CLAUDE.md` shadow. Both reproduced before and after the fix.
+
+## Delivery
+
+Pull request #38 merged 2026-10-18. The operator confirmed the effect the same day: in a fresh directory with no shadowing file, `project-init` reports the version note rather than `Import needed:`.
