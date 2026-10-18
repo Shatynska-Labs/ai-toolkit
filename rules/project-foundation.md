@@ -32,7 +32,7 @@ Nine decisions, falling into two groups by how they may be reached.
 - **Linting** — static checks on the code beyond what the compiler or interpreter enforces.
 - **Formatting** — whether layout is mechanically fixed, and how.
 - **Type checking** — static types and how strictly they are checked, where the language has them.
-- **Build tooling** — how the project is built, packaged and run, including the test runner the testing strategy chose.
+- **Build tooling** — how the project is built, packaged and run. The test runner is decided under Testing Strategy, not here.
 - **Local hooks** — which checks run before a commit or push in a working copy.
 - **Commit messages** — the convention commit messages follow, and whether anything checks it.
 - **Secrets** — how credentials and other secrets stay out of version control, and how a working copy gets them.
