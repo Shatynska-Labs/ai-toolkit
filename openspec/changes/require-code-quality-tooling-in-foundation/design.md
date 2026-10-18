@@ -63,4 +63,13 @@ The `project-foundation` spec states initialization's non-involvement as rationa
 
 ## Trigger check results
 
-Recorded here by task 2.5.
+Run 2026-10-18 against an unchanged description, with a fresh-context evaluator holding the `name` and `description` of every asset under `skills/`, `agents/`, `.claude/skills/` and `.claude/commands/`:
+
+| Prompt | Expected | Routed to | Runner-up |
+|---|---|---|---|
+| "This project already exists — help me figure out what it actually is, its scope, and what tech stack makes sense." | `project-foundation` | `project-foundation` | `project-init` |
+| "I'm starting a brand new project, can you set it up with git, openspec, and the usual conventions?" | `project-init` | `project-init` | none in the evaluated set |
+| "what should our CI and linting setup be for this new project?" | `project-foundation` | `project-foundation` | none |
+| "set up husky and eslint in this repo" | nothing | nothing | `project-foundation`, weak |
+
+All four pass, so task 2.4's condition is not met and the description is unchanged. The evaluator called prompt 3's match weak, since the description says "development tooling" but never "CI" or "linting"; it is the first thing to revisit if a later check misses it.
