@@ -22,7 +22,7 @@ Assets reach a consuming project by installing this repository as a plugin (`/pl
 
 `rules/` fragments have no dedicated Claude Code primitive, so nothing loads them automatically the way `skills/` and `agents/` are loaded. That does not mean they are absent from an installed copy: plugin installation copies this repository's entire tree, not only the directories backing a primitive, so `rules/` is present and readable wherever the plugin is installed — it just has no automatic loader. Two paths reach a fragment from there:
 
-- **`@` import** — a project's `CLAUDE.md` or `AGENTS.md` names the fragment's path in this repository (e.g. `@~/projects/ai-toolkit/rules/<rule-name>.md`). Needs no tooling, but the path is machine-local — it resolves only where this repository is checked out at that path.
+- **`@` import** — a project's `CLAUDE.md` or `AGENTS.md` names the fragment's path in this repository (e.g. `@~/projects/shatynska/ai-toolkit/rules/<rule-name>.md`). Needs no tooling, but the path is machine-local — it resolves only where this repository is checked out at that path.
 - **A shipped tool reading it** — an executable under `scripts/` locates a fragment relative to its own installed location and reads it directly, with no import and no harness involved. `scripts/project-init` does this: it inlines `rules/development-workflow.md` into a project's `AGENTS.md`.
 
 Both reach any fragment under `rules/`. What a binding fragment such as `rules/development-workflow-database.md` lacks until tooling catches up is a *tool* route, not a route: it is imported or copied by hand rather than written into a managed block.

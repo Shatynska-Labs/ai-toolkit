@@ -57,9 +57,9 @@ Most scenarios this suite cannot cover are of one kind, and it is worth naming o
 | An edited fragment is distinguishable from the copy already adopted | Covered — `managed-block-older-version.sh`, which now reads the tool's version from the fragment via `fragment_version` rather than asserting a literal |
 | A frontmatter-only edit does not consume a version | Uncovered — an obligation on a future author, not behavior `project-init` exhibits; verified by reading `rules/README.md` |
 
-## specs/project-foundation/spec.md (14 scenarios)
+## specs/project-foundation/spec.md (33 scenarios)
 
-All 14 are uncovered by `tests/cases/`, for the same reason: this directory exercises `scripts/project-init` only (per section 4's own scope note), and every foundation scenario describes conversational or skill behavior (`skills/project-foundation/`) with no deterministic script to run against it. Verified instead by: manual skill trigger-checks (task 8.5), and structural review of `skills/project-foundation/SKILL.md` and `rules/project-foundation.md` against the spec's requirements (section 6).
+All 33 are uncovered by `tests/cases/`, for the same reason: this directory exercises `scripts/project-init` only (per section 4's own scope note), and every foundation scenario describes conversational or skill behavior (`skills/project-foundation/`) with no deterministic script to run against it. Verified instead by: manual skill trigger-checks (task 8.5), and structural review of `skills/project-foundation/SKILL.md` and `rules/project-foundation.md` against the spec's requirements (section 6).
 
 | Scenario | Verified by |
 |---|---|
@@ -67,14 +67,33 @@ All 14 are uncovered by `tests/cases/`, for the same reason: this directory exer
 | The checklist does not accumulate in projects | Structural review — `rules/project-foundation.md` is `kind: procedural-checklist`, never inlined |
 | Non-goals are recorded even when scope is clear | Structural review — `rules/project-foundation.md` states this explicitly |
 | Stack-specific ignore entries are a foundation deliverable | Structural review — task 6.6 |
+| The quality layer is reached even when nobody raises it | Structural review — `rules/project-foundation.md`'s named concerns, proposed as one set |
+| The checklist names concerns, not tools | Structural review — `rules/project-foundation.md` names no particular tool |
 | A technical decision is proposed rather than asked | Structural review — `skills/project-foundation/SKILL.md`'s classification |
 | An identity decision is not invented | Structural review — same |
 | A skipped decision is detectable after the fact | Structural review — the fixed `design.md` section set (task 6.5) |
-| A decision absorbed into a shared section stays visible | Structural review — the `Identity` named-item requirement (task 6.5) |
+| A decision absorbed into a shared section stays visible | Structural review — the `Identity` and `Development Tooling` named-item requirement (task 6.5; `require-code-quality-tooling-in-foundation` 1.5) |
+| A concern that does not apply is answered, not skipped | Structural review — `rules/project-foundation.md`'s "not applicable" rule beside the section layout |
+| Descriptive decisions reach README.md | Structural review — `rules/project-foundation.md`'s README.md routing |
+| Operationally load-bearing decisions reach AGENTS.md | Structural review — `rules/project-foundation.md`'s AGENTS.md routing |
+| A decision is not placed by which audience happens to value it | Structural review — `rules/project-foundation.md` states the auto-load criterion |
+| design.md remains the canonical record | Structural review — `rules/project-foundation.md`: "in addition to — never instead of" |
 | A conversation resumed in a new session loses nothing | Structural review — task 6.7's incremental-persistence instruction |
 | Artifacts are produced by the existing mechanism | Structural review — task 6.7 |
 | Test authoring is skipped for a stated reason | Structural review — `rules/project-foundation.md` (section 2) |
 | The exemption does not extend past foundation | Structural review — same |
+| Continuous integration that cannot reach a dependency fails | Structural review — `rules/project-foundation.md`'s fixed positions |
+| A hook is not recorded as the gate | Structural review — same |
+| Secrets are excluded by the ignore file | Structural review — same, and the ignore-entries deliverable |
+| A hook stand-down names what decides it | Structural review — same |
+| The policy is recorded without being applied | Structural review — `rules/project-foundation.md`'s branch-protection rule |
+| Protection is applied with the operator's confirmation | Structural review — same |
+| Protection decided against creates no application task | Structural review — same |
+| Archived decisions are not left unbuilt | Structural review — `rules/project-foundation.md`'s successor-change rule |
+| The test runner has an owner | Structural review — same |
+| Foundation does not build the tooling itself | Structural review — same |
+| Tooling already present needs no successor | Structural review — same |
+| The successor is not exempt from test authoring | Structural review — same |
 | Lifecycle position is derived, not stored | Structural review — no state file exists anywhere in this change |
 | A later architectural change is not a violation | Structural review — `rules/project-foundation.md` states this explicitly |
 

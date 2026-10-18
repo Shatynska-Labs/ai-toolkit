@@ -21,7 +21,7 @@ Two further directories sit alongside these, in a separate category from library
 ## Installing
 
 ```
-/plugin marketplace add ~/projects/ai-toolkit
+/plugin marketplace add ~/projects/shatynska/ai-toolkit
 /plugin install
 ```
 
@@ -30,13 +30,13 @@ This installs every skill and agent in the library into the current project — 
 To develop against the library without installing it, run:
 
 ```
-claude --plugin-dir ~/projects/ai-toolkit
+claude --plugin-dir ~/projects/shatynska/ai-toolkit
 ```
 
 `rules/` fragments have no dedicated loading mechanism — installation copies this repository's entire tree, so the files are present in an installed copy, but nothing loads them automatically the way `skills/` and `agents/` are loaded. Two paths reach a fragment: adopt one yourself by `@` importing its path from a project's `CLAUDE.md` or `AGENTS.md`,
 
 ```
-@~/projects/ai-toolkit/rules/<rule-name>.md
+@~/projects/shatynska/ai-toolkit/rules/<rule-name>.md
 ```
 
 or let a shipped tool under `scripts/` read and inline it directly — this is how `scripts/project-init` delivers `rules/development-workflow.md` into a project's `AGENTS.md`, with no import involved.

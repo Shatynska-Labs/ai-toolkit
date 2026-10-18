@@ -33,41 +33,6 @@ The change is two obligations, both one-time and neither a session's:
 
 **Depends on**: nothing. Independent of `add-session-workflow-tooling`.
 
-## `add-development-workflow-skill`
-
-A skill carrying the reasoning behind `rules/development-workflow.md`, so the fragment can stay short and a session that wants the argument can reach it.
-
-**The constraint that makes this safe, and that the skill must be written against: nothing in it may change an outcome.** A skill is model-invoked, so there is no guarantee it loads at the moment it is relevant. Anything a session must know to act correctly — an instruction, a gate, an exemption, an edge case with a different answer — stays in the fragment. The skill holds why, worked examples, and what was rejected. A rule that reads as optional detail but changes what a session does is the failure this constraint exists to prevent.
-
-The material already exists: `consolidate-development-workflow`'s `design.md` holds twelve decisions with their rejected alternatives, and the archived `add-session-workflow-fragments` and `revise-development-workflow` hold more. The skill assembles what is written rather than inventing it.
-
-Pointers from the fragment to the skill land with this change, not before — until the skill exists a pointer names something a reader cannot open, which the fragment's own no-dangling-reference rule forbids.
-
-**Argued in**: `consolidate-development-workflow`'s implementation, on the operator's observation that detail belongs somewhere reachable but not in a file every session reads in full.
-
-**Depends on**: nothing. `skills/create-skill/SKILL.md` is the authoring standard.
-
-## `move-setup-gates-to-project-setup`
-
-Four obligations found in `commerce-ops` and `infrastructure` while writing `rules/development-workflow.md` v3. Each is sound and none belongs in a fragment every session reads, because a project discharges each once at setup:
-
-- **Continuous integration fails rather than skips** on a dependency the verification requires but cannot reach. A skip a test declares for itself — a platform it does not apply to, an optional dependency — is a decision, not a gate that failed to run. `commerce-ops` enforces this and has a merged pull request that claimed a tier which had skipped.
-- **A commit or push hook is not an authority.** It exists only in a clone where someone installed it, so its silence is not a pass.
-- **Secrets are kept out of version control by the ignore file**, not by vigilance at commit time, so committing one takes an override rather than an oversight.
-- **The project states its test command and test-path glob** — already obliged by `project-foundation`, which routes both into a named section of the project's conventions. Listed here only so the set is complete; it needs nothing.
-
-The first three want a home: `project-foundation`'s checklist, `scripts/project-init`, or both. The change decides which and states them there.
-
-**Argued in**: `consolidate-development-workflow`, which carried all four in the fragment until the operator observed they are one-time actions a session never performs.
-
-**Depends on**: nothing.
-
-## `add-change-code-reviewer`
-
-**In progress** on the branch of the same name. The placeholder at `agents/change-code-reviewer.md` is being replaced by a reviewer that traces a change's committed diff against its delta specs, derived tests and tasks, reports scope as scope, and concludes in the plan reviewer's verdict set. This entry is deleted when that change archives.
-
-**Argued in**: `consolidate-development-workflow`, alongside the rename of `openspec-change-reviewer` to `change-plan-reviewer`. The placeholder was landed separately, at the operator's request, once that change had archived.
-
 ## `extend-dangling-reference-to-agent-names`
 
 `tests/cases/workflow-fragment-no-dangling-reference.sh` scans for `rules/` paths, fragment filenames and `@` imports; it does not scan for an `ai-toolkit:` agent name with no file behind it. That gap is why nothing in the suite reported `build`'s binding while it named a code reviewer that did not exist, and nothing would report its recurrence. It amends `session-workflow`'s publication requirement and its test case.
