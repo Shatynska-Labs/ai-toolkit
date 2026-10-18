@@ -38,7 +38,7 @@ The entry rules are owned by `project-bootstrap` and stated in the file; the obl
 
 ### Requirement: Record writes an entry the file can be relied on for
 
-The **record** operation SHALL write one entry in the shape the file states. Before writing, it SHALL check the entry's name against the backlog's headings, the project's open and archived change directories, and its branches, and SHALL not write a name already used by any of them. It SHALL set Kind by the file's own definition and state the reason. It SHALL search the existing entries for ones touching the same files, specifications or capabilities, and name each it finds in Design with, or `nothing`. It SHALL set Re-checked to the day the entry is written.
+The **record** operation SHALL write one entry in the shape the file states. Before writing, it SHALL check the entry's name against the backlog's headings, the project's open and archived change directories, and its branches, and SHALL not write a name already used by any of them. It SHALL set Kind by the file's own definition and state the reason. It SHALL search the existing entries for ones touching the same files, specifications or capabilities and present each as a Design with candidate, writing into Design with only the candidates the session or operator confirms share a design, or `nothing`. A shared pointer is evidence of a shared design, not the same thing. It SHALL set Re-checked to the day the entry is written.
 
 The name check and the overlap search are the operation's procedure, not entry rules: the file states that an entry is named and may name entries to design with, and record is how the skill makes those statements hold for the entry it writes.
 
@@ -50,7 +50,7 @@ The name check and the overlap search are the operation's procedure, not entry r
 #### Scenario: An overlapping entry exists
 
 - **WHEN** record writes an entry naming a file another entry also names
-- **THEN** the new entry's Design with names that other entry
+- **THEN** record presents that other entry as a Design with candidate, and names it in Design with only once it is confirmed to share a design
 
 ### Requirement: Pick lists what can be taken now
 
