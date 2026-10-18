@@ -217,3 +217,14 @@ Full scenario-to-test mapping is in the change's `test-plan.md`, which archives 
 - **Archive re-read** — `workflow-fragment-archive-backlog-reread.sh`, `workflow-fragment-archive-reread-names-no-field.sh`.
 - **The skill** — `backlog-skill-*.sh`, one or two per requirement (identity and absent-backlog share the first, restates-no-entry-rule and no-audit-cadence the second), each a static scan of `skills/backlog/SKILL.md` or `skills/backlog/references/audit.md` through `tests/cases/lib/static-scan.sh`, checked against a conforming fixture and one mutant per scan. What a session does when it runs an operation is not reachable by a scan.
 - **Uncovered** — the three scenarios *A rule states an action…* carries over verbatim; their accounting above is unchanged.
+
+## retire-the-claude-md-import-notice (1 MODIFIED requirement, 8 scenarios)
+
+`retire-the-claude-md-import-notice` modifies *Workflow rules reach a project as a versioned managed block*: the import line is owed only where a shadowing file exists and the target's `CLAUDE.md` doesn't import `AGENTS.md`, and a version note replaces it where none exists. Of its eight scenarios, four are unchanged and keep their cases above (`managed-block-current-version.sh`, `existing-agents-md-appended.sh`, `claude-md-only.sh`, `managed-block-older-version.sh`). The rest:
+
+- **Rules written but not yet loadable are reported as such** (revised) — `import-line-reported.sh`, `import-line-names-own-claude-md.sh`.
+- **A shadowing file above the target is reported like one in it** — `shadowing-claude-md-above-target.sh`, `shadowing-claude-md-in-enclosing-repo.sh`.
+- **The user's own instructions file does not shadow** — `home-dot-claude-does-not-shadow.sh`.
+- **No CLAUDE.md yields a version note, not an instruction** — `no-shadowing-file-version-note.sh`, and `empty-directory-new-project.sh`, whose import assertion this change reversed.
+
+From the requirement's definition of a shadowing file rather than a scenario: `shadowing-claude-local-md-in-target.sh`, `shadowing-dot-claude-in-target.sh`, `shadowing-claude-local-md-above-target.sh`, `shadowing-dot-claude-above-target.sh`, `shadowing-importing-claude-md-above-target.sh`, `home-root-claude-md-shadows.sh`, and `claude-md-import-states-nothing.sh`. The note cases check that no shadowing file exists above `$TESTDIR` first, and fail with that reason rather than reporting a script defect. Full mapping is in the change's `test-plan.md`.

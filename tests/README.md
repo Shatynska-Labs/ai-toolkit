@@ -26,6 +26,8 @@ Each file in `tests/cases/*.sh` runs as its own subprocess in a fresh `mktemp -d
 
 `scripts/project-init` prints a fixed, greppable report to stdout. Cases assert against these tokens, so the script and this suite must agree on them — this is the normative form, written before the script, and section 5 implements against it rather than inventing wording independently.
 
+A **shadowing file** is `CLAUDE.md`, `CLAUDE.local.md` or `.claude/CLAUDE.md` in the target or any directory above it, other than `$HOME/.claude/CLAUDE.md`. Cases asserting the note assume none exists above `$TESTDIR`; they check that first and fail with that reason rather than reporting a script defect.
+
 Each applicable line, in order:
 
 ```
@@ -38,7 +40,8 @@ conventions file: created with block (version N)
            | block appended (version N)
            | block already present (version N, matches)
            | block already present (existing version N, tool carries version M)
-Import needed: add `@AGENTS.md` to CLAUDE.md for the rules to take effect   [only when CLAUDE.md does not already import AGENTS.md]
+Import needed: add `@AGENTS.md` to this project's own CLAUDE.md (create it if absent) for the rules to take effect   [only when the target's CLAUDE.md does not import AGENTS.md and a shadowing file exists]
+Note: Claude Code reads AGENTS.md without a CLAUDE.md from version 2.1.277 (2.1.281 on Bedrock, Vertex AI, Foundry, gateways and telemetry-disabled sessions), unless its "Project instructions" setting says otherwise; on an earlier version, add `@AGENTS.md` to a CLAUDE.md.   [only when no shadowing file exists]
 Outcome: SUCCESS | BLOCKED | ERROR
 Reason: <text>   [BLOCKED or ERROR only]
 Next step: foundation discovery — run /project-foundation to establish this project's foundation.   [new-project SUCCESS only]
