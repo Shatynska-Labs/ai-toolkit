@@ -62,3 +62,7 @@ The changelog agrees: 2.1.277, "in a project with no CLAUDE.md, Claude Code read
 Round 1: `FIX REQUIRED`. One `[MAJOR — design]`: the split rested on the target's `CLAUDE.md` alone, while the observation behind it had excluded files above the target, an arrangement the spec supports as a new project. Answered by observation (Context, second table) and by Decision 1's shadowing-file search. Three `[MINOR]`: `tests/README.md` untasked (task 2.3 added), the note omitting telemetry-disabled sessions, and a false claim that the note covered the `/config` setting (both fixed in Decision 2 and Risks).
 
 Round 2: `CONDITIONALLY APPROVED`, five `[MINOR]`, applied without a further round — the spec's account of where the import fix was observed narrowed to what was observed; the test environment's own ancestors guarded; the import line reworded to name the target's own `CLAUDE.md` (Decision 2a); an import in a non-root file named as a Non-Goal rather than claimed not to load; the report form updated before the script, and `tests/coverage.md` tasked.
+
+## Code review
+
+Round 1: `CONDITIONALLY APPROVED`, two `[MINOR]`, applied — the ancestor walk now covers the physical path as well as the given one, so a symlinked target cannot hide a shadowing file, and `HOME` is normalised so a trailing slash does not make the user's own `~/.claude/CLAUDE.md` shadow. Both reproduced before and after the fix.
