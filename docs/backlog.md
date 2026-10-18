@@ -177,3 +177,11 @@ Two remedies were identified and neither was taken, pending that answer: require
 **Argued in**: `seed-the-backlog`'s code review; outside that change's scope.
 
 **Depends on**: nothing.
+
+## `fold-small-work-in`
+
+The workflow leaves no path for small adjacent work. **Scope** sends every improvement noticed along the way to a separate change, with no size threshold. **A second change surfacing** offers recording as the only outcome. And `change-code-reviewer` reports any edit outside the stated scope as a `scope` finding, so work a session does fold in is pushed back out at review. This adds a fold-in rule to **Scope**: work that touches files the change already edits, owes no specification delta and no decision, and is small goes in as its own commit, named in the PR description. It limits **A second change surfacing** to what Scope does not fold in, and exempts such commits from the reviewer's `scope` kind (`change-code-review`'s *Out-of-scope edits are reported as scope*). It also makes a change at `build:applying` take the backlog's `Kind: fix` entries that touch its files, and makes the `backlog` skill's **record** apply the fold-in test before writing an entry.
+
+**Argued in**: `add-backlog-skill`'s `handoff.md` (sections 1 and 4) and its design (Context), which split this out at the operator's direction.
+
+**Depends on**: `add-backlog-skill` (the Kind field and the skill this extends). Design it with `state-recording-as-the-obligation`, whose required clause the fold-in rule changes.
