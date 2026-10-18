@@ -296,6 +296,28 @@ if [ -f "$claude_path" ] && grep -qF '@AGENTS.md' "$claude_path" 2>/dev/null; th
   claude_has_import=1
 fi
 
+# Claude Code reads AGENTS.md on its own only where no project instructions
+# file is found for the target, in it or any directory above it; the user's
+# own ~/.claude/CLAUDE.md does not count.
+shadowed=0
+home_instructions="${HOME%/}/.claude/CLAUDE.md"
+# Both the path as given and its physical form, so a symlinked target cannot
+# hide a shadowing file on either chain.
+for start in "$target" "$target_physical"; do
+  dir="$start"
+  while :; do
+    for candidate in "${dir%/}/CLAUDE.md" "${dir%/}/CLAUDE.local.md" "${dir%/}/.claude/CLAUDE.md"; do
+      [ "$candidate" = "$home_instructions" ] && continue
+      if [ -e "$candidate" ]; then
+        shadowed=1
+      fi
+    done
+    [ "$shadowed" -eq 1 ] && break 2
+    [ "$dir" = "/" ] && break
+    dir="$(dirname "$dir")"
+  done
+done
+
 import_needed=0
 
 if [ -f "$agents_path" ]; then
@@ -327,8 +349,12 @@ fi
 if [ "$import_needed" -eq 1 ]; then
   # shellcheck disable=SC2016 # single-quoted deliberately: the backticks are
   # literal formatting, not command substitution, and no variable expansion
-  # is wanted in this string.
-  echo 'Import needed: add `@AGENTS.md` to CLAUDE.md for the rules to take effect'
+  # is wanted in these strings.
+  if [ "$shadowed" -eq 1 ]; then
+    echo 'Import needed: add `@AGENTS.md` to this project'"'"'s own CLAUDE.md (create it if absent) for the rules to take effect'
+  else
+    echo 'Note: Claude Code reads AGENTS.md without a CLAUDE.md from version 2.1.277 (2.1.281 on Bedrock, Vertex AI, Foundry, gateways and telemetry-disabled sessions), unless its "Project instructions" setting says otherwise; on an earlier version, add `@AGENTS.md` to a CLAUDE.md.'
+  fi
 fi
 
 echo "Outcome: SUCCESS"

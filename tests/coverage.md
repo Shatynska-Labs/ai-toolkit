@@ -208,3 +208,14 @@ The 12 uncovered scenarios are the reviewer's conduct on a dispatch — blocking
 - `workflow-fragment-first-commit-exception.sh`, `workflow-fragment-first-commit-by-observable.sh` — the exception sits beside the delivery rule and is identified by there being no commit before it, naming no class of commit.
 
 Full scenario-to-test mapping is in the change's `test-plan.md`, which archives with it.
+
+## retire-the-claude-md-import-notice (1 MODIFIED requirement, 8 scenarios)
+
+`retire-the-claude-md-import-notice` modifies *Workflow rules reach a project as a versioned managed block*: the import line is owed only where a shadowing file exists and the target's `CLAUDE.md` doesn't import `AGENTS.md`, and a version note replaces it where none exists. Of its eight scenarios, four are unchanged and keep their cases above (`managed-block-current-version.sh`, `existing-agents-md-appended.sh`, `claude-md-only.sh`, `managed-block-older-version.sh`). The rest:
+
+- **Rules written but not yet loadable are reported as such** (revised) — `import-line-reported.sh`, `import-line-names-own-claude-md.sh`.
+- **A shadowing file above the target is reported like one in it** — `shadowing-claude-md-above-target.sh`, `shadowing-claude-md-in-enclosing-repo.sh`.
+- **The user's own instructions file does not shadow** — `home-dot-claude-does-not-shadow.sh`.
+- **No CLAUDE.md yields a version note, not an instruction** — `no-shadowing-file-version-note.sh`, and `empty-directory-new-project.sh`, whose import assertion this change reversed.
+
+From the requirement's definition of a shadowing file rather than a scenario: `shadowing-claude-local-md-in-target.sh`, `shadowing-dot-claude-in-target.sh`, `shadowing-claude-local-md-above-target.sh`, `shadowing-dot-claude-above-target.sh`, `shadowing-importing-claude-md-above-target.sh`, `home-root-claude-md-shadows.sh`, and `claude-md-import-states-nothing.sh`. The note cases check that no shadowing file exists above `$TESTDIR` first, and fail with that reason rather than reporting a script defect. Full mapping is in the change's `test-plan.md`.

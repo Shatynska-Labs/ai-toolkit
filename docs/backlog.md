@@ -177,11 +177,3 @@ Two remedies were identified and neither was taken, pending that answer: require
 **Argued in**: `seed-the-backlog`'s code review; outside that change's scope.
 
 **Depends on**: nothing.
-
-## `act-on-the-claude-md-import-at-initialization`
-
-`scripts/project-init` reports `Import needed: add @AGENTS.md to CLAUDE.md for the rules to take effect` where a project has no `CLAUDE.md` importing `AGENTS.md`, and the `project-init` skill only relays the line. So a new project's first commit can go out without the import, and the workflow rules the tool just inlined do not load in the project's next Claude Code session until someone notices. The change decides whether the skill offers to write the import (before the first commit, so the commit carries it) or the tool does, and keeps the tool from overwriting a `CLAUDE.md` the project owns.
-
-**Argued in**: `establish-the-remote-and-the-first-commit`'s cold run of the revised skill, which reached the import line with nothing to do about it. Not done there because the relay behaviour predates that change and is not what it set out to fix.
-
-**Depends on**: nothing.
