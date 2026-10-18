@@ -62,12 +62,6 @@ The first three want a home: `project-foundation`'s checklist, `scripts/project-
 
 **Depends on**: nothing.
 
-## `add-change-code-reviewer`
-
-**In progress** on the branch of the same name. The placeholder at `agents/change-code-reviewer.md` is being replaced by a reviewer that traces a change's committed diff against its delta specs, derived tests and tasks, reports scope as scope, and concludes in the plan reviewer's verdict set. This entry is deleted when that change archives.
-
-**Argued in**: `consolidate-development-workflow`, alongside the rename of `openspec-change-reviewer` to `change-plan-reviewer`. The placeholder was landed separately, at the operator's request, once that change had archived.
-
 ## `extend-dangling-reference-to-agent-names`
 
 `tests/cases/workflow-fragment-no-dangling-reference.sh` scans for `rules/` paths, fragment filenames and `@` imports; it does not scan for an `ai-toolkit:` agent name with no file behind it. That gap is why nothing in the suite reported `build`'s binding while it named a code reviewer that did not exist, and nothing would report its recurrence. It amends `session-workflow`'s publication requirement and its test case.
