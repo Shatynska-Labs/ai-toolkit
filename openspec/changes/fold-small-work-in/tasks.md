@@ -7,8 +7,8 @@
 
 ## 2. Code reviewer
 
-- [ ] 2.1 Extend **Scope** in `agents/change-code-reviewer.md` with the fold-in exemption in decision 6, deferring to the project's conventions for the conditions. Verify with the derived reviewer cases and `tests/cases/change-code-reviewer-finding-vocabulary.sh`
-- [ ] 2.2 Extend the cold-run fixture in `agents/change-code-reviewer.checks.yaml` as decision 6 describes (the fixture's fold-in rule, `README.md` in the proposal, the folded-in typo commit) and add its pass criterion
+- [ ] 2.1 Extend **Scope** in `agents/change-code-reviewer.md` with the fold-in exemption in decision 6, deferring to the project's conventions for the conditions, and add to *Resolving the target* reading the range's commits with `git log --name-only <base>..<head>`. Verify with the derived reviewer cases and `tests/cases/change-code-reviewer-finding-vocabulary.sh`
+- [ ] 2.2 Extend the cold-run fixture in `agents/change-code-reviewer.checks.yaml` as decision 6 describes (the fixture's fold-in rule; `README.md` with a typo in its install section on `main`; the proposal and a fixture task naming a greet section in `README.md`, replacing "No other file changes"; the greet commit adding it; the folded-in typo commit) and add its pass criteria
 - [ ] 2.3 Run the cold-run check against the extended fixture by real dispatch, as the fixture's `form` states, and report the outcome against every pass criterion
 
 ## 3. Backlog skill

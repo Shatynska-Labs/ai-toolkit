@@ -10,8 +10,8 @@ The backlog entry `state-recording-as-the-obligation` names a gap in the same cl
 - **A second change surfacing** applies only to what Scope does not fold in, and its routing for an independent change states recording as the obligation and opening as the option (folds in `state-recording-as-the-obligation`).
 - **apply**: before implementing, read `docs/backlog.md` for entries the fold-in conditions admit for this change and take each as folded-in work, naming the entry in its commit. The archive re-read deletes the entry.
 - Fragment version 8 → 9.
-- `agents/change-code-reviewer.md`: an edit the project's conventions let a change fold in, made as they direct, is not a `scope` finding; one failing a condition is. A folded-in edit is reviewed for correctness like the rest of the diff. The cold-run fixture gains a folded-in commit.
-- `skills/backlog/SKILL.md`, **record**: test the work against the project's fold-in rule first, and write no entry for work that meets it unless the operator still wants one.
+- `agents/change-code-reviewer.md`: an edit the project's conventions let a change fold in, made as they direct, is not a `scope` finding; one failing a condition is. The reviewer reads the range's commits to judge it. A folded-in edit is reviewed for correctness like the rest of the diff. The cold-run fixture gains a folded-in commit.
+- `skills/backlog/SKILL.md`, **record**: test the work against the project's fold-in rule first, and write no entry for work that meets it.
 
 ## Capabilities
 
