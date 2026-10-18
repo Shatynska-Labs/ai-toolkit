@@ -1,7 +1,7 @@
 ## 1. Plan
 
 - [x] 1.1 Commit the approved plan, and verify `git log -1` on the branch holds proposal, design, delta specs and tasks
-- [ ] 1.2 Dispatch `ai-toolkit:change-test-writer` against the committed plan, with test command `bash tests/run.sh` and test-path glob `tests/cases/*.sh`, and verify `test-plan.md` maps every scenario in both delta specs to a case or states why none
+- [x] 1.2 Dispatch `ai-toolkit:change-test-writer` against the committed plan, with test command `bash tests/run.sh` and test-path glob `tests/cases/*.sh`, and verify `test-plan.md` maps every scenario in both delta specs to a case or states why none
 
 ## 2. The project-init skill
 
