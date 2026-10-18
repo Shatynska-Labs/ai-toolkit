@@ -6,6 +6,23 @@
 # shellcheck disable=SC1090 # $TESTLIB is set by tests/run.sh at runtime, not statically resolvable
 source "$TESTLIB"
 
+# Precondition: no shadowing file (CLAUDE.md, CLAUDE.local.md or
+# .claude/CLAUDE.md, other than $HOME/.claude/CLAUDE.md) above $TESTDIR, or
+# the environment rather than the script decides the import report below.
+for dir in "$TESTDIR" "$(cd "$TESTDIR" && pwd -P)"; do
+  while :; do
+    for cand in "${dir%/}/CLAUDE.md" "${dir%/}/CLAUDE.local.md" "${dir%/}/.claude/CLAUDE.md"; do
+      [ "$cand" = "${HOME%/}/.claude/CLAUDE.md" ] && continue
+      if [ -e "$cand" ]; then
+        echo "FAIL: precondition not met — shadowing file above \$TESTDIR: $cand. Not a finding about the script." >&2
+        exit 1
+      fi
+    done
+    [ "$dir" = "/" ] && break
+    dir="$(dirname "$dir")"
+  done
+done
+
 work="$TESTDIR/work"
 mkdir -p "$work"
 cd "$work" || exit 1
@@ -23,7 +40,12 @@ assert_contains "$work/AGENTS.md" "ai-toolkit:development-workflow" "managed blo
 assert_contains "$report" "Outcome: SUCCESS" "reports success"
 assert_contains "$report" "Target:" "states the target directory"
 assert_contains "$report" "foundation discovery" "names foundation discovery as next step"
-assert_contains "$report" "Import needed:" "neither file existed — CLAUDE.md does not import AGENTS.md, so the import line must be reported"
+# No shadowing file exists, so the import is not owed; the version note is.
+if grep -qF "Import needed:" "$report"; then
+  echo "FAIL: no shadowing file exists, so the report must not state the import as needed" >&2
+  exit 1
+fi
+assert_contains "$report" "Note: Claude Code reads AGENTS.md without a CLAUDE.md from version 2.1.277" "the version note is reported where no shadowing file exists"
 
 # Discovery is named, not started: no foundation change was created.
 if [ -d "$work/openspec/changes" ] && find "$work/openspec/changes" -mindepth 1 -maxdepth 1 -not -name archive | grep -q .; then
