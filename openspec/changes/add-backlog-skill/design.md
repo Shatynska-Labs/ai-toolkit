@@ -62,7 +62,7 @@ The spec fixes the statements and not the wording, as `seed-the-backlog` did. Th
 
 The earlier shape let an entry state what it "should precede". That direction is dropped deliberately: ordering is stated only from the waiting side, in Waits on, which is the side pick and the archive re-read read. A constraint stated on both sides is two statements that drift.
 
-**3. The fragment's addition** is one sentence appended to **archive**: "Before opening that pull request, re-read `docs/backlog.md` for the entries this change completed, made obsolete, unblocked or made stale (including entries naming files or specifications it touched, not only entries naming it) and update each as the file directs, in the commit that carries the record." The parenthesis is the differing edge case, so it is in the fragment. It names no field, so a later change to the shape needs no fragment version. Version 6 → 7.
+**3. The fragment's addition** is one sentence appended to **archive**: "Before opening that pull request, re-read `docs/backlog.md` for the entries this change completed, made obsolete, unblocked or made stale (including entries naming files or specifications it touched, not only entries naming it) and update each as the file directs, in the commit that carries the record." The parenthesis is the differing edge case, so it is in the fragment. It names no field, so a later change to the shape needs no fragment version. Version 7 → 8.
 
 **4. The skill's shape.** `SKILL.md` holds the five operations. `references/audit.md` holds the agent brief (inputs, the sources to check with archived changes and merged PRs named explicitly, the verdict vocabulary, the return format) and the merged report's sections, and is loaded only when an audit runs. The audit brief is not its own library agent. Only this skill dispatches it. An agent would need the cold-run and trigger machinery of `create-agent` for a prompt with one caller, so it can be promoted if a second caller appears. The skill dispatches the general-purpose agent type, with the brief as the prompt and the instruction to write nothing.
 
@@ -87,4 +87,4 @@ Range size: about 25 entries per agent, so commerce-ops' 92 split into four, as 
 
 ## Migration Plan
 
-Adopting projects see version skew (6 → 7) and refresh their block as usual. Existing backlogs are migrated, if at all, by the skill on the operator's word.
+Adopting projects see version skew (7 → 8) and refresh their block as usual. Existing backlogs are migrated, if at all, by the skill on the operator's word.

@@ -140,7 +140,7 @@ The search covered `tests/cases/**` only, using the terms `Depends on`, `precede
 Cases that bear on the change and were assessed as **not** superseded:
 
 - `workflow-fragment-backlog-rules-not-restated` still scans for `depends on:`. That stays valid because the fragment must still not restate field labels. The new labels are covered by `workflow-fragment-archive-reread-names-no-field`.
-- `inlined-body-matches-fragment` and `managed-block-*` read the fragment's version dynamically, so the bump from 6 to 7 needs no test change.
+- `inlined-body-matches-fragment` and `managed-block-*` read the fragment's version dynamically, so the bump from 7 to 8 needs no test change.
 
 There was nothing to find for two superseded statements:
 

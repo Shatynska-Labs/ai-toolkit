@@ -195,3 +195,16 @@ Code review found a target reached through a symlink bypassing the repository ch
 - `workflow-fragment-build-binding-verdict-acts.sh` — `build`'s binding names the act for each verdict.
 
 The 12 uncovered scenarios are the reviewer's conduct on a dispatch — blocking, restoring, locating, judging a quoted instruction — which no program here runs; the cold-run check exercises them instead. Full scenario-to-test mapping is in `add-change-code-reviewer`'s `test-plan.md`, which archives with the change; this section is what survives it.
+
+## establish-the-remote-and-the-first-commit (11 delta scenarios)
+
+`establish-the-remote-and-the-first-commit` adds two `project-bootstrap` requirements on what the `project-init` skill does after a successful run, and one `session-workflow` requirement on the fragment's first-commit exception. Ten scenarios constrain prose a model follows, so each case checks that `skills/project-init/SKILL.md` or `rules/development-workflow.md` states the step, over `$TOOLKIT_ROOT` and over a fixture it writes that the check must reject; that a wrapper following the skill behaves so is checked by the change's cold run, not here. One is runtime behaviour of the script:
+
+- `project-init-skill-commit-offer-lists-untracked.sh`, `project-init-skill-commit-offer-lists-staged.sh` — the commit offer lists untracked paths git does not exclude, and staged paths.
+- `project-init-skill-declined-commit-states-gaps.sh` — a declined commit states the first commit and a remote outstanding.
+- `project-init-skill-adoption-not-committed.sh` — an adoption's writes reach the trunk through a pull request.
+- `project-init-skill-remote-connected-after-confirmation.sh`, `project-init-skill-rejected-push-not-forced.sh`, `project-init-skill-declined-remote-states-gap.sh`, `project-init-skill-existing-remote-left-alone.sh` — the remote step.
+- `project-init-configures-no-remote.sh` — the script itself configures no remote.
+- `workflow-fragment-first-commit-exception.sh`, `workflow-fragment-first-commit-by-observable.sh` — the exception sits beside the delivery rule and is identified by there being no commit before it, naming no class of commit.
+
+Full scenario-to-test mapping is in the change's `test-plan.md`, which archives with it.

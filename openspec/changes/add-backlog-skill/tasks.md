@@ -6,7 +6,7 @@
 ## 2. Fragment
 
 - [ ] 2.1 Append the archive re-read sentence from `design.md` decision 3 to **archive** in `rules/development-workflow.md`. Verify with the derived fragment cases and `tests/cases/workflow-fragment-backlog-rules-not-restated.sh`
-- [ ] 2.2 Increment the fragment's `version` from 6 to 7. Verify `tests/cases/inlined-body-matches-fragment.sh` passes
+- [ ] 2.2 Increment the fragment's `version` from 7 to 8. Verify `tests/cases/inlined-body-matches-fragment.sh` passes
 
 ## 3. Skill
 

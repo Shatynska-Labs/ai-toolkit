@@ -178,6 +178,14 @@ Two remedies were identified and neither was taken, pending that answer: require
 
 **Depends on**: nothing.
 
+## `act-on-the-claude-md-import-at-initialization`
+
+`scripts/project-init` reports `Import needed: add @AGENTS.md to CLAUDE.md for the rules to take effect` where a project has no `CLAUDE.md` importing `AGENTS.md`, and the `project-init` skill only relays the line. So a new project's first commit can go out without the import, and the workflow rules the tool just inlined do not load in the project's next Claude Code session until someone notices. The change decides whether the skill offers to write the import (before the first commit, so the commit carries it) or the tool does, and keeps the tool from overwriting a `CLAUDE.md` the project owns.
+
+**Argued in**: `establish-the-remote-and-the-first-commit`'s cold run of the revised skill, which reached the import line with nothing to do about it. Not done there because the relay behaviour predates that change and is not what it set out to fix.
+
+**Depends on**: nothing.
+
 ## `fold-small-work-in`
 
 The workflow leaves no path for small adjacent work. **Scope** sends every improvement noticed along the way to a separate change, with no size threshold. **A second change surfacing** offers recording as the only outcome. And `change-code-reviewer` reports any edit outside the stated scope as a `scope` finding, so work a session does fold in is pushed back out at review. This adds a fold-in rule to **Scope**: work that touches files the change already edits, owes no specification delta and no decision, and is small goes in as its own commit, named in the PR description. It limits **A second change surfacing** to what Scope does not fold in, and exempts such commits from the reviewer's `scope` kind (`change-code-review`'s *Out-of-scope edits are reported as scope*). It also makes a change at `build:applying` take the backlog's `Kind: fix` entries that touch its files, and makes the `backlog` skill's **record** apply the fold-in test before writing an entry.
