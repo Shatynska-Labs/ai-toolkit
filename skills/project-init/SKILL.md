@@ -56,17 +56,19 @@ If the tool reported `BLOCKED` or `ERROR`, stop here. Explain the reason from th
 
 The first commit of a repository with no commit is the one commit the workflow lets reach the trunk directly, because there is no branch yet for a pull request to merge into. Offer it only when the report shows a new project.
 
-Before asking, show what the commit would contain, not only what the tool wrote: the target may already hold the project's own files. List every already staged path that the commit would include, and every untracked path git does not exclude through the ignore file or its other standard exclusions. A wholly untracked directory may be listed as one entry. `git status --short` gives both.
+Every git command in this step and the next runs against the target directory the report's `Target:` line names, as `git -C <target> …`, never the current directory: a target passed through in step 2 may differ from it.
 
-Wait for confirmation — never commit without it, per this workflow's own rule that commits are suggested, not automatic. On confirmation, stage with `git add -A`, which takes exactly the paths listed, and commit. If the user declines the initial commit, say that the repository's first commit and a remote are both still outstanding and that the workflow's first pull request needs both, then go to step 6.
+Before asking, show what the commit would contain, not only what the tool wrote: the target may already hold the project's own files. List every already staged path that the commit would include, and every untracked path git does not exclude through the ignore file or its other standard exclusions. A wholly untracked directory may be listed as one entry. `git -C <target> status --short --untracked-files=normal` gives both, whatever the user's `status.showUntrackedFiles` setting.
+
+Wait for confirmation — never commit without it, per this workflow's own rule that commits are suggested, not automatic. On confirmation, stage with `git -C <target> add -A`, which takes exactly the paths listed, and commit with `git -C <target> commit`. If the user declines the initial commit, say that the repository's first commit and a remote are both still outstanding and that the workflow's first pull request needs both, then go to step 6.
 
 In an adoption, offer no commit onto the current branch: the repository already has a trunk, and the tool's writes reach it through a pull request like any other change. Where the adopted repository has no remote configured, also say that a remote is needed before that pull request can be opened.
 
 ## 5. Connect a remote, after the first commit
 
-Where the first commit was made and `git remote` lists nothing, ask the user for the URL of a hosted repository they have created. Never create one yourself, and never choose its forge, owner, name or visibility — each is a judgment about the project. Where a remote is already configured, leave it unchanged and do not ask for one.
+Where the first commit was made and `git -C <target> remote` lists nothing, ask the user for the URL of a hosted repository they have created. Never create one yourself, and never choose its forge, owner, name or visibility — each is a judgment about the project. Where a remote is already configured, leave it unchanged and do not ask for one.
 
-When the user supplies a URL, confirm before acting, since a push is outward-facing; on confirmation run `git remote add origin <url>`, then push the current branch with its upstream set: `git push -u origin HEAD`.
+When the user supplies a URL, confirm before acting, since a push is outward-facing; on confirmation run `git -C <target> remote add origin <url>`, then push the current branch with its upstream set: `git -C <target> push -u origin HEAD`.
 
 If the push fails or is rejected — the hosted repository is not empty, the URL is unreachable, access is refused — relay git's message, say that `origin` now names the supplied URL, and stop: correcting the remote and pushing are the user's. Do not force the push, and do not fetch, merge or rebase the remote's history to make it succeed. Re-running the tool will not return here, since the repository now has a commit.
 
