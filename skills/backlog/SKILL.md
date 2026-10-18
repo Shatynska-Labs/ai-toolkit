@@ -25,7 +25,7 @@ Five operations over `docs/backlog.md` in the project this skill is invoked in. 
 
 Find `docs/backlog.md` at the project root. If it is absent, say so and name `project-init` as what seeds it; do not create the file with text of your own.
 
-Read the preamble, everything before the first entry heading, and take the entry shape and the deletion grounds from it. Where it differs from what you expect, it wins: this skill checks entries against the shape the file states, never against one of its own.
+Read the preamble, everything before the first entry heading, and take the entry shape and the deletion grounds from it. Where it differs from what you expect, it wins: this skill checks entries against the shape the file states, never against one of its own. Where the file's shape lacks a field an operation below names (Kind, Waits on, Design with, Re-checked), use the file's own equivalent where it has one, such as Depends on for Waits on, and otherwise skip that step and say so. Never add a field the file does not define.
 
 The checks and gates below bind you only while you run the operation. An entry written by hand without them is not deficient for lacking them.
 

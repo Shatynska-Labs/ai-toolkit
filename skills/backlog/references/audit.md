@@ -43,4 +43,4 @@ The skill merges every agent's return into one report, in these sections, each l
 7. **Fixes**: entries that can be taken as fixes, with the `fix?` ones listed apart with their reason.
 8. **Unverified**: verdicts that rest on a source an agent could not reach.
 
-Every entry the audit touches gets today's date in Re-checked when the cleanup is applied. Nothing in this report is applied until the operator approves it.
+Where the file's shape names Re-checked, every entry the audit touches gets today's date in it when the cleanup is applied; approving the cleanup is not approving a migration to fields the file does not define. Nothing in this report is applied until the operator approves it.

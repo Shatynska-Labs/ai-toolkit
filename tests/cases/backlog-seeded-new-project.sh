@@ -3,8 +3,10 @@
 # mode). Change: seed-the-backlog.
 #
 # SPECIFIED: the file is created where `docs/` does not exist, the report
-# states it was created, the file states each of the six statements the
-# requirement lists, and it contains no entry.
+# states it was created, the file states each statement carried over from
+# seed-the-backlog, and it contains no entry. The statement N labels below
+# follow seed-the-backlog's order; the statements add-backlog-skill added or
+# revised are asserted by backlog-seeded-structured-statements.sh.
 #
 # DERIVED (wording): the requirement fixes what the text states, not the
 # text. Each statement is asserted by one stable phrase taken from the seeded
