@@ -9,8 +9,9 @@ description: >
   root, invokes the deterministic `scripts/project-init` tool, relays its
   report verbatim, offers an initial commit, and names foundation discovery
   as the next step without starting it. It performs only deterministic
-  setup — Git, OpenSpec, a managed workflow block in `AGENTS.md` — and
-  makes no judgment about the project's identity, scope, or architecture;
+  setup — Git, OpenSpec, a seeded `docs/backlog.md`, a managed workflow
+  block in `AGENTS.md` — and makes no judgment about the project's
+  identity, scope, or architecture;
   for those, see `project-foundation`, which it never invokes itself. Not
   for authoring library assets (`create-skill`, `create-agent`) and not for
   proposing an OpenSpec change once a project already has a foundation
@@ -29,7 +30,7 @@ Try, in order, stopping at the first that resolves:
 
 1. `$AI_TOOLKIT_ROOT`
 2. `$CLAUDE_PLUGIN_ROOT`
-3. the machine-local default, `~/projects/ai-toolkit`
+3. the machine-local default, `~/projects/shatynska/ai-toolkit`
 
 If none resolves, report yourself blocked — name what you looked for — and stop. Do not fall back to running `git init` or `openspec init` directly, and do not write the workflow rules from memory. An improvised equivalent produces a project initialized differently from every other one while looking like it succeeded, which is the exact failure this workflow exists to prevent.
 

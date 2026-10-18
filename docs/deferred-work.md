@@ -6,6 +6,14 @@ This is not `docs/backlog.md`. An entry here is deleted when it stops being true
 
 This file exists outside any change because a deferral recorded only inside one stops being findable when that change is archived — it is the change *succeeding*, not the session ending, that loses it.
 
+## The development workflow's reasoning is not published as a skill
+
+`rules/development-workflow.md` was compressed hard, and the reasoning behind its rules lives only in the changes that decided them: chiefly the archived `consolidate-development-workflow`, `add-session-workflow-fragments` and `revise-development-workflow`. A skill carrying that reasoning was planned as `add-development-workflow-skill` and dropped before a proposal was written.
+
+`session-workflow` allows such a skill only if it carries reasoning and nothing that changes an outcome, so it cannot make a session act more correctly. It is model-invoked, so it would load rarely, and it would have to track every version of a fragment that went from v3 to v6 in six weeks. The material assembled for it was the fragment as it stood at v2–v3, which no longer matches what ships. The three corrected arguments worth keeping from it are in `openspec/changes/archive/2026-09-05-consolidate-development-workflow/lessons.md`.
+
+This stops being true if a consuming project shows a session going wrong for want of the reasoning, not the rule.
+
 ## A session's shared-service namespace is allocated and never reclaimed
 
 `rules/development-workflow.md` directs a session to take its own namespace in any shared service its verification writes to, and directs nothing about releasing it. A project carrying those rules therefore accumulates namespaces and needs a sweep of its own. (The rule lived in `rules/worktree-isolation.md` until `consolidate-development-workflow` folded that fragment into the workflow one; the gap is unchanged.)

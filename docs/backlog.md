@@ -33,46 +33,37 @@ The change is two obligations, both one-time and neither a session's:
 
 **Depends on**: nothing. Independent of `add-session-workflow-tooling`.
 
-## `add-development-workflow-skill`
+## `extend-dangling-reference-to-agent-names`
 
-A skill carrying the reasoning behind `rules/development-workflow.md`, so the fragment can stay short and a session that wants the argument can reach it.
+`tests/cases/workflow-fragment-no-dangling-reference.sh` scans for `rules/` paths, fragment filenames and `@` imports; it does not scan for an `ai-toolkit:` agent name with no file behind it. That gap is why nothing in the suite reported `build`'s binding while it named a code reviewer that did not exist, and nothing would report its recurrence. It amends `session-workflow`'s publication requirement and its test case.
 
-**The constraint that makes this safe, and that the skill must be written against: nothing in it may change an outcome.** A skill is model-invoked, so there is no guarantee it loads at the moment it is relevant. Anything a session must know to act correctly — an instruction, a gate, an exemption, an edge case with a different answer — stays in the fragment. The skill holds why, worked examples, and what was rejected. A rule that reads as optional detail but changes what a session does is the failure this constraint exists to prevent.
-
-The material already exists: `consolidate-development-workflow`'s `design.md` holds twelve decisions with their rejected alternatives, and the archived `add-session-workflow-fragments` and `revise-development-workflow` hold more. The skill assembles what is written rather than inventing it.
-
-Pointers from the fragment to the skill land with this change, not before — until the skill exists a pointer names something a reader cannot open, which the fragment's own no-dangling-reference rule forbids.
-
-**Argued in**: `consolidate-development-workflow`'s implementation, on the operator's observation that detail belongs somewhere reachable but not in a file every session reads in full.
-
-**Depends on**: nothing. `skills/create-skill/SKILL.md` is the authoring standard.
-
-## `move-setup-gates-to-project-setup`
-
-Four obligations found in `commerce-ops` and `infrastructure` while writing `rules/development-workflow.md` v3. Each is sound and none belongs in a fragment every session reads, because a project discharges each once at setup:
-
-- **Continuous integration fails rather than skips** on a dependency the verification requires but cannot reach. A skip a test declares for itself — a platform it does not apply to, an optional dependency — is a decision, not a gate that failed to run. `commerce-ops` enforces this and has a merged pull request that claimed a tier which had skipped.
-- **A commit or push hook is not an authority.** It exists only in a clone where someone installed it, so its silence is not a pass.
-- **Secrets are kept out of version control by the ignore file**, not by vigilance at commit time, so committing one takes an override rather than an oversight.
-- **The project states its test command and test-path glob** — already obliged by `project-foundation`, which routes both into a named section of the project's conventions. Listed here only so the set is complete; it needs nothing.
-
-The first three want a home: `project-foundation`'s checklist, `scripts/project-init`, or both. The change decides which and states them there.
-
-**Argued in**: `consolidate-development-workflow`, which carried all four in the fragment until the operator observed they are one-time actions a session never performs.
+**Argued in**: the `add-change-code-reviewer` backlog entry, which carried it until `add-change-code-reviewer` split it out (its design, Decision 8).
 
 **Depends on**: nothing.
 
-## `add-change-code-reviewer`
+## `reexamine-plan-gate-code-review-exclusion`
 
-**A placeholder has landed.** `agents/change-code-reviewer.md` exists and dispatches the `code-review` skill against the target it is given, so `rules/development-workflow.md`'s binding now names an agent that answers. It carries none of this library's own review emphases, which is what this entry still owes.
+`plan`'s Claude Code binding in `rules/development-workflow.md` says not to use `/code-review` for the plan-review gate, because that command sounds general enough to reach for before any diff exists. With a real `change-code-reviewer` in place for `build`'s gate, re-examine whether that negative binding is still needed or should name the code reviewer instead.
 
-What the real agent adds, and the placeholder does not: the emphases that make a code review this library's rather than a generic one — a diff read against the change's own delta specs requirement by requirement, the derived tests checked for the scenarios they were written from, unrelated scope reported as scope rather than as a defect, and a severity vocabulary that maps onto the review loop's exits. `skills/create-agent`'s cold-run check applies to that body and has not been run; the placeholder's own `.checks.yaml` records the trigger check that was, and states the cold-run check as owed.
+**Argued in**: the `add-change-code-reviewer` backlog entry, split out by `add-change-code-reviewer` (its design, Decision 8).
 
-Once the real body exists, the negative binding on the plan-review gate can be re-examined: it currently excludes `/code-review` because that command sounds general enough to reach for before any diff exists.
+**Depends on**: `add-change-code-reviewer` having archived, so the question is asked against a reviewer that is in use.
 
-**Argued in**: `consolidate-development-workflow`, alongside the rename of `openspec-change-reviewer` to `change-plan-reviewer`. The placeholder was landed separately, at the operator's request, once that change had archived.
+## `name-the-fragments-third-owner`
 
-**Extend the dangling-reference case.** `tests/cases/workflow-fragment-no-dangling-reference.sh` scans for `rules/` paths, fragment filenames and `@` imports; it does not scan for an `ai-toolkit:` agent name with no file behind it. That gap is why nothing in the suite reported the binding while it dangled, and nothing would report its recurrence. It is addable now that the agent exists, and belongs here.
+`session-workflow`'s Purpose and its publication requirement describe the workflow fragment as governed by `session-workflow` and `project-bootstrap`, with a stated seam. `change-code-review` now also governs one sentence of it — the content of `build`'s Claude Code binding. An editor starting from `session-workflow` will not learn that. The next change that modifies `session-workflow`'s publication requirement for its own reason names the third owner there; this is not worth a change of its own.
+
+**Argued in**: `add-change-code-reviewer` (its design, Decision 7 and Risks).
+
+**Depends on**: `add-change-code-reviewer` having archived.
+
+## `harden-build-binding-verdict-acts-case`
+
+`tests/cases/workflow-fragment-build-binding-verdict-acts.sh` passes the binding text to `awk -v`, which interprets backslash escapes, so a binding containing a backslash would be checked against altered text; and its `has` helper matches act words as case-insensitive substrings, so "nonstop" satisfies "stop". Correct against today's fragment, but weaker as a discriminator than it reads. Pass the text through `ENVIRON` or stdin and match whole words.
+
+**Argued in**: `add-change-code-reviewer`'s code review, rounds 1 and 2. Not applied there because the case was derived by a separate test author.
+
+**Depends on**: nothing.
 
 ## `evaluate-an-openspec-schema-for-our-artifacts`
 
@@ -162,3 +153,27 @@ The table below is the review's enumeration and is one short of the accumulation
 Two remedies were identified and neither was taken, pending that answer: require the attributed reason to be the *only* rejection reason, by building each fixture to trip exactly one scan; or add one fixture per scan.
 
 **Argued in**: `state-the-committed-artifact-situation`'s third code review; the accounting limit is stated in `tests/coverage.md`, which survives that change's archiving, and in its `test-plan.md`, which does not.
+
+## `decide-unreadable-git-dir-handling`
+
+`scripts/project-init` does not specify what happens when the target holds a `.git` git cannot open (for example a corrupt `HEAD`): the repository concern reads as unsatisfied, `git init` reinitializes it, and the initial-branch step then treats it as created. Whether the tool should refuse, report, or leave such a directory alone is undecided. The same check also misreports a readable repository it is refused access to — `safe.directory` on a repository owned by another user, common on WSL `/mnt/c` — as `created`, routing it to the new-project ending; a single repository probe used for both the report and the mode would remove the disagreement. `name-initial-branch-main` code review also found: a `.git` with only non-repository content (an empty `hooks/`) is created on git's built-in default branch with `SUCCESS`; a missing `HEAD` is recreated by `git init` on the configured default, moving the branch. Two of its test cases need hardening as part of this change: `initial-branch-missing-head-not-rewritten.sh` asserts only `!= main` and passes when `HEAD` moved to `master` (assert it is not moved off `develop`, and add an `init.defaultBranch=main` variant), and its guards and those of `initial-branch-corrupted-head-not-rewritten.sh` use `git -C`, which can discover a repository above `$TESTDIR` (use `--git-dir` or `GIT_CEILING_DIRECTORIES`).
+
+**Argued in**: `name-initial-branch-main` (design decision 5; `test-plan.md`, open questions).
+
+**Depends on**: nothing.
+
+## `state-recording-as-the-obligation`
+
+`session-workflow`'s backlog requirement says the fragment "SHALL state that recording is the obligation and branching is the option". `rules/development-workflow.md`'s routing bullet offers the two as equals — "record it in `docs/backlog.md`, or open the identified change" — and nothing in the fragment states the clause.
+
+**Argued in**: `seed-the-backlog`'s code review, which found the gap predates that change.
+
+**Depends on**: nothing.
+
+## `count-a-dangling-ignore-file-link-as-present`
+
+`scripts/project-init` tests the ignore file with `-f`, so a dangling `.gitignore` link reads as absent and the heredoc writes through it to wherever it points. `seed-the-backlog` tests `docs/backlog.md` with `[ -e ] || [ -L ]` for exactly this reason; the ignore file should match.
+
+**Argued in**: `seed-the-backlog`'s code review; outside that change's scope.
+
+**Depends on**: nothing.

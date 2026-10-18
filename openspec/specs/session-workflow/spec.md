@@ -531,11 +531,15 @@ Where the change in progress does not depend on the identified change, the fragm
 
 Where such a branch is created by either path, the fragment SHALL state that it is created and left: it does not become the session's working branch and gets no working tree of its own here. The branch carries the identified change's handoff and no proposal, so it is not named for a proposal — the term this requirement's predecessor used, and the one this change replaces.
 
-**The fragment SHALL name the backlog's path as `docs/backlog.md`.** A backlog entry names an identified change and what it depends on, and is deleted when that change is archived.
+**The fragment SHALL name the backlog's path as `docs/backlog.md`.** A backlog entry names an identified change.
 
-**The fragment SHALL state that an entry's number is an identifier, not a priority, and is not stable, and SHALL direct citing an entry by name, never by number.** Entries are deleted as their changes are archived and renumbered as the file is reordered, so a number cited elsewhere comes to point at a different entry or at none, while the name stays with the change it names.
+**This capability governs routing work to the backlog, not the backlog's entry rules.** How an entry is headed, referred to, ordered and deleted is owned by `project-bootstrap`, which seeds `docs/backlog.md` with those rules. The fragment SHALL state that the file carries them, and SHALL NOT restate them: stated in both places, they are two wordings that drift.
 
-The fragment SHALL state what happens where the adopting project has no backlog: it is created. An option that silently reduces to no option in a project lacking a file the fragment never told it to create is not an option.
+The seeded file is therefore not a further publication of this capability's obligations, and the rule that the fragment remain sufficient on its own does not reach it. That rule guards against a document loaded only when something judges it relevant; the entry rules sit in the file a session must open to record or cite an entry, so they are read at the moment they apply.
+
+**The fragment SHALL NOT mention entry numbers.** An entry is named, not numbered, and its name is the only identifier a reference outside the file can carry. A rule explaining that a number is unstable presumes the number exists; stating it invites the numbering it warns against.
+
+The fragment SHALL NOT direct creating the backlog where it is absent. `project-bootstrap` creates it; a project that took the rules without the tool owns that gap, and a clause repeated to every session for a one-time setup step is the kind of setup obligation this capability keeps out of the fragment.
 
 The path is fixed here rather than left to the fragment's author for the reason `.worktrees/` is fixed above: a path stated only in a change's own artifacts is archived with them, and a requirement whose subject is then unnameable cannot be checked against the fragment afterwards.
 
@@ -556,7 +560,7 @@ The fragment SHALL state that recording is the obligation and branching is the o
 #### Scenario: A backlog entry is cited by name
 
 - **WHEN** a session refers to a `docs/backlog.md` entry from anywhere outside that file — a waiver, a handoff, another entry
-- **THEN** it cites the entry by name, so deleting or reordering other entries does not make the reference point elsewhere
+- **THEN** it refers to the entry by its heading, the change's name — the only identifier the seeded file gives an entry, and the one that file directs referring to it by — so deleting or reordering other entries does not make the reference point elsewhere
 
 #### Scenario: The scope rule and the backlog are one obligation
 
@@ -566,7 +570,12 @@ The fragment SHALL state that recording is the obligation and branching is the o
 #### Scenario: The backlog does not yet exist
 
 - **WHEN** a project carrying these rules has no file at the named path
-- **THEN** the fragment directs creating it, rather than leaving the independent path with one route where it stated two
+- **THEN** the fragment does not direct creating it: the file is `project-bootstrap`'s to create, and running the tool creates it with the entry rules the fragment defers to
+
+#### Scenario: Entry rules are read from the backlog, not the fragment
+
+- **WHEN** a session records an entry in `docs/backlog.md`
+- **THEN** the fragment has told it where the entry goes and why, and the file itself tells it how the entry is headed, shaped and deleted, with no rule about entry numbers stated in either
 
 #### Scenario: An identified change is opened without a proposal
 

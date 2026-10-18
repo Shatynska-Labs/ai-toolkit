@@ -57,9 +57,9 @@ Most scenarios this suite cannot cover are of one kind, and it is worth naming o
 | An edited fragment is distinguishable from the copy already adopted | Covered — `managed-block-older-version.sh`, which now reads the tool's version from the fragment via `fragment_version` rather than asserting a literal |
 | A frontmatter-only edit does not consume a version | Uncovered — an obligation on a future author, not behavior `project-init` exhibits; verified by reading `rules/README.md` |
 
-## specs/project-foundation/spec.md (14 scenarios)
+## specs/project-foundation/spec.md (33 scenarios)
 
-All 14 are uncovered by `tests/cases/`, for the same reason: this directory exercises `scripts/project-init` only (per section 4's own scope note), and every foundation scenario describes conversational or skill behavior (`skills/project-foundation/`) with no deterministic script to run against it. Verified instead by: manual skill trigger-checks (task 8.5), and structural review of `skills/project-foundation/SKILL.md` and `rules/project-foundation.md` against the spec's requirements (section 6).
+All 33 are uncovered by `tests/cases/`, for the same reason: this directory exercises `scripts/project-init` only (per section 4's own scope note), and every foundation scenario describes conversational or skill behavior (`skills/project-foundation/`) with no deterministic script to run against it. Verified instead by: manual skill trigger-checks (task 8.5), and structural review of `skills/project-foundation/SKILL.md` and `rules/project-foundation.md` against the spec's requirements (section 6).
 
 | Scenario | Verified by |
 |---|---|
@@ -67,14 +67,33 @@ All 14 are uncovered by `tests/cases/`, for the same reason: this directory exer
 | The checklist does not accumulate in projects | Structural review — `rules/project-foundation.md` is `kind: procedural-checklist`, never inlined |
 | Non-goals are recorded even when scope is clear | Structural review — `rules/project-foundation.md` states this explicitly |
 | Stack-specific ignore entries are a foundation deliverable | Structural review — task 6.6 |
+| The quality layer is reached even when nobody raises it | Structural review — `rules/project-foundation.md`'s named concerns, proposed as one set |
+| The checklist names concerns, not tools | Structural review — `rules/project-foundation.md` names no particular tool |
 | A technical decision is proposed rather than asked | Structural review — `skills/project-foundation/SKILL.md`'s classification |
 | An identity decision is not invented | Structural review — same |
 | A skipped decision is detectable after the fact | Structural review — the fixed `design.md` section set (task 6.5) |
-| A decision absorbed into a shared section stays visible | Structural review — the `Identity` named-item requirement (task 6.5) |
+| A decision absorbed into a shared section stays visible | Structural review — the `Identity` and `Development Tooling` named-item requirement (task 6.5; `require-code-quality-tooling-in-foundation` 1.5) |
+| A concern that does not apply is answered, not skipped | Structural review — `rules/project-foundation.md`'s "not applicable" rule beside the section layout |
+| Descriptive decisions reach README.md | Structural review — `rules/project-foundation.md`'s README.md routing |
+| Operationally load-bearing decisions reach AGENTS.md | Structural review — `rules/project-foundation.md`'s AGENTS.md routing |
+| A decision is not placed by which audience happens to value it | Structural review — `rules/project-foundation.md` states the auto-load criterion |
+| design.md remains the canonical record | Structural review — `rules/project-foundation.md`: "in addition to — never instead of" |
 | A conversation resumed in a new session loses nothing | Structural review — task 6.7's incremental-persistence instruction |
 | Artifacts are produced by the existing mechanism | Structural review — task 6.7 |
 | Test authoring is skipped for a stated reason | Structural review — `rules/project-foundation.md` (section 2) |
 | The exemption does not extend past foundation | Structural review — same |
+| Continuous integration that cannot reach a dependency fails | Structural review — `rules/project-foundation.md`'s fixed positions |
+| A hook is not recorded as the gate | Structural review — same |
+| Secrets are excluded by the ignore file | Structural review — same, and the ignore-entries deliverable |
+| A hook stand-down names what decides it | Structural review — same |
+| The policy is recorded without being applied | Structural review — `rules/project-foundation.md`'s branch-protection rule |
+| Protection is applied with the operator's confirmation | Structural review — same |
+| Protection decided against creates no application task | Structural review — same |
+| Archived decisions are not left unbuilt | Structural review — `rules/project-foundation.md`'s successor-change rule |
+| The test runner has an owner | Structural review — same |
+| Foundation does not build the tooling itself | Structural review — same |
+| Tooling already present needs no successor | Structural review — same |
+| The successor is not exempt from test authoring | Structural review — same |
 | Lifecycle position is derived, not stored | Structural review — no state file exists anywhere in this change |
 | A later architectural change is not a violation | Structural review — `rules/project-foundation.md` states this explicitly |
 
@@ -138,3 +157,41 @@ A note on what a case here may assert, learned by writing one that failed: the *
 **Twelve uncovered**, in two kinds. Six are scenarios the `MODIFIED` operation carries through verbatim — behaviour this change does not alter, and its scope clause owes no retrofit. Six are propositions the delta obliges without fixing any token to scan for; they are of the same kind this file names once above, a property of prose rather than of behaviour.
 
 Full scenario-to-test mapping, assertion provenance and the two disclosures that pass recorded are in `state-the-committed-artifact-situation`'s `test-plan.md`, which archives with the change; this section is what survives it.
+
+## specs/project-bootstrap/spec.md — initial branch (4 delta scenarios)
+
+`name-initial-branch-main` adds *A repository the tool creates starts on a stated branch*. All four scenarios are covered, each case isolating git configuration under `$TESTDIR`:
+
+- **No configured default yields main** — `initial-branch-unconfigured-main.sh`; the caller's-directory clause by `initial-branch-caller-config-ignored.sh`.
+- **A configured default is honoured** — `initial-branch-configured-honoured.sh` on the installed git, and `initial-branch-pre-2-28-git-emulated.sh` with a fake `git` whose `init` ignores `init.defaultBranch`, which is the case that discriminates on a git 2.28 or newer.
+- **A configured default in an enclosing repository is not read** — `initial-branch-enclosing-config-ignored.sh`.
+- **An existing repository's branch is left alone** — `initial-branch-existing-unborn-untouched.sh` and `initial-branch-existing-with-commits-untouched.sh`.
+
+The `ERROR` clause for a failed branch step is covered by `initial-branch-set-failure-errors.sh`, which assumes the mechanism `design.md` names (`git symbolic-ref`).
+
+Code review found a target reached through a symlink bypassing the repository check; `initial-branch-existing-via-symlink-{cwd,arg}-untouched.sh` (branch) and `initial-branch-existing-via-symlink-{cwd,arg}-reported.sh` (`already present`) cover that path under the same scenario. `initial-branch-empty-dotgit-dir-initialized.sh` covers an empty `.git` taking the created path, and `initial-branch-invalid-configured-name-errors.sh` the `ERROR` clause for a configured name that is not a valid branch. Round 3 added `initial-branch-caller-git-dir-env-untouched.sh` (inherited `GIT_DIR` does not reach the caller's repository), `initial-branch-missing-head-not-rewritten.sh` and `initial-branch-corrupted-head-not-rewritten.sh` (a `.git` with content is not given a branch), and `target-line-symlink-as-given.sh` (`Target:` keeps the path as given).
+
+## specs/project-bootstrap/spec.md and specs/session-workflow/spec.md — seeded backlog (16 delta scenarios)
+
+`seed-the-backlog` adds *A backlog is seeded where none exists*, adds the backlog to *Each concern is checked independently and is safe to repeat*, and revises *A second change surfacing in a session is recorded in the backlog*. Its cases were derived by `ai-toolkit:change-test-writer`; the per-scenario accounting, and which assertions are derived from `design.md` rather than the specification, are in the change's `test-plan.md`.
+
+- **A project without a backlog receives the seeded file** — `backlog-seeded-new-project.sh`, `backlog-seeded-adoption.sh`.
+- **An existing backlog is preserved exactly** — `backlog-existing-preserved.sh`, and `backlog-dangling-symlink-not-written-through.sh` for a link that does not resolve.
+- **The seeded file carries no numbering** — `backlog-seeded-no-numbering.sh`.
+- **Repeated execution is not destructive** — `repeated-execution-backlog.sh` for the backlog, `repeated-execution-idempotent.sh` for the rest.
+- **A partially initialized directory is completed, not refused** — `partial-init-reports-backlog.sh`.
+- **The backlog does not yet exist**, **A backlog entry is cited by name**, **Entry rules are read from the backlog, not the fragment** — `workflow-fragment-backlog-not-created-by-fragment.sh`, `workflow-fragment-backlog-no-entry-numbers.sh`, `workflow-fragment-backlog-rules-not-restated.sh`, each checked against a violating and a compliant fixture, plus the seeded-file cases above.
+
+`workflow-fragment-fixed-paths.sh` lost its cite-by-number assertion, which the revised requirement forbids. `backlog-report-line-after-ignore-file.sh` and `backlog-write-failure-errors.sh` trace to `design.md` and `tasks.md` rather than to a scenario. The remaining session-workflow scenarios are unchanged by this delta and keep their accounting above.
+
+## specs/change-code-review/spec.md (25 delta scenarios)
+
+`add-change-code-reviewer` adds the `change-code-review` capability. Its scenarios describe what a code review establishes and what a session does with the verdict, so what a case can reach is the fixed vocabulary and sentence each outcome requires to exist in `agents/change-code-reviewer.md` or `rules/development-workflow.md`, not the review itself. 13 are covered in part, 12 uncovered. Each case runs its check over `$TOOLKIT_ROOT` and over a fixture it writes that the check must reject:
+
+- `change-code-reviewer-verdict-set.sh` — the four verdicts.
+- `change-code-reviewer-finding-vocabulary.sh` — the three severities and seven kinds.
+- `change-code-reviewer-traceability-markers.sh` — the implementation and coverage marks, the reason-bearing `[Uncovered —` and `[Exempt —` forms included.
+- `change-code-reviewer-no-edit-grant.sh` — no edit-capable tool in the grant (derived from the frontmatter in the change's design, not from the spec).
+- `workflow-fragment-build-binding-verdict-acts.sh` — `build`'s binding names the act for each verdict.
+
+The 12 uncovered scenarios are the reviewer's conduct on a dispatch — blocking, restoring, locating, judging a quoted instruction — which no program here runs; the cold-run check exercises them instead. Full scenario-to-test mapping is in `add-change-code-reviewer`'s `test-plan.md`, which archives with the change; this section is what survives it.
