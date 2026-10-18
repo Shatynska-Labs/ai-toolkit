@@ -48,3 +48,7 @@ Round 1: `CONDITIONALLY APPROVED`, eight `[MINOR]` findings, all applied without
 ## Code review
 
 Round 1: `FIX REQUIRED`. One `[MAJOR]` — the literal git commands in steps 4 and 5 ran in the current directory although step 2 passes through another target — and one `[MINOR]` — `git status --short` hides untracked paths under `status.showUntrackedFiles=no`. Both fixed by running every command as `git -C <target>` and listing with `--untracked-files=normal`; the fixes were mechanical, so no second round was dispatched.
+
+## Delivery
+
+Implementation merged in Shatynska-Labs/ai-toolkit#36 (`3154d1b`). The effect was observed in the cold run of task 4.2 — a pre-existing file listed and committed, `origin` set, `main` tracking `origin/main` — and the operator confirmed it on 2026-10-18.
