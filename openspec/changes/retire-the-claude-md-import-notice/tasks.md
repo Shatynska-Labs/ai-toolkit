@@ -1,7 +1,7 @@
 ## 1. Plan
 
 - [x] 1.1 Commit the approved plan, and verify `git log -1` holds proposal, design, delta spec and tasks
-- [ ] 1.2 Dispatch `ai-toolkit:change-test-writer` with test command `bash tests/run.sh` and test-path glob `tests/cases/*.sh`, and verify `test-plan.md` maps the four new or changed scenarios and lists `empty-directory-new-project.sh`'s import assertion as obsolete
+- [x] 1.2 Dispatch `ai-toolkit:change-test-writer` with test command `bash tests/run.sh` and test-path glob `tests/cases/*.sh`, and verify `test-plan.md` maps the four new or changed scenarios and lists `empty-directory-new-project.sh`'s import assertion as obsolete
 
 ## 2. Implementation
 
