@@ -17,10 +17,15 @@
 ## 3. Coverage and backlog
 
 - [x] 3.1 In `tests/coverage.md`'s `project-foundation` section, add the four rows missing for "Settled decisions are surfaced into the project's permanent documentation" and the fifteen scenarios this change adds, each with "Structural review" as its verification, and update the section's heading and prose count from 14 to 33; verify the row count equals the scenario count in `openspec/specs/project-foundation/spec.md` after sync
-- [ ] 3.2 At archive, delete the `move-setup-gates-to-project-setup` entry from `docs/backlog.md`
+- [x] 3.2 At archive, delete the `move-setup-gates-to-project-setup` entry from `docs/backlog.md`
 
 ## 4. Verify
 
 - [x] 4.1 `openspec validate require-code-quality-tooling-in-foundation --strict` passes
 - [x] 4.2 `bash tests/run.sh` passes (no case is expected to change; `workflow-fragment-omits-setup-obligations.sh` must stay green, since the workflow fragment is untouched)
 - [x] 4.3 Structural review: walk every scenario in this change's delta spec against the edited fragment and skill and record each as met
+
+## 5. Ship
+
+- [x] 5.1 Pull request #33 merged (operator-confirmed).
+- [x] 5.2 Confirm waived by the operator on 2026-10-18: the change edits the foundation checklist and skill only, and its effect is observable only the next time foundation runs in a consuming project — no observation can be made now.
