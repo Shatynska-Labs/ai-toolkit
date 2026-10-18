@@ -33,20 +33,6 @@ The change is two obligations, both one-time and neither a session's:
 
 **Depends on**: nothing. Independent of `add-session-workflow-tooling`.
 
-## `add-development-workflow-skill`
-
-A skill carrying the reasoning behind `rules/development-workflow.md`, so the fragment can stay short and a session that wants the argument can reach it.
-
-**The constraint that makes this safe, and that the skill must be written against: nothing in it may change an outcome.** A skill is model-invoked, so there is no guarantee it loads at the moment it is relevant. Anything a session must know to act correctly — an instruction, a gate, an exemption, an edge case with a different answer — stays in the fragment. The skill holds why, worked examples, and what was rejected. A rule that reads as optional detail but changes what a session does is the failure this constraint exists to prevent.
-
-The material already exists: `consolidate-development-workflow`'s `design.md` holds twelve decisions with their rejected alternatives, and the archived `add-session-workflow-fragments` and `revise-development-workflow` hold more. The skill assembles what is written rather than inventing it.
-
-Pointers from the fragment to the skill land with this change, not before — until the skill exists a pointer names something a reader cannot open, which the fragment's own no-dangling-reference rule forbids.
-
-**Argued in**: `consolidate-development-workflow`'s implementation, on the operator's observation that detail belongs somewhere reachable but not in a file every session reads in full.
-
-**Depends on**: nothing. `skills/create-skill/SKILL.md` is the authoring standard.
-
 ## `extend-dangling-reference-to-agent-names`
 
 `tests/cases/workflow-fragment-no-dangling-reference.sh` scans for `rules/` paths, fragment filenames and `@` imports; it does not scan for an `ai-toolkit:` agent name with no file behind it. That gap is why nothing in the suite reported `build`'s binding while it named a code reviewer that did not exist, and nothing would report its recurrence. It amends `session-workflow`'s publication requirement and its test case.
