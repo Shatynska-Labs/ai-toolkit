@@ -28,7 +28,7 @@ The conversational wrapper over `rules/project-foundation.md`. That fragment car
 
 Identity, problem, audience, scope, and non-goals must come from the user — nothing available makes them derivable. Once those are established, propose the technical decisions (language, framework, architecture, testing strategy, development tooling) with your reasoning, for confirmation or redirection — that is faster than asking about them, and it is not a substitute for coverage.
 
-Do not fire the nine decisions as a fixed sequence of questions. Coverage is the obligation; interrogation order is not.
+Do not fire the nine decisions as a fixed sequence of questions. Coverage is the obligation; interrogation order is not. The development-tooling items are the same: once the stack is known, propose them as one coherent set with your reasoning, not one question per item.
 
 ## Persist as you go
 
@@ -47,17 +47,33 @@ Create the `project-foundation` change early — dispatch or use `openspec-propo
 ## Architecture
 ## Testing Strategy
 ## Development Tooling
+   - Linting
+   - Formatting
+   - Type checking
+   - Build tooling
+   - Local hooks
+   - Commit messages
+   - Secrets
+   - Dependency updates and audit
+   - Continuous integration
+   - Toolchain pinning
+   - Branch protection
+   - Provisioning
+   - Ignore entries
+   - Delivery
 ```
 
-An unfilled section, or an unfilled item within `Identity`, is a visible gap — that is what makes coverage checkable in the artifact rather than only inside this conversation.
+An unfilled section, or an unfilled item within `Identity` or `Development Tooling`, is a visible gap — that is what makes coverage checkable in the artifact rather than only inside this conversation. An item may be answered "not applicable" with its reason stated; a stated reason is an answer, an empty item is not.
 
 ## Also write to README.md and AGENTS.md as decisions settle
 
 `design.md` is archived with the change once foundation completes, so it is not what a human or a fresh agent session reads by default. Alongside each `design.md` write — never instead of it — write the same decision into whichever of the project's `README.md` or `AGENTS.md` it belongs in, per `rules/project-foundation.md`'s "Decisions also reach README.md and AGENTS.md" section: identity, problem, audience, scope, non-goals, technology, and architecture go to `README.md`; testing strategy and development tooling go to a separate, non-managed section of `AGENTS.md`. The split follows whether a future agent turn needs the fact without being told to look for it, not which audience happens to value it — do not re-derive the split from scratch here, read it from the fragment.
 
-## The development-tooling decision has a concrete deliverable
+## Foundation builds the ignore entries, and names who builds the rest
 
-Once the stack is known, extend the project's `.gitignore` with that stack's exclusions. `project-init` deliberately created a `.gitignore` with no stack assumption; this is the first point the stack is known, and this is where that gap closes.
+Foundation's one deliverable is the ignore entries: once the stack is known, extend the project's `.gitignore` with that stack's exclusions and its secret-bearing paths. `project-init` deliberately created a `.gitignore` with no stack assumption; this is the first point the stack is known, and this is where that gap closes.
+
+Do not build the rest of the tooling in this change — no linter, formatter, hook, continuous-integration or dependency-update configuration. Before archiving, open the successor change that owns it, with the handoff contents `rules/project-foundation.md` specifies, and name it under `Delivery`; where every decided item is already present, say so under `Delivery` instead. Do not change forge settings either — branch protection is recorded here and applied later, with the operator's confirmation.
 
 ## Test authoring does not apply to this change
 
@@ -65,9 +81,11 @@ State this explicitly when the point would normally arrive: this change's test c
 
 ## Completion
 
-Foundation is complete when every section is filled and the change is archived. That archival is the signal — nothing else needs to track the transition into normal development, and nothing afterward should try to reconcile the project against it. A later architectural or tooling shift is simply a new change.
+Foundation is complete when every section is filled, its successor is opened where one is needed, and the change is archived. That archival is the signal — nothing else needs to track the transition into normal development, and nothing afterward should try to reconcile the project against it. A later architectural or tooling shift is simply a new change.
 
 ## Trigger check fixtures
 
 - **Positive** — "This project already exists — help me figure out what it actually is, its scope, and what tech stack makes sense." → expected routing: `project-foundation`.
 - **Negative** — "I'm starting a brand new project, can you set it up with git, openspec, and the usual conventions?" → expected routing: `project-init`.
+- **Positive** — "what should our CI and linting setup be for this new project?" → expected routing: `project-foundation`.
+- **Negative** — "set up husky and eslint in this repo" → expected routing: nothing — it asks to build tooling, not to decide it.
