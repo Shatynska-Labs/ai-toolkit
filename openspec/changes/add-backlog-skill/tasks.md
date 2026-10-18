@@ -1,12 +1,12 @@
 ## 1. Seeded backlog
 
-- [ ] 1.1 Replace the heredoc in `scripts/project-init` with the seeded text from `design.md` decision 2. Verify by running the tool in a scratch directory and reading the created `docs/backlog.md`
-- [ ] 1.2 Update the tests the test plan lists as obsolete (at least the `Depends on` assertion in `tests/cases/backlog-seeded-new-project.sh`) to the new shape. Verify with `bash tests/run.sh`
+- [x] 1.1 Replace the heredoc in `scripts/project-init` with the seeded text from `design.md` decision 2. Verify by running the tool in a scratch directory and reading the created `docs/backlog.md`
+- [x] 1.2 Update the tests the test plan lists as obsolete (at least the `Depends on` assertion in `tests/cases/backlog-seeded-new-project.sh`) to the new shape. Verify with `bash tests/run.sh`
 
 ## 2. Fragment
 
-- [ ] 2.1 Append the archive re-read sentence from `design.md` decision 3 to **archive** in `rules/development-workflow.md`. Verify with the derived fragment cases and `tests/cases/workflow-fragment-backlog-rules-not-restated.sh`
-- [ ] 2.2 Increment the fragment's `version` from 7 to 8. Verify `tests/cases/inlined-body-matches-fragment.sh` passes
+- [x] 2.1 Append the archive re-read sentence from `design.md` decision 3 to **archive** in `rules/development-workflow.md`. Verify with the derived fragment cases and `tests/cases/workflow-fragment-backlog-rules-not-restated.sh`
+- [x] 2.2 Increment the fragment's `version` from 7 to 8. Verify `tests/cases/inlined-body-matches-fragment.sh` passes
 
 ## 3. Skill
 

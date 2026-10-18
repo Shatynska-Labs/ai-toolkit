@@ -56,8 +56,6 @@ assert_contains "$backlog" "has not seen the work that found it" \
   "statement 6: the shape — what and why, for a session that has not seen the work"
 assert_contains "$backlog" "Recorded by" \
   "statement 6: the shape — what recorded it"
-assert_contains "$backlog" "Depends on" \
-  "statement 6: the shape — what it depends on"
 
 # No entry: outside fenced blocks, no level-2-or-deeper heading exists. The
 # example entry's heading sits inside a fence (design.md), so it is skipped.

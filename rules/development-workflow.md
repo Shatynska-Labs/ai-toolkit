@@ -1,6 +1,6 @@
 ---
 kind: standing-constraint
-version: 7
+version: 8
 ---
 
 ## Development workflow
@@ -102,7 +102,7 @@ Two classes cannot answer that gate and are waivable. Say so plainly, name the c
 
 A recorded waiver completes **confirm**: `ship:confirmed` is true of a waived change.
 
-**archive** — once the effect is confirmed or the gate waived, bring the branch back to the freshly fetched trunk, commit the change's specification record there, and open a pull request for it: the last of the change's pull requests. The work is on the trunk by now, however it was merged, so bringing the branch back to it discards nothing.
+**archive** — once the effect is confirmed or the gate waived, bring the branch back to the freshly fetched trunk, commit the change's specification record there, and open a pull request for it: the last of the change's pull requests. The work is on the trunk by now, however it was merged, so bringing the branch back to it discards nothing. Before opening that pull request, re-read `docs/backlog.md` for the entries this change completed, made obsolete, unblocked or made stale (including entries naming files or specifications it touched, not only entries naming it) and update each as the file directs, in the commit that carries the record.
 
 Two is a floor. Where the deploy is unhealthy, or the effect is absent through a defect, the change is not delivered and its record is not written: fix it and re-enter at `build`'s review gate; the fix takes a pull request of its own.
 
