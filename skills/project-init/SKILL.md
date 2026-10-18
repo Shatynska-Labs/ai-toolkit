@@ -24,7 +24,7 @@ metadata:
 
 # project-init
 
-A thin wrapper around `scripts/project-init`. Every decision about what initialization creates belongs to that script; this skill's job is to find it, run it, relay what it says, and then take the two steps the script cannot, because each needs the user's answer: the repository's first commit, and connecting a remote. It takes the mode — new project or adoption — from the tool's report, which names a different next step for each, and never re-derives it.
+A thin wrapper around `scripts/project-init`. Every decision about what initialization creates belongs to that script; this skill's job is to find it, run it, relay what it says, and then take the two steps the script cannot, because each needs the user's answer: the repository's first commit, and connecting a remote. It takes the mode — new project or adoption — from the tool's report and never re-derives it: a new project's `Next step:` line names foundation discovery as the next step, an adoption's begins `none required`.
 
 ## 1. Resolve the toolkit root
 
@@ -58,7 +58,7 @@ The first commit of a repository with no commit is the one commit the workflow l
 
 Before asking, show what the commit would contain, not only what the tool wrote: the target may already hold the project's own files. List every already staged path that the commit would include, and every untracked path git does not exclude through the ignore file or its other standard exclusions. A wholly untracked directory may be listed as one entry. `git status --short` gives both.
 
-Wait for confirmation — never commit without it, per this workflow's own rule that commits are suggested, not automatic. If the user declines the initial commit, say that the repository's first commit and a remote are both still outstanding and that the workflow's first pull request needs both, then go to step 6.
+Wait for confirmation — never commit without it, per this workflow's own rule that commits are suggested, not automatic. On confirmation, stage with `git add -A`, which takes exactly the paths listed, and commit. If the user declines the initial commit, say that the repository's first commit and a remote are both still outstanding and that the workflow's first pull request needs both, then go to step 6.
 
 In an adoption, offer no commit onto the current branch: the repository already has a trunk, and the tool's writes reach it through a pull request like any other change. Where the adopted repository has no remote configured, also say that a remote is needed before that pull request can be opened.
 
