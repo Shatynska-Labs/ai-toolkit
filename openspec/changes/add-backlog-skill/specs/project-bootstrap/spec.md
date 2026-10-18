@@ -9,7 +9,7 @@ The workflow fragment routes out-of-scope work to that path and defers to the fi
 The created file SHALL state, as prose a session reads before adding an entry:
 
 - that it lists changes the project has identified and not yet archived, each recorded instead of being folded into the change that found it;
-- that an entry's heading is the change's kebab-case name — the name its branch and change directory are expected to take, which the session that opens the change may revise if the work turns out different — and that an entry is referred to only by that name;
+- that an entry's heading is the change's kebab-case name — the name its branch and change directory are expected to take, which the session that opens the change may revise if the work turns out different — and that an entry is referred to only by that name, a fix taking it as its branch's name only;
 - that the order of entries carries no meaning, and that an entry states in its own fields what it waits on and which entries share a design with it;
 - that an entry is kept short: what is needed and why, with files, specifications and changes named as pointers, and without line numbers, census tables or step-by-step plans;
 - that an entry is deleted when its change is archived, when the operator takes it as a fix rather than a change, when a change makes it obsolete, or when the operator decides the change will not be made;
@@ -17,9 +17,11 @@ The created file SHALL state, as prose a session reads before adding an entry:
 - that the file is kept when it has no entries;
 - the shape of an entry: its heading; what the change is and why, written for a session that has not seen the work that found it; its **Kind**, `fix` or `change`, with the reason; what it **Waits on**, as `nothing` or as something that can be checked — a change by name, a person's answer, an event; which entries it is to be **designed with**, or nothing; what **recorded** it and why it was not done there; and the date it was last **re-checked** against the repository.
 
-**Kind is `fix` only where the entry owes no specification delta and needs no decision from the operator**; otherwise it is `change`. The reason is stated because the label alone cannot be checked, and an entry's kind is the first thing a session picking work reads.
+**Kind is `fix` only where the entry owes no specification delta, needs no decision from the operator, and is small enough to review in one sitting**; otherwise it is `change`. The size condition is the workflow's own: a fix is work too small to be a change, which skips `plan`, so an entry too large for one sitting is not one whatever it owes. The reason is stated because the label alone cannot be checked, and an entry's kind is the first thing a session picking work reads.
 
-**Waits on replaces a list of changes that must land first.** A blocked entry waits on more than changes — an answer, an access grant, a production event — and a trigger stated as something checkable is the one that can be noticed when it fires.
+**Waits on replaces a list of changes that must land first.** An entry that should precede another says so from the waiting side: the later entry names it in Waits on. The earlier shape also let an entry state what it should precede; that direction is dropped, because a constraint stated on both sides is two statements that drift, and Waits on is the side the pick and the archive re-read read.
+
+A blocked entry waits on more than changes — an answer, an access grant, a production event — and a trigger stated as something checkable is the one that can be noticed when it fires.
 
 Entry brevity is stated because the details it excludes are the ones that go stale first, and the session that takes the entry up redoes them anyway. A census worth keeping belongs in the change's own artifacts once the change is opened.
 
@@ -54,4 +56,4 @@ The file is kept when empty because the tool created it: deleting it would leave
 #### Scenario: A fix is distinguished from a change by what it owes
 
 - **WHEN** a session reads the seeded file to record an entry that owes a specification delta
-- **THEN** the file's definition of Kind leaves only `change` available to it, because `fix` is stated as owing no delta and needing no decision
+- **THEN** the file's definition of Kind leaves only `change` available to it, because `fix` is stated as owing no delta, needing no decision and fitting one review sitting

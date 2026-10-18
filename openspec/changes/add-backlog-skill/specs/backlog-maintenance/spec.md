@@ -22,7 +22,7 @@ Its description SHALL state the five operations and the phrasings that reach the
 
 ### Requirement: The skill restates neither the entry rules nor the workflow's obligations
 
-The skill SHALL read how an entry is shaped, named, kept and deleted from the backlog file's own preamble, and SHALL NOT restate those rules. It SHALL NOT state an obligation the workflow fragment does not state, and SHALL NOT be required for any obligation the fragment states to be met.
+The skill SHALL read how an entry is shaped, named, kept and deleted from the backlog file's own preamble, and SHALL NOT restate those rules. It SHALL NOT place an obligation on a session that the workflow fragment does not state, and SHALL NOT be required for any obligation the fragment states to be met. The checks an operation performs and the gates on its own edits are procedure: they bind a session only while it runs that operation, and an entry or an archive done without the skill is not deficient for lacking them. This is the seam `session-workflow` states for an operational skill.
 
 The entry rules are owned by `project-bootstrap` and stated in the file; the obligations to record, and to re-read at archive, are owned by `session-workflow` and stated in the fragment. A third statement of either is a wording that drifts from both, and a skill is loaded only when something judges it relevant, so it cannot be where an obligation lives.
 
@@ -40,6 +40,8 @@ The entry rules are owned by `project-bootstrap` and stated in the file; the obl
 
 The **record** operation SHALL write one entry in the shape the file states. Before writing, it SHALL check the entry's name against the backlog's headings, the project's open and archived change directories, and its branches, and SHALL not write a name already used by any of them. It SHALL set Kind by the file's own definition and state the reason. It SHALL search the existing entries for ones touching the same files, specifications or capabilities, and name each it finds in Design with, or `nothing`. It SHALL set Re-checked to the day the entry is written.
 
+The name check and the overlap search are the operation's procedure, not entry rules: the file states that an entry is named and may name entries to design with, and record is how the skill makes those statements hold for the entry it writes.
+
 #### Scenario: A name already used by an archived change
 
 - **WHEN** record is asked to write an entry whose name matches an archived change's directory
@@ -52,12 +54,17 @@ The **record** operation SHALL write one entry in the shape the file states. Bef
 
 ### Requirement: Pick lists what can be taken now
 
-The **pick** operation SHALL list the entries whose Waits on is `nothing`, split into `fix` and `change`, with entries that name each other in Design with listed together. Where given paths, it SHALL narrow the list to entries naming any of them. It SHALL write nothing, and SHALL NOT open a change or begin an entry's work.
+The **pick** operation SHALL list the entries whose Waits on is `nothing`, split into `fix` and `change`, with entries that name each other in Design with listed together. Where given paths, it SHALL narrow the list to entries naming any of them. An entry whose Waits on names something already satisfied — a change that is archived, say — SHALL be listed apart, as takeable once updated, rather than hidden as blocked. It SHALL write nothing, and SHALL NOT open a change or begin an entry's work.
 
 #### Scenario: A blocked entry is not offered
 
 - **WHEN** an entry waits on a change that is not archived
 - **THEN** pick does not list it as takeable
+
+#### Scenario: A wait already satisfied but not updated
+
+- **WHEN** an entry waits on a change that has since been archived and the entry was never updated
+- **THEN** pick lists it apart as takeable once updated, naming the archived change
 
 #### Scenario: Pick narrowed to files
 
@@ -75,14 +82,28 @@ The **close** operation SHALL delete the entry it is given and, in the same edit
 
 ### Requirement: Sweep performs the archive step's re-read
 
-The **sweep** operation, given an archived change, SHALL find the entries it completed, made obsolete, unblocked or made stale. It SHALL search for entries naming the change, entries whose Waits on it satisfies, and entries naming files or specifications its diff touched. It SHALL update each as the file directs, and SHALL leave the edit for the archive commit rather than committing it elsewhere.
+The **sweep** operation, given a change, SHALL find the entries it completed, made obsolete, unblocked or made stale. It SHALL search for entries naming the change, entries whose Waits on it satisfies, and entries naming files or specifications the change touched.
 
-Searching by the diff, and not only by name, is required because a change that finishes an entry's work seldom names the entry.
+It SHALL take what the change touched from the change's merged pull requests on the forge — every one of them, since a change takes at least two — and, where the forge cannot be reached, from the change's specification deltas and the files its design and tasks name, saying that the fallback was used. It SHALL NOT take them from the branch's diff against the trunk: by the archive step the branch has been brought back to the trunk, and a squash merge leaves no ancestry, so that diff holds the record alone.
+
+Run before the archive commit, it SHALL update each entry as the file directs and leave the edit for that commit. Run after the change's record is on the trunk, it SHALL make the same edit and say that it is to be delivered as the workflow delivers work too small to be a change.
+
+Searching by what the change touched, and not only by name, is required because a change that finishes an entry's work seldom names the entry.
 
 #### Scenario: An entry finished without being named
 
 - **WHEN** sweep runs for a change whose diff completes an entry that the change never mentions
-- **THEN** sweep finds the entry through the files it names and presents it for deletion
+- **THEN** sweep finds the entry through the files the change's merged pull requests touched, and presents it for deletion
+
+#### Scenario: Sweep after a squash merge
+
+- **WHEN** sweep runs at the archive step for a change whose work was squash-merged
+- **THEN** it still finds what the change touched, from the forge's record of its merged pull requests, not from the branch's diff
+
+#### Scenario: Sweep after the record has landed
+
+- **WHEN** sweep is run for a change whose record is already on the trunk
+- **THEN** it makes the edit and says it is to be delivered as work too small to be a change, not left for an archive commit that no longer exists
 
 ### Requirement: Audit verifies every entry independently and changes nothing without the operator
 
