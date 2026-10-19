@@ -147,7 +147,7 @@ The dispatch named `tests/lib.sh` as the shared test arrangement. A test module 
    - Found in another test module: `tests/cases/lib/static-scan.sh` (`scan`, `scan_check`, `scan_discriminate`, `scan_run`) holds similar machinery: one pattern per scan rather than same-line co-occurrence, no `@body`/`@after:` regions. It lies within the test-path glob and is not the dispatched shared arrangement, so it was not sourced.
    - Proposed home: `tests/lib.sh`, or a sibling file it sources, merged with `tests/cases/lib/static-scan.sh`'s scanner (extend that scanner to take several patterns per scan and the two extra region kinds).
 
-Disposition (implementer): _to be recorded here — promoted or kept, with reason._
+Disposition (implementer): **kept.** This repository's `AGENTS.md` records no shared test arrangement's location — neither naming `tests/lib.sh` nor stating there is none — so, under this change's own apply rule, every entry is kept with that reason. Recording `tests/lib.sh` as the shared arrangement, and merging `tests/cases/lib/static-scan.sh` into it, is a testing-strategy decision for this repository, not a step of this change.
 
 ## Obsolete tests
 

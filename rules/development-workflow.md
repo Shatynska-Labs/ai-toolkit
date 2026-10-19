@@ -1,6 +1,6 @@
 ---
 kind: standing-constraint
-version: 8
+version: 9
 ---
 
 ## Development workflow
@@ -65,7 +65,7 @@ _Claude Code binding:_ dispatch `ai-toolkit:change-plan-reviewer` once every art
 
 **commit** — commit the approved plan before tests are derived from it; the tests map to that baseline.
 
-**derive tests** — have an author other than whoever writes the implementation derive tests from the approved specification deltas, not from implementation code. That author needs this project's test command and test-path glob; both are in this project's own conventions.
+**derive tests** — have an author other than whoever writes the implementation derive tests from the approved specification deltas, not from implementation code. That author needs this project's test command and test-path glob, and the location of its shared test arrangement where it has one — the test code its tests take builders, fixtures, fakes and stubs from; all are in this project's own conventions.
 
 A stated exemption applies where this project's rules name one for a class of change, and the reason is given when it is used. A change declaring no specification deltas owes no new tests, only that the suite stays green.
 
@@ -74,6 +74,8 @@ _Claude Code binding:_ dispatch `ai-toolkit:change-test-writer` after the verdic
 ### build
 
 **apply** — implement only once two things hold: a commit holding the approved plan, which follows the verdict that permitted proceeding, and the derived tests — or the stated exemption that excused them. Where either is absent, take the missing step rather than starting and noting the gap. Work too small to be a change skipped `plan` and has neither to hold.
+
+Where the test author declared arrangement locally because the shared test arrangement lacked it, the change's test plan lists each such entry. Deal with every entry in this change, before `build`'s review, and record its disposition against the entry: **promote** it — add it to the shared test arrangement, or extend the near-miss the entry names, and move the derived tests that declared it onto it — or **keep** it local and record the reason. A local copy drifts from the interface it stands in for, and later tests import it from the test file that declared it. Moving derived tests onto promoted arrangement is permitted: change only where a test takes its arrangement from — remove the local declaration, import from the shared arrangement, adapt to its constructor — and never what the test asserts. Where this project's conventions record no shared arrangement's location, whether they state it has none or are silent, keep every entry with that reason; creating a shared arrangement, or recording where one lives, is a decision about the project's testing strategy, not a step of this change.
 
 **verify** — run the verification relevant to the change: tests, type checking, linting, formatting, a build, whatever this project's conventions require. Do not report a change as complete without having run it.
 
