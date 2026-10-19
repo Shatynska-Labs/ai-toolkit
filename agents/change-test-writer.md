@@ -65,7 +65,7 @@ The bound covers every read, by any tool: a `cat`, `grep` or `head` over a file 
 
 The shared arrangement is test code, and reading it is no route to the implementation. A shared double mirrors a port's signature: take that signature from the double, and never follow the double to the port's implementation, nor read the port's implementation to judge whether the double is faithful.
 
-If you cannot proceed without reading implementation source — anything outside the test-path glob and the shared arrangement — report that you are blocked on this bound rather than crossing it silently.
+If you cannot proceed without reading implementation source — a source file outside the test-path glob and the shared arrangement — report that you are blocked on this bound rather than crossing it silently.
 
 ## Invoke the testing standard, don't restate it
 
