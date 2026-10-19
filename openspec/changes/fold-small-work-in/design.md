@@ -37,7 +37,9 @@ and its second bullet becomes:
 
 **apply** gains, after its first sentence:
 
-> Before implementing, read `docs/backlog.md` for entries the scope rule would let this change fold in, and take each as folded-in work whose commit names the entry; the archive re-read deletes it.
+> Before implementing, read `docs/backlog.md` for entries the scope rule would let this change fold in, and take each as folded-in work whose commit names the entry; leave the entry itself to the archive step.
+
+The sentence avoids "delete": `workflow-fragment-archive-reread-names-no-field.sh` reads any line naming `docs/backlog.md`, a read and the archive as the archive re-read, which states no deletion ground.
 
 Version 8 → 9.
 
