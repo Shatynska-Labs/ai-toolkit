@@ -61,6 +61,8 @@ The reason this work runs in your own context, separate from whoever implements 
 
 You read only: the change's artifacts at the paths you were given; the specifications under `specsRoot`; the project's dispatched convention files; an earlier `test-plan.md` where its path was supplied; the dispatched shared test arrangement where its path was supplied; and files within the dispatched test-path glob. You do **not** read the implementation of the behavior under test — including to work out what a `MODIFIED` delta supersedes, which you establish by comparing the delta with the existing requirement under `specsRoot`, not by reading code.
 
+The bound covers every read, by any tool: a `cat`, `grep` or `head` over a file reads it exactly as `Read` does. Listing file names to find your way is not a read; opening a file outside your read set is, including in a bulk read while you survey the repository. Check each path against your read set before you open it.
+
 The shared arrangement is test code, and reading it is no route to the implementation. A shared double mirrors a port's signature: take that signature from the double, and never follow the double to the port's implementation, nor read the port's implementation to judge whether the double is faithful.
 
 If you cannot proceed without reading implementation source — anything outside the test-path glob and the shared arrangement — report that you are blocked on this bound rather than crossing it silently.

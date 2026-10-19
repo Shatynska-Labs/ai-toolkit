@@ -106,8 +106,11 @@ cold_run_check:
     delivers the derivation rather than claiming files it did not write - so a
     denied run reads as a plausible report and is easy to mistake for a pass.
     Check the trace for refused writes before scoring any run. The wider
-    bypassPermissions is not needed: Bash for the test command is permitted
-    under the default mode, and only Write and a touch probe are refused.
+    bypassPermissions is not needed, but the test command must be allowed
+    explicitly with --allowedTools, with and without trailing arguments:
+    acceptEdits does not cover Bash, and a refused test command leaves the
+    run with no baseline. Allow find and ls as well, so the agent can list
+    files without a bulk read being the only way to survey the fixture.
   fixture_caveats:
     - >-
         The seed test must be written for the runner the fixture supplies. A
@@ -176,7 +179,7 @@ cold_run_check:
       a_shared_arrangement_with_gaps:
         fixture: >-
           tests_support/ holds a FakeClock double for the port, and a
-          make_greeting builder lacking a field one scenario sets (the
+          make_greeting_request builder lacking the locale field one scenario sets (the
           near-miss). An earlier change's tests/test_earlier.py declares a
           StubStore the new scenarios need, which tests_support/ does not
           hold. The probe change carries scenarios needing FakeClock, the
@@ -197,7 +200,7 @@ cold_run_check:
           - >-
             Wrote a Missing shared arrangement section listing each local
             declaration with name and file, what it stands in for, the tests
-            using it, the near-miss (make_greeting) and why it would not do,
+            using it, the near-miss (make_greeting_request) and why it would not do,
             tests/test_earlier.py as where StubStore was found, and a proposed
             home.
       b_none_named_conventions_silent:

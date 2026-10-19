@@ -33,6 +33,6 @@
 
 ## 5. Verification
 
-- [ ] 5.1 Run the cold-run check for `change-test-writer` per `skills/create-agent/references/cold-run-check.md`, in an isolated worktree, against the extended fixture; verify every pass criterion including the new ones
-- [ ] 5.2 Run the cold-run check for `change-code-reviewer` against its extended fixture; verify every pass criterion including the new ones
-- [ ] 5.3 Run `openspec validate hand-missing-test-arrangement-to-apply --strict` and verify it passes
+- [x] 5.1 Run the cold-run check for `change-test-writer` per `skills/create-agent/references/cold-run-check.md`, in an isolated fixture, against arrangement variant (a); verify the base and variant-(a) pass criteria. Variants (b)–(d) are not run in this change, by the operator's decision on 2026-10-19 to limit usage; they stay recorded in the fixture for a later run
+- [x] 5.2 Run the cold-run check for `change-code-reviewer` against arrangement variant (a); verify the base and variant-(a) pass criteria. Variants (b)–(e) are not run in this change, for the same reason
+- [x] 5.3 Run `openspec validate hand-missing-test-arrangement-to-apply --strict` and verify it passes
