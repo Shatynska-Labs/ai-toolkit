@@ -228,3 +228,14 @@ Full scenario-to-test mapping is in the change's `test-plan.md`, which archives 
 - **No CLAUDE.md yields a version note, not an instruction** — `no-shadowing-file-version-note.sh`, and `empty-directory-new-project.sh`, whose import assertion this change reversed.
 
 From the requirement's definition of a shadowing file rather than a scenario: `shadowing-claude-local-md-in-target.sh`, `shadowing-dot-claude-in-target.sh`, `shadowing-claude-local-md-above-target.sh`, `shadowing-dot-claude-above-target.sh`, `shadowing-importing-claude-md-above-target.sh`, `home-root-claude-md-shadows.sh`, and `claude-md-import-states-nothing.sh`. The note cases check that no shadowing file exists above `$TESTDIR` first, and fail with that reason rather than reporting a script defect. Full mapping is in the change's `test-plan.md`.
+
+## fold-small-work-in (26 delta scenarios)
+
+`fold-small-work-in` adds *Small adjacent work is folded into the change that found it* (4) and *A change takes the backlog entries it can fold in* (3) to `session-workflow`, and modifies *A second change surfacing in a session is recorded in the backlog* there (11), *Out-of-scope edits are reported as scope* in `change-code-review` (5), and *Record writes an entry the file can be relied on for* in `backlog-maintenance` (3). Its cases were derived by `ai-toolkit:change-test-writer`; the per-scenario accounting and which assertions are derived rather than specified are in the change's `test-plan.md`. 15 scenarios are reached by the new cases, most in part, since each reads the stated text rather than a session's conduct; 8 carried over unchanged keep their existing cases; 3 are uncovered.
+
+- **Fold-in rule and routing** — `workflow-fragment-fold-in-conditions.sh`, `workflow-fragment-fold-in-own-commit.sh`, `workflow-fragment-fold-in-named-in-pr.sh`, `workflow-fragment-second-change-excludes-folded.sh`, `workflow-fragment-routing-recording-owed.sh`.
+- **Backlog pickup at apply** — `workflow-fragment-apply-backlog-pickup.sh`, `workflow-fragment-apply-pickup-names-no-field.sh`.
+- **The reviewer's exemption** — `change-code-reviewer-fold-in-exemption.sh`, `change-code-reviewer-fold-in-reviewed.sh`. Whether the reviewer applies it is the cold-run check's to establish (`agents/change-code-reviewer.checks.yaml`), not a scan's.
+- **Record's fold-in test** — `backlog-skill-record-fold-in.sh`.
+- Each fragment case finds its paragraph through `tests/cases/lib/line-scan.sh`, and is checked against a conforming fixture and one mutant per scan.
+- **Uncovered** — *A blocking dependency survives the session ending*, *A handoff is not left uncommitted on a branch the session leaves* and *A deferral outlives the change that recorded it*, carried over verbatim; their accounting is unchanged.
