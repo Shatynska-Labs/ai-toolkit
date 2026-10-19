@@ -13,7 +13,7 @@
 ## 2. Implementation-step rules
 
 - [x] 2.1 In `rules/test-plan.md`, name the **Missing shared arrangement** section and that each entry is promoted or kept, with its disposition recorded against the entry by the implementer; bump `version` 2 → 3; verify no sibling fragment or `rules/` path is named
-- [x] 2.2 In `rules/development-workflow.md`, extend **derive tests** with the shared arrangement's location as an input and **apply** with promote-or-keep, the stated permission to move derived tests onto promoted arrangement, its bound (arrangement source only, never assertions), the keep-every-entry case where the conventions record no shared arrangement's location (whether they state none or are silent), and the one-clause reason; bump `version` 8 → 9; verify against `specs/session-workflow/spec.md` and that the text carries no argument against the rejected alternative
+- [x] 2.2 In `rules/development-workflow.md`, extend **derive tests** with the shared arrangement's location as an input and **apply** with promote-or-keep, the stated permission to move derived tests onto promoted arrangement, its bound (arrangement source only, never assertions), the keep-every-entry case where the conventions record no shared arrangement's location (whether they state none or are silent), and the one-clause reason; bump `version` 9 → 10 (8 → 9 as planned; `fold-small-work-in` took 9 on the trunk first); verify against `specs/session-workflow/spec.md` and that the text carries no argument against the rejected alternative
 - [x] 2.3 Run `tests/run.sh` and verify it passes, since `tests/cases/inlined-body-matches-fragment.sh` reads the workflow fragment's version and body
 
 ## 3. change-code-reviewer

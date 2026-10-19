@@ -29,7 +29,7 @@ None.
 - `agents/change-test-writer.md` — the dispatch contract, *What you may read*, *The pass is additive only*, *The manifest*. The description is unchanged: it names essential inputs only, and this input is optional.
 - `agents/change-code-reviewer.md` — *What you check*, *Severity*.
 - `agents/change-test-writer.checks.yaml`, `agents/change-code-reviewer.checks.yaml` — cold-run fixtures extended to exercise the new behaviour; the trigger fixtures stand, since neither description changes.
-- `rules/test-plan.md` (version 2 → 3), `rules/development-workflow.md` (version 8 → 9, since its inlined body changes).
+- `rules/test-plan.md` (version 2 → 3), `rules/development-workflow.md` (version 9 → 10, since its inlined body changes; `fold-small-work-in` took version 9 on the trunk while this change was open).
 - `rules/project-foundation.md`, `skills/project-foundation/SKILL.md` — the testing-strategy section of the checklist.
 - **Related backlog entry**: `share-a-suites-test-arrangement` puts guidance on what a good shared arrangement is into `skills/testing`. This change covers how a derivation feeds one; that entry, taken later, can reference this change's manifest section. They are not merged.
 - **Consumer**: commerce-ops, which recorded this decision under its own backlog entry `promote-the-remaining-local-doubles-into-the-harness` and will update its project-local `test-harness` skill once the toolkit ships it. Not part of this change.

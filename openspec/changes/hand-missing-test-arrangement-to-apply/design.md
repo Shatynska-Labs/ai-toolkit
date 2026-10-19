@@ -4,7 +4,7 @@ See `proposal.md` for why. Four places carry the test-authoring flow today, and 
 
 - `agents/change-test-writer.md` writes tests inside the dispatched test-path glob, with `<changeRoot>/test-plan.md` as the one write outside it. It reads the change's artifacts, `specsRoot`, the convention files, an earlier `test-plan.md`, and files within the glob — so a shared arrangement outside the glob (`tests/support/` beside a `tests/test_*.py` glob, say) is currently unreadable to it.
 - `rules/test-plan.md` (version 2) tells an implementer to read the manifest before implementing.
-- `rules/development-workflow.md` (version 8) is inlined into consuming projects. Its **derive tests** names the test command and test-path glob as the author's inputs; its **apply** names no step concerning the derived tests beyond making them pass.
+- `rules/development-workflow.md` (version 8 when this change was planned, 9 once `fold-small-work-in` merged) is inlined into consuming projects. Its **derive tests** names the test command and test-path glob as the author's inputs; its **apply** names no step concerning the derived tests beyond making them pass.
 - `agents/change-code-reviewer.md` traces scenarios to tests and audits tasks; it has no check on how tests take their arrangement.
 
 `rules/project-foundation.md` and `skills/project-foundation/SKILL.md` carry a testing-strategy section with no named items.
@@ -39,7 +39,7 @@ See `proposal.md` for why. Four places carry the test-authoring flow today, and 
 
 **7. The report gains an *arrangement audit* section** after the task audit, rather than folding into findings alone, so a clean audit is stated rather than inferred from the absence of findings — the same reason traceability and task audit are sections.
 
-**8. Fragment versions.** `rules/development-workflow.md` goes 8 → 9 because its inlined body changes (`project-bootstrap`'s increment rule). `rules/test-plan.md` goes 2 → 3 by the same rule applied to an imported fragment. `rules/project-foundation.md` is a procedural checklist and carries no version.
+**8. Fragment versions.** `rules/development-workflow.md` goes 9 → 10 — `fold-small-work-in` reached the trunk at 9 while this change was open — because its inlined body changes (`project-bootstrap`'s increment rule). `rules/test-plan.md` goes 2 → 3 by the same rule applied to an imported fragment. `rules/project-foundation.md` is a procedural checklist and carries no version.
 
 **9. Foundation names three testing items, not one.** Adding only the shared arrangement as an item would leave the two inputs that already matter more (command, glob) unnamed beside it. Itemizing all three under *Testing Strategy* makes every input the writer is dispatched with checkable in the foundation artifact.
 
@@ -51,7 +51,7 @@ See `proposal.md` for why. Four places carry the test-authoring flow today, and 
 - [A project with no shared arrangement gets a section listing items with nowhere to go] → the entry's proposed home says there is none, apply keeps each entry with that reason — and does the same where the conventions are silent, so nothing is promoted into a location the reviewer cannot check — and creating a shared arrangement is a testing-strategy decision outside the change.
 - [The reviewer cannot tell a test module from the shared arrangement where the conventions file is silent] → the import check is reported not run with that reason, not guessed.
 - [Existing consumers never revisit foundation, so the new item does not reach them] → the gap is surfaced, not prescribed: the writer raises an unresolved project question on every pass while the conventions are silent, and the reviewer reports its import check not run. The fragment does not direct sessions to record it, because `session-workflow` keeps one-time setup obligations out of the fragment, and the same argument was rejected there for creating a missing backlog.
-- [Consumers on version 8 of the workflow block keep the old apply text] → reconciliation of a stale managed block is outside `project-init`'s scope today, as for every earlier version bump.
+- [Consumers on an earlier version of the workflow block keep the old apply text] → reconciliation of a stale managed block is outside `project-init`'s scope today, as for every earlier version bump.
 
 ## Migration Plan
 

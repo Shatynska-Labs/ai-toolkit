@@ -33,11 +33,12 @@ The checks and gates below bind you only while you run the operation. An entry w
 
 Write one entry in the shape the file states.
 
-1. **Name.** Check the proposed name against every entry heading in the file, every directory under the project's open and archived changes (for OpenSpec, `openspec/changes/` and `openspec/changes/archive/`, where archived names carry a date prefix), and every local and remote branch. If any already uses it, do not write the entry; ask for another name.
-2. **Kind.** Set it by the file's own definition and write the reason beside it: for a change, which delta it owes, which decision it needs, or that it is too large.
-3. **Design with.** Search the existing entries for ones naming the same files, specifications or capabilities. Present each as a Design with candidate and say what they share. Write into Design with only the candidates the session or the operator confirms share a design, or `nothing`. A shared pointer is evidence of a shared design, not the same thing.
-4. **Waits on, Recorded by.** As the file describes them.
-5. **Re-checked.** Today's date.
+1. **Fold in.** Where you are in a change, test the work against the fold-in rule the project's workflow states, if it states one. Where the work meets it, say that it can be folded into that change and write no entry.
+2. **Name.** Check the proposed name against every entry heading in the file, every directory under the project's open and archived changes (for OpenSpec, `openspec/changes/` and `openspec/changes/archive/`, where archived names carry a date prefix), and every local and remote branch. If any already uses it, do not write the entry; ask for another name.
+3. **Kind.** Set it by the file's own definition and write the reason beside it: for a change, which delta it owes, which decision it needs, or that it is too large.
+4. **Design with.** Search the existing entries for ones naming the same files, specifications or capabilities. Present each as a Design with candidate and say what they share. Write into Design with only the candidates the session or the operator confirms share a design, or `nothing`. A shared pointer is evidence of a shared design, not the same thing.
+5. **Waits on, Recorded by.** As the file describes them.
+6. **Re-checked.** Today's date.
 
 ## pick
 
