@@ -145,6 +145,7 @@ Not superseded by any delta, but it collides with the text `design.md` decision 
 - **Delta**: session-workflow ADDED *A change takes the backlog entries it can fold in* (the apply sentence).
 - **Evidence**: the case takes "the re-read line" to be every line matching `docs/backlog\.md` and `re-?read` and `archiv`, and fails it on `delet`. The planned apply sentence — "Before implementing, read `docs/backlog.md` for entries … ; the archive re-read deletes it." — is one line (one paragraph per line) carrying all four, so that case will go from green to red once task 1.3 lands. Simulated against the sentence alone; the fragment itself was not read.
 - **Marking**: candidate for human confirmation, not a conclusion. Either the apply sentence is reworded so it does not state the deletion on the same line (a plan change, for `openspec-update-change`), or the existing case's line selection is judged superseded and revised by a human. This pass did not edit it. Task 1.3 names `workflow-fragment-backlog-rules-not-restated` as its verifier but not this case.
+- **Resolution**: settled by rewording the apply sentence in `design.md` decision 2 to "leave the entry itself to the archive step" (commit d78b264), so the line states no deletion. The existing case was left unchanged and passes at the implementation head. The fixture text in `workflow-fragment-apply-backlog-pickup.sh` and `workflow-fragment-apply-pickup-names-no-field.sh` still quotes the first wording; both fixtures conform either way.
 
 ## Unresolved project questions
 

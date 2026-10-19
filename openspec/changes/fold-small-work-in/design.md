@@ -35,7 +35,7 @@ and its second bullet becomes:
 
 > - Where it **does not**: record it in `docs/backlog.md`. That is what is owed; opening the identified change instead is the option.
 
-**apply** gains, after its first sentence:
+**apply** gains, at the end of its paragraph:
 
 > Before implementing, read `docs/backlog.md` for entries the scope rule would let this change fold in, and take each as folded-in work whose commit names the entry; leave the entry itself to the archive step.
 
