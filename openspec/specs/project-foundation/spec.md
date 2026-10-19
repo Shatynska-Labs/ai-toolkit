@@ -84,6 +84,9 @@ The foundation change's design artifact SHALL carry this fixed set of named sect
 ## Technology            language and framework
 ## Architecture
 ## Testing Strategy
+   - Test command
+   - Test-path glob
+   - Shared test arrangement
 ## Development Tooling
    - Linting
    - Formatting
@@ -103,7 +106,7 @@ The foundation change's design artifact SHALL carry this fixed set of named sect
 
 The mapping from decision to section is fixed here rather than chosen per project, and is stated in this requirement rather than in a design document, because the requirement outlives the change that introduces it and an obligation deferred to an archived file cannot be checked afterwards.
 
-A section covering more than one decision SHALL carry a named item per decision it absorbs — as `Identity` and `Development Tooling` do — so that an unanswered decision remains individually visible rather than being concealed by a filled section covering several.
+A section covering more than one decision SHALL carry a named item per decision it absorbs — as `Identity`, `Testing Strategy` and `Development Tooling` do — so that an unanswered decision remains individually visible rather than being concealed by a filled section covering several.
 
 An item MAY be answered as not applicable, with the reason stated — type checking for a language without it, or branch protection decided against for a single-maintainer repository. A stated reason is an answer; an empty item is not.
 
@@ -293,3 +296,21 @@ The successor SHALL NOT inherit foundation's test-authoring exemption. It is the
 
 - **WHEN** the successor change is prepared for implementation
 - **THEN** test authoring applies to it normally, against the test command and test-path glob foundation recorded
+
+### Requirement: The testing strategy names the test author's inputs
+
+The testing-strategy section SHALL carry three named items, each a visible gap until answered: the **test command**, the **test-path glob**, and the **shared test arrangement** — where the project's tests take builders, fixtures, fakes and stubs from, as a path, or the statement that the project has none.
+
+These are what a later change's test author is dispatched with. The test command and the test-path glob are already required to reach `AGENTS.md`; naming them as items makes their coverage checkable in the artifact rather than implied by the section having been written. The shared test arrangement is added beside them because a test author dispatched without it declares every piece of arrangement locally, and the implementation step then has nowhere named to promote it to.
+
+"None" is an answer and an empty item is a gap, as for every other item. A project that answers "none" is not obliged to create a shared arrangement by foundation; its later changes' tests declare arrangement locally and the test plan records it.
+
+#### Scenario: The shared arrangement is reached even when nobody raises it
+
+- **WHEN** a foundation conversation has settled the test runner and the person has not mentioned shared fixtures or doubles
+- **THEN** the shared test arrangement item is still proposed with reasoning for confirmation or redirection, rather than left unanswered
+
+#### Scenario: The items reach AGENTS.md
+
+- **WHEN** the testing strategy settles
+- **THEN** the test command, the test-path glob and the shared test arrangement — a path, or that there is none — are written into `AGENTS.md`'s testing-strategy section
