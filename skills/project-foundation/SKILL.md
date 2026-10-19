@@ -28,7 +28,7 @@ The conversational wrapper over `rules/project-foundation.md`. That fragment car
 
 Identity, problem, audience, scope, and non-goals must come from the user — nothing available makes them derivable. Once those are established, propose the technical decisions (language, framework, architecture, testing strategy, development tooling) with your reasoning, for confirmation or redirection — that is faster than asking about them, and it is not a substitute for coverage.
 
-Do not fire the nine decisions as a fixed sequence of questions. Coverage is the obligation; interrogation order is not. The development-tooling items are the same: once the stack is known, propose them as one coherent set with your reasoning, not one question per item.
+Do not fire the nine decisions as a fixed sequence of questions. Coverage is the obligation; interrogation order is not. The development-tooling items are the same: once the stack is known, propose them as one coherent set with your reasoning, not one question per item. Propose the testing-strategy items with the test runner even when nobody raises them — the shared test arrangement especially, where the project's shared builders, fixtures and doubles live, or that it has none.
 
 ## Persist as you go
 
@@ -46,6 +46,9 @@ Create the `project-foundation` change early — dispatch or use `openspec-propo
 ## Technology
 ## Architecture
 ## Testing Strategy
+   - Test command
+   - Test-path glob
+   - Shared test arrangement
 ## Development Tooling
    - Linting
    - Formatting
@@ -63,11 +66,11 @@ Create the `project-foundation` change early — dispatch or use `openspec-propo
    - Delivery
 ```
 
-An unfilled section, or an unfilled item within `Identity` or `Development Tooling`, is a visible gap — that is what makes coverage checkable in the artifact rather than only inside this conversation. An item may be answered "not applicable" with its reason stated; a stated reason is an answer, an empty item is not.
+An unfilled section, or an unfilled item within `Identity`, `Testing Strategy` or `Development Tooling`, is a visible gap — that is what makes coverage checkable in the artifact rather than only inside this conversation. An item may be answered "not applicable" with its reason stated; a stated reason is an answer, an empty item is not.
 
 ## Also write to README.md and AGENTS.md as decisions settle
 
-`design.md` is archived with the change once foundation completes, so it is not what a human or a fresh agent session reads by default. Alongside each `design.md` write — never instead of it — write the same decision into whichever of the project's `README.md` or `AGENTS.md` it belongs in, per `rules/project-foundation.md`'s "Decisions also reach README.md and AGENTS.md" section: identity, problem, audience, scope, non-goals, technology, and architecture go to `README.md`; testing strategy and development tooling go to a separate, non-managed section of `AGENTS.md`. The split follows whether a future agent turn needs the fact without being told to look for it, not which audience happens to value it — do not re-derive the split from scratch here, read it from the fragment.
+`design.md` is archived with the change once foundation completes, so it is not what a human or a fresh agent session reads by default. Alongside each `design.md` write — never instead of it — write the same decision into whichever of the project's `README.md` or `AGENTS.md` it belongs in, per `rules/project-foundation.md`'s "Decisions also reach README.md and AGENTS.md" section: identity, problem, audience, scope, non-goals, technology, and architecture go to `README.md`; testing strategy and development tooling go to a separate, non-managed section of `AGENTS.md` — including the test command, the test-path glob, and the shared test arrangement as a path or that there is none, which a later change's test author is dispatched with. The split follows whether a future agent turn needs the fact without being told to look for it, not which audience happens to value it — do not re-derive the split from scratch here, read it from the fragment.
 
 ## Foundation builds the ignore entries, and names who builds the rest
 

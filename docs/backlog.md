@@ -265,3 +265,31 @@ The four `tests/cases/testing-skill-*.sh` cases each run their check over the re
 **Recorded by**: `add-session-workflow-fragments`, whose sixth review round found the collision.
 
 **Re-checked**: 2026-10-18
+
+## `record-this-repositorys-shared-test-arrangement`
+
+This repository's `AGENTS.md` records no test command, test-path glob or shared test arrangement, so its own changes dispatch `change-test-writer` from values supplied by hand, and the arrangement audit's import check cannot run here. Record all three — `bash tests/run.sh`, `tests/cases/**`, and `tests/lib.sh` as the shared arrangement — then merge `tests/cases/lib/static-scan.sh` into `tests/lib.sh` (it lies inside the glob, so it is a test module) and move the scan helper `hand-missing-test-arrangement-to-apply`'s five cases each declare locally onto it. That change's `test-plan.md` lists the helper as kept for exactly this reason.
+
+**Kind**: `change`. Moving the scan helpers edits existing tests beyond the bounded promotion permission, and which file is the shared arrangement is a testing-strategy decision.
+
+**Waits on**: `hand-missing-test-arrangement-to-apply` archived.
+
+**Design with**: `share-a-suites-test-arrangement`.
+
+**Recorded by**: `hand-missing-test-arrangement-to-apply`, whose apply rule keeps every entry where the conventions record no shared arrangement.
+
+**Re-checked**: 2026-10-19
+
+## `run-the-remaining-arrangement-cold-runs`
+
+`agents/change-test-writer.checks.yaml` and `agents/change-code-reviewer.checks.yaml` carry arrangement variants (b)–(d) and (b)–(e) that `hand-missing-test-arrangement-to-apply` did not run: conventions silent on the shared arrangement, stating none, recording no glob, no change name, and nothing missing. Run each and record any body revision it forces.
+
+**Kind**: `fix`. No delta and no decision, unless a run fails — then the revision is a change of its own.
+
+**Waits on**: `nothing`.
+
+**Design with**: `nothing`.
+
+**Recorded by**: `hand-missing-test-arrangement-to-apply` (design decision 10), which ran only variant (a) of each, by the operator's decision to limit usage.
+
+**Re-checked**: 2026-10-19

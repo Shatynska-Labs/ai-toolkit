@@ -22,7 +22,7 @@ Nine decisions, falling into two groups by how they may be reached.
 
 - **Technology**: language and framework.
 - **Architecture**: the shape of the system.
-- **Testing strategy**: how the project's behavior will be verified.
+- **Testing strategy**: how the project's behavior will be verified, including three items a later change's test author is dispatched with — the **test command**, the **test-path glob**, and the **shared test arrangement**: where the project's tests take builders, fixtures, fakes and stubs from, as a path, or the statement that the project has none. "None" is an answer; an empty item is a gap. A test author dispatched without the shared test arrangement declares every piece of arrangement locally, and the implementation step has nowhere named to promote it to. Answering "none" does not oblige foundation to create one.
 - **Development tooling**: the project's quality layer, decided concern by concern — see *Development tooling, concern by concern* below. Which tool serves each concern is the project's choice; this checklist names the concern, never the tool.
 
 ## Development tooling, concern by concern
@@ -73,7 +73,7 @@ The foundation is a normal change, authored through the project's existing chang
 
 Write each decision into the change's `design.md` as it settles, rather than holding it in conversation until a final write. A foundation conversation can span sessions, and a decision that exists only in conversation is invisible to whoever resumes it.
 
-`design.md` carries a fixed set of named sections, one per decision. Two sections absorb several decisions and carry a named item per decision, so an unanswered one stays individually visible: `Identity` groups problem, audience and identity itself, and `Development Tooling` carries one item per concern above, plus `Ignore entries` and `Delivery`:
+`design.md` carries a fixed set of named sections, one per decision. Three sections absorb several decisions and carry a named item per decision, so an unanswered one stays individually visible: `Identity` groups problem, audience and identity itself, `Testing Strategy` carries the test command, the test-path glob and the shared test arrangement, and `Development Tooling` carries one item per concern above, plus `Ignore entries` and `Delivery`:
 
 ```
 ## Identity
@@ -85,6 +85,9 @@ Write each decision into the change's `design.md` as it settles, rather than hol
 ## Technology
 ## Architecture
 ## Testing Strategy
+   - Test command
+   - Test-path glob
+   - Shared test arrangement
 ## Development Tooling
    - Linting
    - Formatting
@@ -113,7 +116,7 @@ The split is not by audience. Do not route a decision to `AGENTS.md` because an 
 Under that test:
 
 - **`README.md`** gets identity, problem, audience, scope, non-goals, technology, and architecture — decisions that inform without needing to shape a future agent turn automatically. Create the file if it is absent; otherwise append a section. Delimit it with `<!-- ai-toolkit:project-foundation -->` / `<!-- /ai-toolkit:project-foundation -->`, unversioned — this content is never regenerated from a toolkit fragment, so there is nothing to stamp a version against, and a human is free to edit it afterward. Use these headings, in order: `## What it is`, `## Problem`, `## Audience`, `## Scope`, `## Non-Goals`, `## Technology`, `## Architecture`. As each decision settles, rewrite the content between the markers rather than duplicating it.
-- **`AGENTS.md`** gets testing strategy and development tooling only — the two decisions a later change's test-authoring step actually depends on as inputs (the test command, the test-path glob), and which reach an agent automatically only through this file. Append a second, separate section — outside the existing `<!-- ai-toolkit:development-workflow vN -->` block if one is present, never inside it, since that block is regenerated wholesale on update and would silently destroy project-owned content living inside it. Delimit it the same way, unversioned, with headings `## Testing Strategy` and `## Development Tooling`, placed after the workflow block where one exists. `AGENTS.md` is presupposed to already exist — this workflow's own initialization step always creates it before foundation can run — so there is no create-if-absent case to handle here, unlike `README.md`.
+- **`AGENTS.md`** gets testing strategy and development tooling only — the two decisions a later change's test-authoring step actually depends on as inputs (the test command, the test-path glob, the shared test arrangement or that there is none), and which reach an agent automatically only through this file. Append a second, separate section — outside the existing `<!-- ai-toolkit:development-workflow vN -->` block if one is present, never inside it, since that block is regenerated wholesale on update and would silently destroy project-owned content living inside it. Delimit it the same way, unversioned, with headings `## Testing Strategy` and `## Development Tooling`, placed after the workflow block where one exists. `AGENTS.md` is presupposed to already exist — this workflow's own initialization step always creates it before foundation can run — so there is no create-if-absent case to handle here, unlike `README.md`.
 
 ## The foundation change is exempt from test authoring
 

@@ -51,15 +51,21 @@ The `.openspec.yaml` path is essential because you never construct a path — th
 
 **Optional** — the absolute path of an earlier `test-plan.md`, if one exists. Its absence changes what your obsolete-test search can draw on, not whether you can proceed.
 
+**Optional** — the absolute path or paths of the project's **shared test arrangement**, read-only: the test code its tests take builders, fixtures, fakes and stubs from, which the runner imports but does not collect. Its absence changes what your tests can take arrangement from — everything they need is then declared locally — not whether you can proceed. Never go looking for one the dispatch did not name.
+
 Address every file by the absolute path you were given, never by construction — not `openspec/changes/<name>/`, and never by assuming the working directory is the repository.
 
 ## What you may read
 
 The reason this work runs in your own context, separate from whoever implements the change, is that you have not seen the implementation and cannot shape assertions to match it. For an `ADDED` requirement that is automatic — there is nothing to read. For a `MODIFIED` one it is not: the pre-change implementation exists, and matching tests to superseded behavior invites reading it.
 
-You read only: the change's artifacts at the paths you were given; the specifications under `specsRoot`; the project's dispatched convention files; an earlier `test-plan.md` where its path was supplied; and files within the dispatched test-path glob. You do **not** read the implementation of the behavior under test — including to work out what a `MODIFIED` delta supersedes, which you establish by comparing the delta with the existing requirement under `specsRoot`, not by reading code.
+You read only: the change's artifacts at the paths you were given; the specifications under `specsRoot`; the project's dispatched convention files; an earlier `test-plan.md` where its path was supplied; the dispatched shared test arrangement where its path was supplied; and files within the dispatched test-path glob. You do **not** read the implementation of the behavior under test — including to work out what a `MODIFIED` delta supersedes, which you establish by comparing the delta with the existing requirement under `specsRoot`, not by reading code.
 
-If you cannot proceed without reading implementation source, report that you are blocked on this bound rather than crossing it silently.
+The bound covers every read, by any tool: a `cat`, `grep` or `head` over a file reads it exactly as `Read` does. Listing file names to find your way is not a read; opening a file outside your read set is, including in a bulk read while you survey the repository. Check each path against your read set before you open it.
+
+The shared arrangement is test code, and reading it is no route to the implementation. A shared double mirrors a port's signature: take that signature from the double, and never follow the double to the port's implementation, nor read the port's implementation to judge whether the double is faithful.
+
+If you cannot proceed without reading implementation source — a source file outside the test-path glob and the shared arrangement — report that you are blocked on this bound rather than crossing it silently.
 
 ## Invoke the testing standard, don't restate it
 
@@ -98,6 +104,16 @@ Every entry records: the test's runner-selectable identifier; the delta that sup
 
 Where you find no bearing test, say so explicitly — distinguish "no such test exists" from "none was found by this search." Never produce an empty list for either reason; an empty list reads as the first while usually meaning the second, and the gap this pass exists to surface would close silently on exactly the operation it was written for. Where the change carries no `MODIFIED` or `REMOVED` delta at all, record the obsolete list as **not applicable, with that reason** instead.
 
+## Arrangement the shared arrangement lacks
+
+Never write to the shared arrangement, edit it, or add a module to it. Editing a shared double changes what every test using it arranges, which is editing existing tests by another route.
+
+Where a scenario needs a builder, fixture, fake or stub the shared arrangement does not hold, declare it inside the test file you are writing, so the tests run and fail for the right reason rather than for want of a collaborator. Where the shared arrangement holds a **near-miss** — arrangement for the same port, collaborator or value that does not serve the scenario as it stands — do not edit it either: declare what you need locally and record the near-miss and why it would not do.
+
+A **test module** is any file within the test-path glob that is not part of the dispatched shared arrangement. A test file you write takes its arrangement only from the shared arrangement or from declarations in that same file — never by import from another test module, including one this pass wrote, and including an earlier change's local declaration that serves the scenario exactly. Arrangement you find in another test module is missing arrangement: declare it locally and record where you found it.
+
+Record every local declaration in the manifest (below), so it reaches the implementation step rather than staying where you wrote it. Where the dispatch names no shared arrangement, declare and record all the same. Where, in addition, the dispatched convention files neither name a shared arrangement nor state that the project has none, record that as an unresolved project question and surface it in your report; where they state the project has none, raise no question for it.
+
 ## The pass is additive only
 
 Never edit, delete, or disable an existing test file — under any delta operation, for any reason. Never write outside the dispatched test-path glob, with exactly one named exception: the manifest, at `<changeRoot>/test-plan.md`. Any other write outside the glob stops the pass and gets reported, rather than judged as legitimate or not.
@@ -117,6 +133,7 @@ Where your pass proceeds past both stop-routes above (blocked, specs-exempt — 
 - each assertion's classification — specified, derived, or deliberately untested — per `testing`'s rule
 - the obsolete-tests list, each entry carrying its superseding delta, its evidence, and its candidate-for-confirmation marking (or "not applicable", per above)
 - any unresolved project questions, with the assumption taken and the tests depending on it
+- a **Missing shared arrangement** section, always present — one entry per local declaration, recording: the declared name and the test file declaring it; what it stands in for (the port, collaborator or value); the tests using it, in runner-selectable form; whether the shared arrangement holds a near-miss, and if so which and why it would not do; the test module it was found in, if it was; and a proposed home in the shared arrangement, or, where none was named, that there is none to propose. Where you declared nothing locally, the section says so; where the dispatch named no shared arrangement, it says that too. Never omit the section — a pass that needed no arrangement must be distinguishable from a manifest that never considered it
 - the baseline you took — full, or scoped together with its scope, both of which `testing` treats as first-class — or, failing that, why none could be taken
 
 Name tests in a form the project's runner can select individually, not in prose — whoever implements next must be able to run exactly the tests a given task must satisfy. State in your report that this manifest is not an artifact the OpenSpec schema knows about, so it will not appear among `openspec instructions apply`'s context files and must be read on purpose.
