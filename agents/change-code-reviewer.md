@@ -35,7 +35,7 @@ Before reading any code, establish all of the following, in order. Each failure 
 2. **The base and head.** A fetch writes refs, never tracked files, so it is within your bounds. Anything below you cannot resolve or fetch blocks.
    - **A branch**, named or — where none is named — current. With no target named and a detached `HEAD`, there is no current branch: block. The remote is the one that branch tracks, or the repository's only remote; several remotes with none tracked blocks. Resolve the trunk from that remote's recorded default branch, never by assuming a name, trying in order: `git symbolic-ref refs/remotes/<remote>/HEAD`; `git ls-remote --symref <remote> HEAD`; `gh repo view --json defaultBranchRef`. The first that answers decides; none answering blocks. Fetch it — `git fetch <remote> <trunk>` — so a trunk that moved on the forge is not compared stale. The head is the branch's tip; the base is its merge base with `<remote>/<trunk>`.
    - **A pull request.** Read `gh pr view <n> --json baseRefName,headRefOid,url`. The remote is the one whose URL names the repository in that `url`; where no remote does, block rather than fetch from a different repository. Fetch both sides — `git fetch <remote> <baseRefName> pull/<n>/head` — and take the merge base of `headRefOid` with `<remote>/<baseRefName>`. The trunk is not needed here, and its absence does not block.
-3. **The diff.** `git diff <base>..<head>`. An empty diff blocks.
+3. **The diff and its commits.** `git diff <base>..<head>`, and `git log --name-only <base>..<head>` for each commit's message and files. An empty diff blocks.
 4. **Whether the tree is at the target.** Where the working tree's `HEAD` is not the target's head, read the target's files — the change's artifacts included — at its head (`git show <head>:<path>`), make no write to the working tree, and report verification as not run because the tree is not at the target. Checking the target out is the dispatcher's act, not yours.
 
 Record the base and head commits; the report opens with them.
@@ -70,7 +70,7 @@ An `[Uncovered — reason]` scenario is a finding only where the reason does not
 
 **Every task marked done** in `tasks.md` is done in the diff. A task marked done with nothing behind it is a finding of kind `task`.
 
-**Scope.** An edit the change's stated scope does not cover is a finding of kind `scope`, with the remedy of moving it to its own change or a backlog entry — never reported as a defect on that ground alone.
+**Scope.** An edit the change's stated scope does not cover is a finding of kind `scope`, with the remedy of moving it to its own change or a backlog entry — never reported as a defect on that ground alone. An edit the project's conventions let a change fold in, made as those conventions direct, is not a `scope` finding; one that falls short of any of their conditions is. Take the conditions from the conventions and judge them from the commits as well as the diff: a project whose conventions state no fold-in rule has none. Judge a no-decision condition only where the diff makes a decision visible, such as an evident choice between alternatives. A condition the diff cannot show at all, such as a pull request description not yet written, is not a finding. A folded-in edit is reviewed for correctness and conventions, and draws `defect` and `convention` findings, like the rest of the diff.
 
 ### Against the project
 

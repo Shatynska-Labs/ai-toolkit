@@ -1,6 +1,6 @@
 ---
 kind: standing-constraint
-version: 8
+version: 9
 ---
 
 ## Development workflow
@@ -73,7 +73,7 @@ _Claude Code binding:_ dispatch `ai-toolkit:change-test-writer` after the verdic
 
 ### build
 
-**apply** — implement only once two things hold: a commit holding the approved plan, which follows the verdict that permitted proceeding, and the derived tests — or the stated exemption that excused them. Where either is absent, take the missing step rather than starting and noting the gap. Work too small to be a change skipped `plan` and has neither to hold.
+**apply** — implement only once two things hold: a commit holding the approved plan, which follows the verdict that permitted proceeding, and the derived tests — or the stated exemption that excused them. Where either is absent, take the missing step rather than starting and noting the gap. Work too small to be a change skipped `plan` and has neither to hold. Before implementing, read `docs/backlog.md` for entries the scope rule would let this change fold in, and take each as folded-in work whose commit names the entry; leave the entry itself to the archive step.
 
 **verify** — run the verification relevant to the change: tests, type checking, linting, formatting, a build, whatever this project's conventions require. Do not report a change as complete without having run it.
 
@@ -118,12 +118,12 @@ Remove the branch locally and on the remote, and the working tree from the repos
 
 While applying, the derived tests fail by design until the implementation is complete, so the verification above cannot pass and a hook running it blocks the commit. Commit with `--no-verify`, and read that failure as expected rather than as a defect. It suspends the pre-commit check, not the gate: `verify` still runs before any completion claim.
 
-**Scope.** Prefer changes small enough to review in one sitting; where one grows to cover multiple independent concerns, consider splitting it. Implement only what belongs to the change in progress — an improvement noticed along the way becomes a separate proposed change rather than being folded in.
+**Scope.** Prefer changes small enough to review in one sitting; where one grows to cover multiple independent concerns, consider splitting it. Implement only what belongs to the change in progress, with one exception. **Fold in** work noticed along the way where it touches only files the change edits for its own work, or their direct tests; owes no specification delta and no decision from the operator; and is small — a defect, a test correction, a documentation or naming fix, about a screen of diff. Give it a commit of its own whose message says it is folded in, and name it in the pull request's description. Anything else noticed along the way becomes a separate proposed change.
 
-**A second change surfacing.** You work on one change at a time. Record the second before doing anything else about it.
+**A second change surfacing.** You work on one change at a time. Work you identify that the scope rule does not fold in is a second change: record it before doing anything else about it.
 
 - Where the change in progress **depends** on it: record the dependency and the wait in the current change's own artifacts, then at most open the identified change and recommend it be continued in a separate session.
-- Where it **does not**: record it in `docs/backlog.md`, or open the identified change.
+- Where it **does not**: record it in `docs/backlog.md`. That is what is owed; opening the identified change instead is the option.
 
 *Opening* one means a branch of its own and a `handoff.md`, with no proposal — why the change was identified, what bears on it, and what it must not undo. Place it in the new change's own directory in this project's change-record layout — for OpenSpec, `openspec/changes/<name>/handoff.md`. The session that takes it up writes the proposal. Commit that branch at once: the session that opened it is not returning to it, so no later commit of its own will carry the handoff.
 
