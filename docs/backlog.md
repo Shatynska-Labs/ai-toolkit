@@ -112,33 +112,7 @@ What the change is and why it is needed, written for a session that has not seen
 
 **Re-checked**: 2026-10-18
 
-## `state-recording-as-the-obligation`
 
-`session-workflow`'s backlog requirement says the fragment "SHALL state that recording is the obligation and branching is the option". `rules/development-workflow.md`'s routing bullet offers the two as equals ("record it in `docs/backlog.md`, or open the identified change"), so the fragment falls short of its own specification.
-
-**Kind**: `fix`. The specification already requires it; the fragment edit and its version increment owe no delta and no decision.
-
-**Waits on**: `nothing`.
-
-**Design with**: `fold-small-work-in`, whose fold-in rule changes the same clause.
-
-**Recorded by**: `seed-the-backlog`'s code review, which found the gap predates that change.
-
-**Re-checked**: 2026-10-18
-
-## `fold-small-work-in`
-
-The workflow leaves no path for small adjacent work: **Scope** sends every improvement to a separate change, **A second change surfacing** offers only recording, and `change-code-reviewer` reports any out-of-scope edit as a `scope` finding. Add a fold-in rule to **Scope**: work touching files the change already edits, owing no delta and no decision, and small, goes in as its own commit named in the PR description. Exempt such commits from the reviewer's `scope` kind, have a change at `build:applying` take the backlog's `fix` entries touching its files, and have the `backlog` skill's **record** apply the fold-in test first.
-
-**Kind**: `change`. It owes `session-workflow` and `change-code-review` deltas and a fragment version increment.
-
-**Waits on**: `nothing`.
-
-**Design with**: `state-recording-as-the-obligation`.
-
-**Recorded by**: `add-backlog-skill` (archived `handoff.md`, sections 1 and 4; design, Context), which split it out at the operator's direction.
-
-**Re-checked**: 2026-10-18
 
 ## `extend-dangling-reference-to-agent-names`
 
