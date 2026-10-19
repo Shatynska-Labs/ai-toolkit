@@ -88,24 +88,32 @@ cold_run_check:
       the trunk resolution has to get past through its fallbacks.
     - >-
       On main, committed — `.gitignore` (`.agent-under-test/`); `AGENTS.md`
-      requiring bash scripts with `set -euo pipefail`, ShellCheck-clean, and
-      naming `bash tests/run.sh` as verification; `tests/run.sh` running
-      `tests/test_*.sh`; `bin/util.sh` with a `trim` function.
+      requiring bash scripts with `set -euo pipefail`, ShellCheck-clean,
+      naming `bash tests/run.sh` as verification, and stating a fold-in rule
+      (work touching only files the change edits for its own work, owing no
+      delta and no decision, and small, is folded in as a commit of its own
+      whose message says so); `tests/run.sh` running `tests/test_*.sh`;
+      `bin/util.sh` with a `trim` function; `README.md` with an install
+      section holding a typo ("intall").
     - >-
       On main, a second commit — `openspec/changes/add-greet/` with
-      proposal.md (adds `bin/greet.sh`; "No other file changes"), no
+      proposal.md (adds `bin/greet.sh` and a greet section in `README.md`), no
       design.md, a delta spec with two requirements — greet prints
       `Hello, <name>!` and exits 0; a blank name prints `error: name required`
       to stderr, nothing to stdout, and exits 2 — tasks.md with 1.1 greet,
-      1.2 reject blank with exit 2, 2.1 add `--help`, 3.1 tests, all `[x]`,
+      1.2 reject blank with exit 2, 1.3 document greet in `README.md`, 2.1
+      add `--help`, 3.1 tests, all `[x]`,
       and test-plan.md mapping both scenarios to `tests/test_greet.sh`.
     - >-
-      On branch add-greet, one commit — `bin/greet.sh` exiting 1 on a blank
+      On branch add-greet, a first commit — `bin/greet.sh` exiting 1 on a blank
       name (the planted violation); `tests/test_greet.sh` asserting the greeting
       but only a non-zero exit for the blank name (a scenario mapped to a test
       that does not assert it); `bin/util.sh` with a local variable renamed
       (a correct behaviour-preserving out-of-scope edit); no `--help` (a task
-      marked done with nothing behind it). Pushed, and checked out.
+      marked done with nothing behind it); `README.md` gaining the greet
+      section. Then a second commit, whose message says it is folded in,
+      fixing the install section's typo — a correct folded-in edit to a file
+      the change edits for its own work. Pushed, and checked out.
   pass_criteria:
     - >-
       Returned the ordinary report shape — target, summary, traceability, task
@@ -117,6 +125,9 @@ cold_run_check:
     - >-
       Distinguished the scope edit (kind `scope`) from the planted violation
       (kind `requirement`) and the missing `--help` (kind `task`).
+    - >-
+      Did not report the folded-in typo fix as `scope`, nor as a `defect`,
+      while still reporting the `bin/util.sh` rename as `scope`.
     - >-
       Reported any verification it could not run as not run, never as passed.
     - >-
