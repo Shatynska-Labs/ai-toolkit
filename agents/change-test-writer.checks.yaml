@@ -158,4 +158,79 @@ cold_run_check:
         unresolved project questions with their assumptions.
     - Reported rather than marking anything complete, and did not edit any of
       the change's planning artifacts.
+  arrangement_variants:
+    # Missing-shared-arrangement behaviour. Each variant is its own dispatch
+    # against its own fixture, because the conditions exclude each other —
+    # a convention file cannot be silent on the shared arrangement and state
+    # there is none at once. Each takes the base recipe above, with a stdlib
+    # runner whose tests take doubles from a support module, and changes only
+    # what its own entry names. Scored alongside the base pass criteria.
+    common: >-
+      A test-path glob of tests/test_*.py; a support module tests_support/
+      outside it, importable by the tests; a port (e.g. a Clock protocol) whose
+      implementation lives in src/clock.py, called by the code under test; a
+      probe change with ADDED scenarios only, so specsRoot is not needed. The
+      shared-arrangement path, when dispatched, is the absolute path of
+      tests_support/.
+    variants:
+      a_shared_arrangement_with_gaps:
+        fixture: >-
+          tests_support/ holds a FakeClock double for the port, and a
+          make_greeting builder lacking a field one scenario sets (the
+          near-miss). An earlier change's tests/test_earlier.py declares a
+          StubStore the new scenarios need, which tests_support/ does not
+          hold. The probe change carries scenarios needing FakeClock, the
+          missing builder field, and StubStore, split so two new test files
+          each need StubStore. AGENTS.md names tests_support/ as the shared
+          test arrangement.
+        payload_adds: the shared-arrangement path.
+        pass_criteria:
+          - Declared the builder and StubStore locally, in each test file that
+            needs them.
+          - Added no import from tests/test_earlier.py, and none between the
+            two new test files.
+          - Took FakeClock from tests_support/.
+          - Left tests_support/ byte-identical.
+          - >-
+            Did not read src/clock.py — confirmed by the absence of a Read call
+            against its path in the trace, not by the report's claim.
+          - >-
+            Wrote a Missing shared arrangement section listing each local
+            declaration with name and file, what it stands in for, the tests
+            using it, the near-miss (make_greeting) and why it would not do,
+            tests/test_earlier.py as where StubStore was found, and a proposed
+            home.
+      b_none_named_conventions_silent:
+        fixture: >-
+          As (a), but AGENTS.md says nothing about a shared test arrangement.
+        payload_adds: nothing — no shared-arrangement path.
+        pass_criteria:
+          - Proceeded without blocking, and did not search for or read
+            tests_support/ (trace).
+          - Declared every double locally.
+          - >-
+            The section states no shared arrangement was named and gives no
+            home to propose.
+          - >-
+            Recorded and reported an unresolved project question about the
+            unrecorded shared arrangement.
+      c_none_named_conventions_state_none:
+        fixture: >-
+          As (b), but AGENTS.md states the project has no shared test
+          arrangement.
+        payload_adds: nothing.
+        pass_criteria:
+          - As (b), except that no unresolved project question is raised about
+            the shared arrangement.
+      d_nothing_missing:
+        fixture: >-
+          As (a), but tests_support/ holds every double and builder the
+          scenarios need, and there is no tests/test_earlier.py.
+        payload_adds: the shared-arrangement path.
+        pass_criteria:
+          - Declared nothing locally, and took every double from
+            tests_support/.
+          - >-
+            The Missing shared arrangement section is present and states that
+            nothing was declared locally.
   not_graded: The quality or idiomaticity of the tests the agent wrote.

@@ -125,6 +125,65 @@ cold_run_check:
       before it.
     - >-
       Terminated because the body directed it to, not because a budget ran out.
+  arrangement_variants:
+    # The arrangement audit. Each variant is its own dispatch against its own
+    # fixture, built from the recipe above with only what its entry names
+    # changed; the conventions states exclude each other. The base fixture's
+    # own findings still occur and are scored by the base criteria — the
+    # counts below are of arrangement-audit findings only.
+    common: >-
+      The add-greet fixture, with a test-path glob of tests/** and the
+      project's shared arrangement at tests/support/ (inside the glob).
+      tests/support/fakes.sh exists on main. The change's test-plan.md carries
+      a Missing shared arrangement section.
+    variants:
+      a_mixed_diff:
+        fixture: >-
+          AGENTS.md names tests/** and tests/support/. The section has four
+          entries — one with no disposition and still declared locally; one
+          kept with a recorded reason; one recorded as promoted with nothing in
+          tests/support/ to bear it out; and one genuinely promoted, added to
+          tests/support/fakes.sh and imported from there by the test.
+          Separately, a test file in the diff imports a stub from
+          tests/test_util.sh (another test module), which no entry mentions.
+        pass_criteria:
+          - >-
+            Three arrangement-audit [MAJOR] test findings — the entry neither
+            promoted nor kept, the promotion the diff does not bear out, the
+            added test-to-test import at its importing line — in addition to
+            the base fixture's own findings.
+          - No finding for the kept entry or for the genuine promotion's import
+            from tests/support/.
+          - The report carries an arrangement audit section after the task
+            audit.
+      b_conventions_silent:
+        fixture: >-
+          As (a), but AGENTS.md names tests/** and says nothing about a shared
+          test arrangement.
+        pass_criteria:
+          - The import check is reported not run, with the reason that the
+            shared arrangement is unrecorded; no import finding.
+          - Both entries recorded as promoted are reported as [MAJOR] test
+            findings.
+      c_conventions_state_none:
+        fixture: >-
+          As (a), but AGENTS.md names tests/** and states the project has no
+          shared test arrangement.
+        pass_criteria:
+          - Every import the diff adds from another file within tests/** —
+            tests/support/fakes.sh included — is a [MAJOR] test finding.
+      d_no_test_path_glob:
+        fixture: >-
+          As (a), but AGENTS.md records no test-path glob.
+        pass_criteria:
+          - The import check is reported not run, with that reason.
+      e_no_change_name:
+        fixture: As (a).
+        payload_change: no change name.
+        pass_criteria:
+          - The missing-arrangement part of the arrangement audit is marked not
+            applicable with the reason.
+          - The import check is still run and reports the test-to-test import.
   static_half: >-
     Every tool the body directs the agent to use — git and gh and the project's
     verification through Bash, the practice skills through Skill, reads through
