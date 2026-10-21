@@ -25,7 +25,7 @@ Five operations over `docs/backlog.md` in the project this skill is invoked in. 
 
 Find `docs/backlog.md` at the project root. If it is absent, say so and name `project-init` as what seeds it; do not create the file with text of your own.
 
-Read the preamble, everything before the first entry heading, and take the entry shape and the deletion grounds from it. Where it differs from what you expect, it wins: this skill checks entries against the shape the file states, never against one of its own. Where the file's shape lacks a field an operation below names (Kind, Waits on, Design with, Re-checked), use the file's own equivalent where it has one, such as Depends on for Waits on, and otherwise skip that step and say so. Never add a field the file does not define.
+Read the preamble, everything before the first entry heading, and take the entry shape and the deletion grounds from it. Where it differs from what you expect, it wins: this skill checks entries against the shape the file states, never against one of its own. Where the file's shape lacks a field an operation below names (Priority, Kind, Waits on, Design with, Re-checked), use the file's own equivalent where it has one, such as Depends on for Waits on, and otherwise skip that step and say so. Never add a field the file does not define.
 
 The checks and gates below bind you only while you run the operation. An entry written by hand without them is not deficient for lacking them.
 
@@ -38,14 +38,16 @@ Write one entry in the shape the file states.
 3. **Kind.** Set it by the file's own definition and write the reason beside it: for a change, which delta it owes, which decision it needs, or that it is too large.
 4. **Design with.** Search the existing entries for ones naming the same files, specifications or capabilities. Present each as a Design with candidate and say what they share. Write into Design with only the candidates the session or the operator confirms share a design, or `nothing`. A shared pointer is evidence of a shared design, not the same thing.
 5. **Waits on, Recorded by.** As the file describes them.
-6. **Re-checked.** Today's date.
+6. **Priority.** Where the file's shape names Priority, set it to the file's default, `normal` in the seeded file, unless the session or the operator states the evidence or the condition the file requires for another value. Propose `high` or `parked` with that evidence or condition, and write either only once the operator confirms it.
+7. **Re-checked.** Today's date.
 
 ## pick
 
 List what can be taken now. Pick is read-only: it writes nothing and opens no change.
 
-- **Takeable** — entries whose Waits on is `nothing`, split into `fix` and `change`. Entries that name each other in Design with are listed together, as one group.
-- **Takeable once updated** — entries whose Waits on names something already satisfied, such as a change that is now archived. List them apart and name what satisfied the wait, rather than hiding them as blocked.
+- **Takeable** — entries whose Waits on is `nothing`, split into `fix` and `change`. Entries that name each other in Design with are listed together, as one group. Where the file's shape names Priority, `high` entries come first, and a group is placed by its highest-priority member.
+- **Takeable once updated** — entries whose Waits on names something already satisfied, such as a change that is now archived, and parked entries whose condition already holds and whose wait is `nothing` or satisfied. List them apart and name what satisfied the wait or fulfilled the condition, rather than hiding them as blocked.
+- **Parked** — a parked entry is not takeable. List it apart, under Parked, with its condition, where its wait is `nothing` or already satisfied, naming any satisfied wait beside it. Waits on governs first: a parked entry still waiting on something unsatisfied is blocked, and is not listed anywhere.
 - **Unclassified** — entries in an older shape (see below).
 
 Given paths, narrow every list to entries that name one of them.
@@ -59,7 +61,7 @@ Delete the entry you are given. In the same edit, update every other entry that 
 Given a change, find the entries it completed, made obsolete, unblocked or made stale, and update each as the file directs.
 
 1. **What the change touched.** Read it from the change's merged pull requests on the forge, every one of them, since a change takes at least two: `gh pr list --state merged --head <branch> --json number`, then `gh pr view <number> --json files` for each. Where the forge cannot be reached, fall back to the change's specification deltas and the files its design and tasks name, and say that the fallback was used. Do not use the branch's diff against the trunk: by the archive step the branch has been brought back to the trunk, and a squash merge leaves no ancestry, so that diff holds the record alone.
-2. **Which entries.** Those naming the change; those whose Waits on it satisfies; those naming a file, specification or capability it touched. The last group is the one a search by name misses, because a change that finishes an entry's work seldom names the entry.
+2. **Which entries.** Those naming the change; those whose Waits on it satisfies; where the file's shape names Priority, parked entries whose condition it fulfilled and `high` entries whose evidence it removed, each with its Priority proposed as the file directs; those naming a file, specification or capability it touched. The last group is the one a search by name misses, because a change that finishes an entry's work seldom names the entry.
 3. **Present, then edit.** Show each entry with what the change did to it. Make the edits once the session or the operator agrees.
 4. **Where the edit goes.** Run before the archive commit, leave the edit for that commit. Run after the change's record is already on the trunk, make the same edit and say that it is to be delivered as work too small to be a change.
 
@@ -75,7 +77,7 @@ A full check of every entry against the repository. It fans out to parallel read
 
 ## Entries in an older shape
 
-A backlog written before the shape gained its fields is never rewritten by `project-init`, so its entries may carry Depends on and no Kind, Waits on, Design with or Re-checked. Where a missing field decides an operation's outcome, report the entry as unclassified, never as a fix or a change, and never omit it. Do not invent the field's value. Rewrite an entry into the current shape only when the operator asks.
+A backlog written before the shape gained its fields is never rewritten by `project-init`, so its entries may carry Depends on and no Kind, Waits on, Design with or Re-checked. Where a missing field decides an operation's outcome, report the entry as unclassified, never as a fix or a change, and never omit it. Do not invent the field's value. A field the file itself gives a default for is not missing: read the entry as that default, as the seeded file does for Priority, and do not report it as unclassified. Rewrite an entry into the current shape only when the operator asks.
 
 ## Trigger check fixtures
 

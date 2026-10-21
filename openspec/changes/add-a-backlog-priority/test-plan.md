@@ -136,6 +136,8 @@ Every case below fails at authoring because the property it reads is absent from
 
 Each entry is a **candidate for human confirmation**, not a conclusion. Nothing was edited or deleted.
 
+**Resolution at apply:** entry 1 confirmed obsolete. Its two assertions were updated to the revised statement `unblocked, unparked or made stale`; what they assert is otherwise unchanged (the archive-time update, and that it sets Re-checked in the same statement).
+
 1. **`backlog-seeded-structured-statements.sh`** — two assertions: `assert_contains "$backlog" "unblocked or made stale"` and the check that the line matching `unblocked or made stale` also carries `Re-checked`.
    - Superseded by: project-bootstrap, MODIFIED *A backlog is seeded where none exists* — the statement "the entries it unblocked or made stale are updated" becomes "the entries it unblocked, unparked or made stale are updated" (`design.md` decision 5's archive sentence).
    - Evidence: the revised wording does not contain the substring `unblocked or made stale`, so both assertions fail once task 1.1 lands. The rest of that case (thirteen other statements) is unaffected and still bears on scenario 1. The replacement assertions are in `backlog-seeded-priority-statements.sh` and `backlog-seeded-priority-transitions.sh`.
@@ -163,7 +165,7 @@ The dispatch named `tests/lib.sh` and `tests/cases/lib/` (`static-scan.sh`, `lin
    - Near-miss: `static-scan.sh`'s `scan_heading_section` reads a section under a heading, not a line inside a fence; `tests/lib.sh`'s `assert_contains` reads the whole file. Neither isolates a fenced line.
    - Found in a test module: the same extraction for `**Kind**` in `backlog-seeded-kind-definition.sh`, and the fenced-block extraction in `backlog-seeded-structured-fields.sh` (not imported; declared locally).
    - Proposed home: `tests/lib.sh`, as a `fenced_field_line FILE LABEL` helper.
-   - Disposition: _(apply records promoted / kept and why)_
+   - Disposition: **Kept** local. This repository's `AGENTS.md` records no shared test arrangement, so creating or extending one is a testing-strategy decision, not a step of this change; `docs/backlog.md`'s `record-this-repositorys-shared-test-arrangement` owns it. Every existing `backlog-seeded-*` case declares the same extraction locally.
 
 2. **`fenced_line` function** — declared in `backlog-seeded-priority-field.sh`.
    - Stands in for: the line number of a labelled field line in the fenced entry shape, to order Priority before Kind.
@@ -171,7 +173,7 @@ The dispatch named `tests/lib.sh` and `tests/cases/lib/` (`static-scan.sh`, `lin
    - Near-miss: none in the shared arrangement.
    - Found in a test module: no.
    - Proposed home: `tests/lib.sh`, beside entry 1 (the same helper with a line-number mode).
-   - Disposition: _(apply records)_
+   - Disposition: **Kept** local. This repository's `AGENTS.md` records no shared test arrangement, so creating or extending one is a testing-strategy decision, not a step of this change; `docs/backlog.md`'s `record-this-repositorys-shared-test-arrangement` owns it. Every existing `backlog-seeded-*` case declares the same extraction locally.
 
 3. **Run-the-tool prelude** — inline in all five `backlog-seeded-priority-*.sh`: make `$TESTDIR/work`, `cd` into it, run `$PROJECT_INIT`, assert exit 0 and that `docs/backlog.md` exists.
    - Stands in for: a freshly seeded backlog to read.
@@ -179,7 +181,7 @@ The dispatch named `tests/lib.sh` and `tests/cases/lib/` (`static-scan.sh`, `lin
    - Near-miss: `tests/lib.sh` supplies the assertions but no seeding helper.
    - Found in a test module: the same prelude in every existing `backlog-seeded-*.sh`.
    - Proposed home: `tests/lib.sh`, as a `seeded_backlog` helper printing the path.
-   - Disposition: _(apply records)_
+   - Disposition: **Kept** local, for the same reason as entry 1: no shared arrangement is recorded in this repository's conventions, and every existing `backlog-seeded-*` case declares the same prelude itself.
 
 4. **Low-value regex and its specimen discriminator** — `low_re` and two specimen lines in `backlog-seeded-priority-no-low.sh`.
    - Stands in for: a word-bounded check that a line offers `low`.
@@ -187,7 +189,7 @@ The dispatch named `tests/lib.sh` and `tests/cases/lib/` (`static-scan.sh`, `lin
    - Near-miss: `static-scan.sh`'s forbid scan with a specimen does the same for a file or section, not for a line extracted from a tool's output.
    - Found in a test module: no.
    - Proposed home: none to propose — specific to this one case.
-   - Disposition: _(apply records)_
+   - Disposition: **Kept** local: specific to its case, and no shared arrangement is recorded in this repository's conventions.
 
 5. **Conforming fixture trees** — the heredoc `SKILL.md` and `references/audit.md` in `backlog-skill-record-priority.sh`, `backlog-skill-pick-priority.sh`, `backlog-skill-sweep-priority.sh`, `backlog-skill-audit-priority.sh`, `backlog-skill-older-shape-priority-default.sh`, `backlog-skill-priority-not-restated.sh`.
    - Stands in for: the material `scan_discriminate` mutates.
@@ -195,4 +197,4 @@ The dispatch named `tests/lib.sh` and `tests/cases/lib/` (`static-scan.sh`, `lin
    - Near-miss: none; `static-scan.sh` expects each case to supply its own.
    - Found in a test module: the pattern is every existing `backlog-skill-*.sh`; no fixture was copied.
    - Proposed home: none to propose — each fixture is shaped to its own scans.
-   - Disposition: _(apply records)_
+   - Disposition: **Kept** local: specific to its case, and no shared arrangement is recorded in this repository's conventions.
