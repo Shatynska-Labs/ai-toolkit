@@ -239,3 +239,10 @@ From the requirement's definition of a shadowing file rather than a scenario: `s
 - **Record's fold-in test** — `backlog-skill-record-fold-in.sh`.
 - Each fragment case finds its paragraph through `tests/cases/lib/line-scan.sh`, and is checked against a conforming fixture and one mutant per scan.
 - **Uncovered** — *A blocking dependency survives the session ending*, *A handoff is not left uncommitted on a branch the session leaves* and *A deferral outlives the change that recorded it*, carried over verbatim; their accounting is unchanged.
+
+## add-a-backlog-priority (31 delta scenarios)
+
+`add-a-backlog-priority` modifies *A backlog is seeded where none exists* in `project-bootstrap` (8 scenarios) and *Record writes an entry the file can be relied on for*, *Pick lists what can be taken now*, *Sweep performs the archive step's re-read*, *Audit verifies every entry independently and changes nothing without the operator* and *Entries in an older shape are reported, not rewritten* in `backlog-maintenance` (23). Its cases were derived by `ai-toolkit:change-test-writer`; the per-scenario accounting, and which assertions are derived rather than specified, are in the change's `test-plan.md`. 14 scenarios are reached by the new cases, the skill's in part, since each reads the stated text rather than a session's conduct; 17 carried over unchanged keep their existing cases; none is uncovered.
+
+- **Seeded Priority** — `backlog-seeded-priority-statements.sh`, `backlog-seeded-priority-field.sh`, `backlog-seeded-priority-values.sh`, `backlog-seeded-priority-no-low.sh`, `backlog-seeded-priority-transitions.sh`. `backlog-seeded-structured-statements.sh` now asserts the revised archive statement, `unblocked, unparked or made stale`.
+- **The skill** — `backlog-skill-record-priority.sh`, `backlog-skill-pick-priority.sh`, `backlog-skill-sweep-priority.sh`, `backlog-skill-audit-priority.sh`, `backlog-skill-older-shape-priority-default.sh`, and `backlog-skill-priority-not-restated.sh`, which forbids the skill restating the file's Priority rule and traces to `design.md` rather than to a scenario.

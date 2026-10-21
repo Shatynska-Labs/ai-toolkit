@@ -52,8 +52,8 @@ assert_contains "$backlog" "step-by-step plans" \
   "brevity: without step-by-step plans"
 assert_contains "$backlog" "when a change makes it obsolete" \
   "deletion: when a change makes it obsolete"
-assert_contains "$backlog" "unblocked or made stale" \
-  "archive-time update: entries unblocked or made stale are updated"
+assert_contains "$backlog" "unblocked, unparked or made stale" \
+  "archive-time update: entries unblocked, unparked or made stale are updated"
 assert_contains "$backlog" "something that can be checked" \
   "Waits on: something that can be checked"
 assert_contains "$backlog" "a person's answer" \
@@ -63,8 +63,8 @@ assert_contains "$backlog" "share a design" \
 assert_contains "$backlog" "last verified against the repository" \
   "Re-checked: the date last verified against the repository"
 
-if ! grep -E 'unblocked or made stale' "$backlog" | grep -q 'Re-checked'; then
+if ! grep -E 'unblocked, unparked or made stale' "$backlog" | grep -q 'Re-checked'; then
   echo "FAIL: the archive-time update does not set the Re-checked date in the same statement" >&2
-  grep -n 'unblocked or made stale' "$backlog" >&2
+  grep -n 'unblocked, unparked or made stale' "$backlog" >&2
   exit 1
 fi
