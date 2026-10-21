@@ -513,16 +513,18 @@ The created file SHALL state, as prose a session reads before adding an entry:
 
 - that it lists changes the project has identified and not yet archived, each recorded instead of being folded into the change that found it;
 - that an entry's heading is the change's kebab-case name — the name its branch and change directory are expected to take, which the session that opens the change may revise if the work turns out different — and that an entry is referred to only by that name, a fix taking it as its branch's name only;
-- that the order of entries carries no meaning, and that an entry states in its own fields what it waits on and which entries share a design with it;
+- that the order of entries carries no meaning, and that an entry states in its own fields what it waits on, how urgent it is, and which entries share a design with it;
 - that an entry is kept short: what is needed and why, with files, specifications and changes named as pointers, and without line numbers, census tables or step-by-step plans;
 - that an entry is deleted when its change is archived, when the operator takes it as a fix rather than a change, when a change makes it obsolete, or when the operator decides the change will not be made;
-- that when a change is archived, the entries it unblocked or made stale are updated and their re-checked date set;
+- that when a change is archived, the entries it unblocked, unparked or made stale are updated and their re-checked date set;
 - that the file is kept when it has no entries;
-- the shape of an entry: its heading; what the change is and why, written for a session that has not seen the work that found it; its **Kind**, `fix` or `change`, with the reason; what it **Waits on**, as `nothing` or as something that can be checked — a change by name, a person's answer, an event; which entries it is to be **designed with**, or nothing; what **recorded** it and why it was not done there; and the date it was last **re-checked** against the repository.
+- the shape of an entry: its heading; what the change is and why, written for a session that has not seen the work that found it; its **Priority**, `high`, `normal` or `parked until` a condition that can be checked, with the reason, that a parked entry is not folded into another change before its condition holds, that a parked entry whose condition holds becomes `normal`, or `high` with evidence, that a `high` entry whose evidence no longer holds becomes `normal`, and that an entry without the field is `normal`; its **Kind**, `fix` or `change`, with the reason; what it **Waits on**, as `nothing` or as something that can be checked — a change by name, a person's answer, an event; which entries it is to be **designed with**, or nothing; what **recorded** it and why it was not done there; and the date it was last **re-checked** against the repository.
 
 **Kind is `fix` only where the entry owes no specification delta, needs no decision from the operator, and is small enough to review in one sitting**; otherwise it is `change`. The size condition is the workflow's own: a fix is work too small to be a change, which skips `plan`, so an entry too large for one sitting is not one whatever it owes. The reason is stated because the label alone cannot be checked, and an entry's kind is the first thing a session picking work reads.
 
 **Waits on replaces a list of changes that must land first.** An entry that should precede another says so from the waiting side: the later entry names it in Waits on. The earlier shape also let an entry state what it should precede; that direction is dropped, because a constraint stated on both sides is two statements that drift, and Waits on is the side the pick and the archive re-read read.
+
+**Priority is `high` only with evidence of harm happening now** — an incident, a measurement, an observation — and **`parked` only with a condition that can be checked**, under which the entry becomes worth taking. Both are stated so that a later reading can tell whether they still hold, which a bare label cannot show. There is no `low`: an entry not worth taking with no condition under which it would be is one the operator has decided will not be made, which is already a deletion ground. Parked is not a wait: a waiting entry cannot be taken, a parked one can and is deliberately deferred, and an entry may be both. An entry without the field is `normal`, stated in the file so that a backlog written before the field existed needs no edit.
 
 A blocked entry waits on more than changes — an answer, an access grant, a production event — and a trigger stated as something checkable is the one that can be noticed when it fires.
 
@@ -554,12 +556,27 @@ The file is kept when empty because the tool created it: deleting it would leave
 #### Scenario: The seeded entry shape carries the structured fields
 
 - **WHEN** the seeded file is created
-- **THEN** its entry shape names Kind, Waits on, Design with, Recorded by and Re-checked, and does not name Depends on
+- **THEN** its entry shape names Priority, Kind, Waits on, Design with, Recorded by and Re-checked, and does not name Depends on
 
 #### Scenario: A fix is distinguished from a change by what it owes
 
 - **WHEN** a session reads the seeded file to record an entry that owes a specification delta
 - **THEN** the file's definition of Kind leaves only `change` available to it, because `fix` is stated as owing no delta, needing no decision and fitting one review sitting
+
+#### Scenario: Priority's values and default are stated
+
+- **WHEN** the seeded file is created
+- **THEN** its entry shape states Priority's three values `high`, `normal` and `parked until`, that `high` needs evidence of harm happening now, that `parked` needs a condition that can be checked, and that an entry without the field is `normal`
+
+#### Scenario: The seeded file offers no low priority
+
+- **WHEN** a session reads the seeded file to record an entry it judges not worth taking
+- **THEN** the file offers no `low` value, so the entry is either parked with a condition or not recorded
+
+#### Scenario: The seeded file states how an entry leaves parked and high
+
+- **WHEN** a session reads the seeded file at the archive of a change that fulfilled a parked entry's condition, or removed a `high` entry's evidence
+- **THEN** the file directs that entry to `normal`, or to `high` with evidence for the parked one, and names unparked entries among those the archive updates
 
 ### Requirement: A wrapper offers the direct initial commit only to a repository without one, and shows what it holds
 
