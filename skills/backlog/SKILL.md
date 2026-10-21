@@ -58,7 +58,7 @@ Delete the entry you are given. In the same edit, update every other entry that 
 
 ## sweep
 
-Given a change, find the entries it completed, made obsolete, unblocked or made stale, and update each as the file directs.
+Given a change, find the entries it completed, made obsolete, unblocked, unparked or made stale, and update each as the file directs.
 
 1. **What the change touched.** Read it from the change's merged pull requests on the forge, every one of them, since a change takes at least two: `gh pr list --state merged --head <branch> --json number`, then `gh pr view <number> --json files` for each. Where the forge cannot be reached, fall back to the change's specification deltas and the files its design and tasks name, and say that the fallback was used. Do not use the branch's diff against the trunk: by the archive step the branch has been brought back to the trunk, and a squash merge leaves no ancestry, so that diff holds the record alone.
 2. **Which entries.** Those naming the change; those whose Waits on it satisfies; where the file's shape names Priority, parked entries whose condition it fulfilled and `high` entries whose evidence it removed, each with its Priority proposed as the file directs; those naming a file, specification or capability it touched. The last group is the one a search by name misses, because a change that finishes an entry's work seldom names the entry.
