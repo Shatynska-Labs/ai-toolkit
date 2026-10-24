@@ -211,20 +211,23 @@ The dispatch names `tests/lib.sh` and `tests/cases/lib/` (`static-scan.sh`, `lin
    - *Near-miss:* `tests/cases/lib/line-scan.sh`. Its scans are per-pattern; it cannot express an ordered conjunction (steps, then proposal, then backlog, then none). Its rule that a require regex must not overlap a selector also rules out selecting by the same words the order is read from.
    - *Found in test module:* the same `check` and `expect` pattern appears in `tests/cases/workflow-fragment-archive-reread-names-no-field.sh`.
    - *Proposed home:* a small `fixture_expect` helper in `tests/cases/lib/`.
+   - **Disposition: kept local.** The two `check`/`expect` copies in this change, and the earlier one in `workflow-fragment-archive-reread-names-no-field.sh`, each carry a different `check`: an ordered conjunction, an exclusion selector, a label scan. Only the three-outcome `expect` wrapper is shared, and it is a handful of lines. A shared helper would have to fix a contract for what a check returns, which none of the three needs, and it could not absorb the parts that differ. Extending `line-scan.sh` with negative selectors would widen a shared scanner for one case. Keeping them local costs three small copies of a wrapper that has nothing to drift against.
 2. **`check` and `expect` in `tests/cases/workflow-fragment-backlog-routing-names-no-workstream.sh`.**
    - *Stands in for:* the same harness, with an exclusion selector (lines naming `docs/backlog.md` and `record` but not `re-read`).
    - *Used by:* `tests/cases/workflow-fragment-backlog-routing-names-no-workstream.sh`.
    - *Near-miss:* `tests/cases/lib/line-scan.sh` and `static-scan.sh`. Their selectors are positive only, so they cannot exclude the archive re-read paragraph.
    - *Found in test module:* `tests/cases/workflow-fragment-archive-reread-names-no-field.sh` (same pattern).
    - *Proposed home:* as entry 1, with negative selectors added to `line-scan.sh` as an alternative.
+   - **Disposition: kept local**, for entry 1's reason.
 3. **`fenced_line` in `tests/cases/backlog-seeded-workstream-field.sh`.**
    - *Stands in for:* "line number of the fenced `**<label>**` line in a markdown file".
    - *Used by:* `tests/cases/backlog-seeded-workstream-field.sh`.
    - *Near-miss:* none in the shared arrangement.
    - *Found in test module:* an identical `fenced_line` in `tests/cases/backlog-seeded-priority-field.sh`.
    - *Proposed home:* `tests/lib.sh`.
+   - **Disposition: promoted.** `fenced_line` was added to `tests/lib.sh` unchanged and listed in `tests/README.md`. `backlog-seeded-workstream-field.sh` now takes it from there, with its local declaration removed and its assertions unchanged. `backlog-seeded-priority-field.sh` belongs to an earlier change and keeps its own identical copy, which shadows the shared one. Moving it is outside this change's derived tests.
 
-Not declared as functions but repeated inline, and worth the same promotion decision: the awk fence extractor `'/^[[:space:]]*(```|~~~)/ { infence = !infence; next } infence { print }'`. It is used in `workstreams-seeded-no-status-field`, `backlog-seeded-workstream-default` and `workstreams-seeded-new-project` (the out-of-fence variant). It appears the same way in `backlog-seeded-structured-fields`, `backlog-seeded-new-project` and `backlog-seeded-priority-statements`.
+Not declared as functions but repeated inline, and worth the same promotion decision (**disposition: kept inline**: one awk expression, spelled identically in every case, with variants that differ by fence sense, so a helper would add an indirection without removing a drift risk): the awk fence extractor `'/^[[:space:]]*(```|~~~)/ { infence = !infence; next } infence { print }'`. It is used in `workstreams-seeded-no-status-field`, `backlog-seeded-workstream-default` and `workstreams-seeded-new-project` (the out-of-fence variant). It appears the same way in `backlog-seeded-structured-fields`, `backlog-seeded-new-project` and `backlog-seeded-priority-statements`.
 
 ## Findings from the artifacts
 

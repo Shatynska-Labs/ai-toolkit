@@ -10,18 +10,18 @@
 
 ## 3. Backlog skill
 
-- [ ] 3.1 In `skills/backlog/SKILL.md`, add Workstream to *Before any operation*'s fields and the workstream register to what it reads, state that workstream rules are read from the README, and extend **record**, **pick**, **close** and **sweep** as decision 11 states, each step gated by what it reads (decision 11's last paragraph). Verify with the derived skill cases
-- [ ] 3.2 Add the **workstreams** operation to `skills/backlog/SKILL.md` (decision 11), read-only, naming the statuses and taking their precedence and sources from the README rather than restating them, the Waits-on-aware **next**, and unplaced entries and open changes, and update the description to six operations with the workstream phrasings, keeping the trigger fixtures routing as before plus one positive fixture for a workstream status phrasing. Verify the trigger check and the derived cases
-- [ ] 3.3 In `skills/backlog/references/audit.md`, add the open-workstream check to the brief and report an entry naming an archived or absent workstream under *Stale facts*. Verify with the derived audit cases
+- [x] 3.1 In `skills/backlog/SKILL.md`, add Workstream to *Before any operation*'s fields and the workstream register to what it reads, state that workstream rules are read from the README, and extend **record**, **pick**, **close** and **sweep** as decision 11 states, each step gated by what it reads (decision 11's last paragraph). Verify with the derived skill cases
+- [x] 3.2 Add the **workstreams** operation to `skills/backlog/SKILL.md` (decision 11), read-only, naming the statuses and taking their precedence and sources from the README rather than restating them, the Waits-on-aware **next**, and unplaced entries and open changes, and update the description to six operations with the workstream phrasings, keeping the trigger fixtures routing as before plus one positive fixture for a workstream status phrasing. Verify the trigger check and the derived cases
+- [x] 3.3 In `skills/backlog/references/audit.md`, add the open-workstream check to the brief and report an entry naming an archived or absent workstream under *Stale facts*. Verify with the derived audit cases
 
 ## 4. Records
 
-- [ ] 4.1 Account for the new and modified scenarios in `tests/coverage.md`
+- [x] 4.1 Account for the new and modified scenarios in `tests/coverage.md`
 
 ## 5. Verify
 
 The new test cases come from the derived-tests step (`change-test-writer`, `test-plan.md`), not from these tasks.
 
-- [ ] 5.1 `bash tests/run.sh` passes
-- [ ] 5.2 `shellcheck scripts/project-init tests/*.sh tests/cases/*.sh tests/cases/lib/*.sh` is clean
-- [ ] 5.3 `openspec validate add-workstreams --strict` passes
+- [x] 5.1 `bash tests/run.sh` passes
+- [x] 5.2 `shellcheck scripts/project-init tests/*.sh tests/cases/*.sh tests/cases/lib/*.sh` is clean
+- [x] 5.3 `openspec validate add-workstreams --strict` passes

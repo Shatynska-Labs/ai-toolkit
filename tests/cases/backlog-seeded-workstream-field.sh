@@ -25,13 +25,6 @@ assert_exit 0 "$?"
 backlog="$work/docs/backlog.md"
 assert_file "$backlog" "the seeded file this case reads"
 
-fenced_line() {
-  awk -v label="$2" '
-    /^[[:space:]]*(```|~~~)/ { infence = !infence; next }
-    infence && index($0, "**" label "**") == 1 { print NR; exit }
-  ' "$1"
-}
-
 w="$(fenced_line "$backlog" Workstream)"
 d="$(fenced_line "$backlog" "Design with")"
 rb="$(fenced_line "$backlog" "Recorded by")"
