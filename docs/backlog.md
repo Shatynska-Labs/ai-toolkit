@@ -292,7 +292,7 @@ A change's branch outlives its merged pull requests on the forge: `rules/develop
 
 **Priority**: `normal`.
 
-**Kind**: `change`, and why. It owes a `session-workflow` delta, or a fragment edit and version increment, and the choice between them is the operator's.
+**Kind**: `change`. It owes a `session-workflow` delta, or a fragment edit and version increment, and the choice between them is the operator's.
 
 **Waits on**: `add-workstreams`, which rewrites the same row (adding a leading workstream cell) and keeps this disagreement as it found it.
 

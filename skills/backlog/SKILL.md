@@ -12,7 +12,7 @@ description: >
   requests touched), audit (parallel read-only agents, applied only on the
   operator's word) and workstreams (each open workstream's steps and their
   status, read from the repository). It reads entry and workstream rules
-  from the files themselves. Not for seeding the
+  from the files themselves. Not for seeding either
   file (project-init), nor for opening, proposing or implementing the
   change an entry names (openspec-new-change, openspec-propose,
   openspec-apply-change).
@@ -22,7 +22,7 @@ metadata:
 
 # backlog
 
-Six operations over `docs/backlog.md` and `docs/workstreams/` in the project this skill is invoked in. The backlog's own preamble states how an entry is named, shaped, kept and deleted; `docs/workstreams/README.md` states how a workstream is named, shaped, kept and archived and how a step's status is read; and the project's workflow rules state when each is written and re-read. This skill states none of them. It is how to carry them out, and a session that never loads it still owes everything those two documents say.
+Six operations over `docs/backlog.md` and `docs/workstreams/` in the project this skill is invoked in. The backlog's own preamble states how an entry is named, shaped, kept and deleted; `docs/workstreams/README.md` states how a workstream is named, shaped, kept and archived and how a step's status is read; and the project's workflow rules state when each is written and re-read. This skill states none of them. It is how to carry them out, and a session that never loads it still owes everything those documents say.
 
 ## Before any operation
 
@@ -69,7 +69,7 @@ Delete the entry you are given. In the same edit, update every other entry that 
 Given a change, find the entries it completed, made obsolete, unblocked, unparked or made stale, and update each as the file directs.
 
 1. **What the change touched.** Read it from the change's merged pull requests on the forge, every one of them, since a change takes at least two: `gh pr list --state merged --head <branch> --json number`, then `gh pr view <number> --json files` for each. Where the forge cannot be reached, fall back to the change's specification deltas and the files its design and tasks name, and say that the fallback was used. Do not use the branch's diff against the trunk: by the archive step the branch has been brought back to the trunk, and a squash merge leaves no ancestry, so that diff holds the record alone.
-2. **Which entries.** Those naming the change; those whose Waits on it satisfies; where the file's shape names Priority, parked entries whose condition it fulfilled and `high` entries whose evidence it removed, each with its Priority proposed as the file directs; those naming a file, specification or capability it touched; and, where the change's archive archives its workstream, those naming that workstream, to be re-pointed or set to `nothing` as `docs/workstreams/README.md` directs. The last group is the one a search by name misses, because a change that finishes an entry's work seldom names the entry.
+2. **Which entries.** Those naming the change; those whose Waits on it satisfies; where the file's shape names Priority, parked entries whose condition it fulfilled and `high` entries whose evidence it removed, each with its Priority proposed as the file directs; those naming a file, specification or capability it touched; and, where the change's archive archives its workstream, those naming that workstream, to be re-pointed or set to `nothing` as `docs/workstreams/README.md` directs. The group naming files, specifications or capabilities is the one a search by name misses, because a change that finishes an entry's work seldom names the entry.
 3. **Present, then edit.** Show each entry with what the change did to it. Make the edits once the session or the operator agrees.
 4. **Where the edit goes.** Run before the archive commit, leave the edit for that commit. Run after the change's record is already on the trunk, make the same edit and say that it is to be delivered as work too small to be a change.
 
