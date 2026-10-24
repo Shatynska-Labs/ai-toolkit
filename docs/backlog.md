@@ -294,7 +294,7 @@ A change's branch outlives its merged pull requests on the forge: `rules/develop
 
 **Kind**: `change`. It owes a `session-workflow` delta, or a fragment edit and version increment, and the choice between them is the operator's.
 
-**Waits on**: `add-workstreams`, which rewrites the same row (adding a leading workstream cell) and keeps this disagreement as it found it.
+**Waits on**: `nothing`. `add-workstreams`, archived 2026-10-24, gave the row its leading workstream cell and kept this disagreement as it found it.
 
 **Design with**: `nothing`.
 
