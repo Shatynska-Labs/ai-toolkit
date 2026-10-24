@@ -36,6 +36,7 @@ repository: created | already present
 specification tooling: created via `openspec init --tools <value>` | already present
 ignore file: created | already present
 backlog: created | already present
+workstreams: created | already present
 conventions file: created with block (version N)
            | block appended (version N)
            | block already present (version N, matches)

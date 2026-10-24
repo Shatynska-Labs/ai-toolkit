@@ -1,12 +1,12 @@
 ## 1. Seeded files
 
-- [ ] 1.1 In `scripts/project-init`'s seeded backlog, add the **Workstream** line after **Design with** with the text in `design.md` decision 9. Verify with the derived seeded-backlog cases and `tests/cases/backlog-seeded-structured-fields.sh`
-- [ ] 1.2 In `scripts/project-init`, seed `docs/workstreams/README.md` with the text in decision 8 as a concern of its own, reported `workstreams: created` / `workstreams: already present`, with the backlog's presence rule (any path type, a dangling link included) and its error path on a failed write, creating no `archive/`, and add the `workstreams:` line directly after `backlog:` to `tests/README.md`'s report contract. Verify with the derived workstream-register cases, including repeated execution and a partial run
-- [ ] 1.3 Apply 1.1 to this repository's `docs/backlog.md` preamble and add this repository's `docs/workstreams/README.md` with the seeded text. Verify by diffing each against the seeded text
+- [x] 1.1 In `scripts/project-init`'s seeded backlog, add the **Workstream** line after **Design with** with the text in `design.md` decision 9. Verify with the derived seeded-backlog cases and `tests/cases/backlog-seeded-structured-fields.sh`
+- [x] 1.2 In `scripts/project-init`, seed `docs/workstreams/README.md` with the text in decision 8 as a concern of its own, reported `workstreams: created` / `workstreams: already present`, with the backlog's presence rule (any path type, a dangling link included) and its error path on a failed write, creating no `archive/`, and add the `workstreams:` line directly after `backlog:` to `tests/README.md`'s report contract. Verify with the derived workstream-register cases, including repeated execution and a partial run
+- [x] 1.3 Apply 1.1 to this repository's `docs/backlog.md` preamble and add this repository's `docs/workstreams/README.md` with the seeded text. Verify by diffing each against the seeded text
 
 ## 2. Workflow fragment
 
-- [ ] 2.1 In `rules/development-workflow.md`, make decision 10's two insertions (draft, archive) and decision 13's status row, its cell-source sentence and example, and bump `version` to 11. Verify with the derived fragment cases and that the existing fragment cases (fixed paths, names no entry field, rules not restated) still pass
+- [x] 2.1 In `rules/development-workflow.md`, make decision 10's two insertions (draft, archive) and decision 13's status row, its cell-source sentence and example, and bump `version` to 11. Verify with the derived fragment cases and that the existing fragment cases (fixed paths, names no entry field, rules not restated) still pass
 
 ## 3. Backlog skill
 

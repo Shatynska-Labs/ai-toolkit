@@ -25,6 +25,8 @@ What the change is and why it is needed, written for a session that has not seen
 
 **Design with**: the entries that share a design with this one, by name, or `nothing`.
 
+**Workstream**: the workstream this entry is a step of or serves, by name, or `nothing`. An entry recorded by a change in a workstream takes that workstream unless it serves another goal. An entry without this field is `nothing`.
+
 **Recorded by**: the change that identified it, and why it was not done there.
 
 **Re-checked**: the date the entry was last verified against the repository.
