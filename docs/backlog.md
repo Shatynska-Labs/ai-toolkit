@@ -25,6 +25,8 @@ What the change is and why it is needed, written for a session that has not seen
 
 **Design with**: the entries that share a design with this one, by name, or `nothing`.
 
+**Workstream**: the workstream this entry is a step of or serves, by name, or `nothing`. An entry recorded by a change in a workstream takes that workstream unless it serves another goal. An entry without this field is `nothing`.
+
 **Recorded by**: the change that identified it, and why it was not done there.
 
 **Re-checked**: the date the entry was last verified against the repository.
@@ -283,3 +285,19 @@ A change's branch outlives its merged pull requests on the forge: `rules/develop
 **Recorded by**: the operator, after Basis's `add-identity-authentication` archive left other changes' merged branches on GitHub; it is this repository's work, not Basis's.
 
 **Re-checked**: 2026-10-21
+
+## `reconcile-the-status-row-verification-cell`
+
+`session-workflow`'s *A session reports where its change stands before acting* requires the entering report to carry one further cell, the verification result, beyond the change, stage, task progress and committed state. `rules/development-workflow.md`'s row template and its example carry no such cell, so a session following the fragment prints a row the requirement calls incomplete. Decide which side is right, and bring the requirement or the fragment's row into line with it.
+
+**Priority**: `normal`.
+
+**Kind**: `change`. It owes a `session-workflow` delta, or a fragment edit and version increment, and the choice between them is the operator's.
+
+**Waits on**: `add-workstreams`, which rewrites the same row (adding a leading workstream cell) and keeps this disagreement as it found it.
+
+**Design with**: `nothing`.
+
+**Recorded by**: `add-workstreams`, whose plan review found the disagreement (2026-10-24); widening the row twice in one change was kept out of its scope.
+
+**Re-checked**: 2026-10-24

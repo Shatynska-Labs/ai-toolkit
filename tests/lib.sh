@@ -71,3 +71,13 @@ fragment_version() {
   fi
   printf '%s\n' "$version"
 }
+
+# fenced_line <markdown-file> <label>
+# Prints the line number of the first line inside a fenced block that
+# begins with **<label>**, or nothing where none does.
+fenced_line() {
+  awk -v label="$2" '
+    /^[[:space:]]*(```|~~~)/ { infence = !infence; next }
+    infence && index($0, "**" label "**") == 1 { print NR; exit }
+  ' "$1"
+}

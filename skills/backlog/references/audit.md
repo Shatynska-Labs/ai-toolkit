@@ -25,6 +25,7 @@ Return, for each entry, by its heading name:
   - `obsolete`: done, or no longer needed. Name the change or pull request that did it, or what made it unnecessary;
   - `waiting`: blocked, and its trigger has not fired. Name the trigger and how you checked it. If the trigger *has* fired, say so: that entry is takeable, not waiting.
 - **Priority** — where the file's shape names Priority: for a `high` entry, whether the evidence it names still holds; for a `parked` one, whether its condition now holds, with the evidence either way. A parked entry whose condition holds is unparked; a `high` one whose evidence no longer holds is stale.
+- **Workstream** — where the file's shape names Workstream: whether the workstream the entry names is open, a file in `docs/workstreams/` and not under its `archive/`. An entry naming a workstream that is archived or absent is stale.
 - **Kind** — one of `fix`, `change` or `fix?`, with the reason: whether it owes a specification delta, whether it needs a decision from the operator, and whether it fits one review sitting. `fix?` is for an entry that owes no delta and no decision but whose size you cannot settle; say what makes it uncertain.
 - **Evidence** — the paths, commits, changes or pull requests each verdict rests on.
 - **Overlap** — any other entry in your range that describes the same change, or shares a design with this one.
@@ -37,7 +38,7 @@ The skill merges every agent's return into one report, in these sections, each l
 
 1. **Done or obsolete**: proposed for deletion.
 2. **Recorded twice**: pairs (or more) that are one change, as duplicates proposed to merge into one entry under one name. An agent sees only its own range, so the skill compares across ranges for this.
-3. **Stale facts**: each with its correction, among them each `high` entry whose evidence no longer holds, its Priority corrected as the file directs.
+3. **Stale facts**: each with its correction, among them each `high` entry whose evidence no longer holds, its Priority corrected as the file directs, and each entry naming a workstream that is archived or absent, proposed re-pointed to an open workstream or set to `nothing`.
 4. **Partly done**: each with what remains, proposed as a rewrite of the entry.
 5. **Now unblocked or unparked**: entries whose trigger fired, proposed with Waits on set to `nothing`, and parked entries whose condition now holds, with the evidence that it holds and their Priority proposed as the file directs.
 6. **Groups**: entries that share a design, proposed for Design with.

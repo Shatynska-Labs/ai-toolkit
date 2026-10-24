@@ -20,7 +20,7 @@ What this costs is real and worth stating: these three cases were written by who
 bash tests/run.sh
 ```
 
-Each file in `tests/cases/*.sh` runs as its own subprocess in a fresh `mktemp -d` temporary directory (`$TESTDIR`), so no case can observe another's filesystem state. `tests/lib.sh` supplies `assert_exit`, `assert_file`, `assert_file_absent`, `assert_unchanged`, and `assert_contains` — sourced via `$TESTLIB`, which `run.sh` exports. A failed assertion prints to stderr and exits the case non-zero immediately. `run.sh` itself exits non-zero if any case failed.
+Each file in `tests/cases/*.sh` runs as its own subprocess in a fresh `mktemp -d` temporary directory (`$TESTDIR`), so no case can observe another's filesystem state. `tests/lib.sh` supplies `assert_exit`, `assert_file`, `assert_file_absent`, `assert_unchanged`, `assert_contains`, and `fenced_line` (the line number of a fenced `**<label>**` line) — sourced via `$TESTLIB`, which `run.sh` exports. A failed assertion prints to stderr and exits the case non-zero immediately. `run.sh` itself exits non-zero if any case failed.
 
 ## The report contract
 
@@ -36,6 +36,7 @@ repository: created | already present
 specification tooling: created via `openspec init --tools <value>` | already present
 ignore file: created | already present
 backlog: created | already present
+workstreams: created | already present
 conventions file: created with block (version N)
            | block appended (version N)
            | block already present (version N, matches)
