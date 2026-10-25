@@ -1,7 +1,7 @@
 ---
 priority: normal
 kind: change
-waits_on: [one-file-per-backlog-entry]
+waits_on: []
 design_with: []
 workstream: see-the-backlog-across-projects
 recorded_by: one-file-per-backlog-entry
