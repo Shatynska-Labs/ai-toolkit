@@ -37,7 +37,7 @@ order_check() {
   local text fold head
   text="$(scan_heading_section "$1/$S" record 2>/dev/null | tr '[:upper:]' '[:lower:]')"
   fold="$(printf '%s\n' "$text" | grep -n -E 'fold' | head -n1 | cut -d: -f1)"
-  head="$(printf '%s\n' "$text" | grep -n -E 'heading' | head -n1 | cut -d: -f1)"
+  head="$(printf '%s\n' "$text" | grep -n -E 'entry files' | head -n1 | cut -d: -f1)"
   if [ -z "$fold" ] || [ -z "$head" ]; then return 2; fi
   [ "$fold" -lt "$head" ] || { echo "FAIL: [fold-test-first] record checks the name before it applies the fold-in test" >&2; return 1; }
 }
@@ -50,7 +50,7 @@ cat > "$fixture/$S" <<'FIXTURE'
 ## Record
 
 First, where the session is in a change, test the work against the fold-in rule the project's workflow states. Where it meets it, say the work can be folded in and write no entry.
-Check the name against the backlog's headings.
+Check the name against the backlog's entry files.
 
 ## Pick
 
@@ -65,7 +65,7 @@ cat > "$late/$S" <<'FIXTURE'
 
 ## Record
 
-Check the name against the backlog's headings.
+Check the name against the backlog's entry files.
 Then test the work against the fold-in rule the project's workflow states, and write no entry where it meets it.
 FIXTURE
 order_check "$late" 2>/dev/null; st=$?

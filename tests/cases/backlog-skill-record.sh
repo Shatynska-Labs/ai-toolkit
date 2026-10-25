@@ -22,7 +22,7 @@ source "$TESTLIB"
 source "$(dirname "${BASH_SOURCE[0]}")/lib/static-scan.sh"
 
 S=skills/backlog/SKILL.md
-scan require "$S" record name-vs-headings 'heading'
+scan require "$S" record name-vs-entry-files 'entry files'
 scan require "$S" record name-vs-archive 'archive'
 scan require "$S" record name-vs-branches 'branch'
 scan require "$S" record design-with-candidates 'design with'
@@ -36,7 +36,7 @@ cat > "$fixture/$S" <<'FIXTURE'
 
 ## Record
 
-Check the name against the backlog's headings.
+Check the name against the backlog's entry files.
 Check it against open and archived change directories.
 Check it against the project's branches.
 Present overlapping entries as Design with candidates.

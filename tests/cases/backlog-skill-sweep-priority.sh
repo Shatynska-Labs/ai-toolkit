@@ -27,7 +27,7 @@ scan require "$S" sweep parked-condition 'parked[^.]*condition|condition[^.]*par
 scan require "$S" sweep condition-fulfilled 'fulfil'
 scan require "$S" sweep high-evidence 'high[^a-z][^.]*evidence|evidence[^.]*[^a-z]high[^a-z]'
 scan require "$S" sweep evidence-removed 'remov'
-scan require "$S" sweep priority-as-file-directs 'priority[^.]*(file directs|as the file)|(file directs|as the file)[^.]*priority'
+scan require "$S" sweep priority-as-file-directs 'priority[^.]*(readme directs|as the readme)|(readme directs|as the readme)[^.]*priority'
 
 fixture="$TESTDIR/fixture"
 mkdir -p "$fixture/skills/backlog"
@@ -39,7 +39,7 @@ cat > "$fixture/$S" <<'FIXTURE'
 Find entries naming files the change touched.
 Find entries whose parked condition the change fulfils.
 Find entries whose `high` evidence the change takes away by removing the harm.
-Present each with its Priority proposed as the file directs.
+Present each with its Priority proposed as the README directs.
 
 ## Audit
 

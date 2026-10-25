@@ -19,5 +19,5 @@ assert_file "$fragment" "the fragment this case reads"
 
 assert_contains "$fragment" ".worktrees/" \
   "the working-tree location is a fixed path, so a requirement stated against it has a checkable subject"
-assert_contains "$fragment" "docs/backlog.md" \
+assert_contains "$fragment" "docs/backlog/" \
   "identified work is routed to the backlog at the path the specification fixes"

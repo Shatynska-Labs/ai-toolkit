@@ -51,7 +51,7 @@ assert_contains "$r" "freshly fetched trunk" "status read from the freshly fetch
 assert_contains "$r" "archived change of that name" "done: an archived change of the step's name"
 assert_contains "$r" "local or remote branch" "in flight: a local or remote branch"
 assert_contains "$r" "open pull request" "in flight: an open pull request"
-assert_contains "$r" "has an entry of that name" "recorded: a backlog entry of that name"
+assert_contains "$r" "holds an entry of that name" "recorded: a backlog entry of that name"
 assert_contains "$r" "planned otherwise" "planned otherwise"
 assert_contains "$r" "Edit the file only when the plan changes" "edited only when the plan changes"
 assert_contains "$r" "gates nothing" "step order gates nothing"
