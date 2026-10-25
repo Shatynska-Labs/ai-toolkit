@@ -13,10 +13,10 @@
 
 ## 3. Workflow fragment and skills
 
-- [ ] 3.1 In `rules/development-workflow.md`, name `docs/backlog/` wherever `docs/backlog.md` is named, say that its README states the entry rules, and bump `version` to 12 (decision 9). Verify with the derived fragment cases and that `inlined-body-matches-fragment.sh` passes
-- [ ] 3.2 Rewrite `skills/backlog/SKILL.md` for the directory: the single-file refusal, record writing one file with names and conditions apart, pick's unwaited and satisfied, close editing frontmatter, sweep, workstreams, and the narrowed *Entries in an older shape*; update the description to name `scripts/backlog-migrate` (decision 7). Verify with the derived skill cases and the trigger fixtures
-- [ ] 3.3 Update `skills/backlog/references/audit.md` for entry files, `waits_for` and unknown names. Verify by reading against the audit requirement
-- [ ] 3.4 Update `skills/project-init/SKILL.md` where it names the seeded `docs/backlog.md`. Verify by reading
+- [x] 3.1 In `rules/development-workflow.md`, name `docs/backlog/` wherever `docs/backlog.md` is named, say that its README states the entry rules, and bump `version` to 12 (decision 9). Verify with the derived fragment cases and that `inlined-body-matches-fragment.sh` passes
+- [x] 3.2 Rewrite `skills/backlog/SKILL.md` for the directory: the single-file refusal, record writing one file with names and conditions apart, pick's unwaited and satisfied, close editing frontmatter, sweep, workstreams, and the narrowed *Entries in an older shape*; update the description to name `scripts/backlog-migrate` (decision 7). Verify with the derived skill cases and the trigger fixtures
+- [x] 3.3 Update `skills/backlog/references/audit.md` for entry files, `waits_for` and unknown names. Verify by reading against the audit requirement
+- [x] 3.4 Update `skills/project-init/SKILL.md` where it names the seeded `docs/backlog.md`. Verify by reading
 
 ## 4. This repository
 
