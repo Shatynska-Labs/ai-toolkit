@@ -36,3 +36,9 @@
 - [x] 6.2 `shellcheck scripts/project-init scripts/backlog-migrate tests/*.sh tests/cases/*.sh tests/cases/lib/*.sh` is clean
 - [x] 6.3 `openspec validate one-file-per-backlog-entry --strict` passes
 - [x] 6.4 Correct the Purpose of `openspec/specs/backlog-maintenance/spec.md`, which names `docs/backlog.md` and which a delta cannot change, to name `docs/backlog/`. Verify by reading
+
+## 7. Ship
+
+- [x] 7.1 Merged as Shatynska-Labs/ai-toolkit#56 (commit `ccb04008`, 2026-10-25).
+- [x] 7.2 **Confirmed by the operator, 2026-10-25**, on three observations: `scripts/project-init` from the merged `main` seeds `docs/backlog/README.md` in an empty directory; commerce-ops was converted by `scripts/backlog-migrate` (94 entries, `SUCCESS`, merged as Fuperia-IT/commerce-ops#765); and the reinstalled `backlog` skill's `pick` read commerce-ops's `docs/backlog/` (7 fixes and 48 changes takeable, 12 parked, 28 waiting, none unclassified).
+- [x] 7.3 **Promote waived by the operator, 2026-10-25**: this repository is a library with no production deploy, so the change reaches consumers by its merge and the plugin's reinstall, not by a promotion.
