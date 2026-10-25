@@ -312,10 +312,74 @@ A workstream step taken as a fix leaves no archived change, and its backlog entr
 
 **Waits on**: `nothing`.
 
-**Design with**: `nothing`.
+**Design with**: `name-a-shared-step-once`.
 
-**Workstream**: `nothing`.
+**Workstream**: `complete-the-workstream-loop`.
 
 **Recorded by**: commerce-ops's `adopt-workstreams` plan review (2026-10-24), which found four fix steps in one of its workstreams. The rule is the library's, not that project's.
 
 **Re-checked**: 2026-10-24
+
+## `name-a-shared-step-once`
+
+A change can be a step of two open workstreams: in commerce-ops, `serve-a-subject-other-than-a-launch` is step 1 of both `purchase-order-process` and `unit-economics-beyond-the-launch`. The status row's workstream field reads "the open one whose steps name the change" (`rules/development-workflow.md`, *Reporting where the change stands*), which is singular, so the row is ambiguous for that change, and the archive re-read does not say which workstream places its entries. BMAD avoids it by giving a story exactly one epic. Decide the rule: the change is listed in one workstream and the other names it through a backlog entry's Waits on, or the row names every workstream listing it.
+
+**Kind**: `change`. It owes a `session-workflow` delta to the status row and the archive re-read, and a `project-bootstrap` delta to the seeded `docs/workstreams/README.md`. The choice is the operator's.
+
+**Waits on**: `nothing`.
+
+**Design with**: `count-a-fix-step-as-done`.
+
+**Workstream**: `complete-the-workstream-loop`.
+
+**Recorded by**: the operator, from a comparison of this workflow with BMAD-METHOD (2026-10-25), opening `complete-the-workstream-loop`.
+
+**Re-checked**: 2026-10-25
+
+## `observe-what-finishes-a-workstream`
+
+The seeded `docs/workstreams/README.md` asks Done when for "a condition that can be checked against the repository, the forge or production", and "every step is archived" satisfies it while proving only that the step list was worked through, not that the Goal holds; a step list missing a step meets it all the same. Three of commerce-ops's four open workstreams use that form; `purchase-order-process` shows the stronger one, a staging observation of the Goal. The README directs Done when to name an observable effect of the Goal, alongside the steps being archived where that is wanted.
+
+**Kind**: `change`. It owes a `project-bootstrap` delta to the seeded README.
+
+**Waits on**: `nothing`.
+
+**Design with**: `review-a-workstream-against-its-goal`, which checks it.
+
+**Workstream**: `complete-the-workstream-loop`.
+
+**Recorded by**: the operator, from a comparison of this workflow with BMAD-METHOD (2026-10-25), opening `complete-the-workstream-loop`.
+
+**Re-checked**: 2026-10-25
+
+## `review-a-workstream-against-its-goal`
+
+`change-plan-reviewer` reviews one change's artifacts; nothing reviews a workstream. Whether its steps together reach its Goal, agree with the document its Decisions names, and leave out what Not in scope says, is checked by no one when it is opened or when its steps change. BMAD's readiness check does this for its epics against the product requirements and architecture. Add the review and the point in `rules/development-workflow.md` at which it is dispatched, bounded like the plan review. Whether it is a second mode of `change-plan-reviewer` or an agent of its own is open.
+
+**Kind**: `change`. It owes a `change-review` delta, or a new capability for a new agent, and a `session-workflow` delta for when it runs; the choice between the two forms is the operator's.
+
+**Waits on**: `nothing`.
+
+**Design with**: `observe-what-finishes-a-workstream`.
+
+**Workstream**: `complete-the-workstream-loop`.
+
+**Recorded by**: the operator, from a comparison of this workflow with BMAD-METHOD (2026-10-25), opening `complete-the-workstream-loop`.
+
+**Re-checked**: 2026-10-25
+
+## `run-a-workstream-retrospective`
+
+Archiving a workstream moves its file and nothing more, so what the work taught is kept only where a session happens to remember it. BMAD runs a retrospective at the end of each epic. Add one to the workstream's archive: compare the plan with what happened — `git log -p` on the workstream file shows every plan edit, since the file holds no progress — and the cost of the gates across its changes (review rounds, failed gates, waivers); then route each lesson to a rule, a skill, a backlog entry or a memory, or to nowhere, rather than keeping a retrospective document. Open: whether a change's archive runs a short one too, and whether the archived file keeps a line recording that it ran.
+
+**Kind**: `change`. It owes a `project-bootstrap` delta to the seeded README's archive paragraph and a `session-workflow` delta to the archive step.
+
+**Waits on**: `nothing`.
+
+**Design with**: `nothing`.
+
+**Workstream**: `complete-the-workstream-loop`.
+
+**Recorded by**: the operator, from a comparison of this workflow with BMAD-METHOD (2026-10-25), opening `complete-the-workstream-loop`.
+
+**Re-checked**: 2026-10-25
