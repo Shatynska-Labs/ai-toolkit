@@ -7,9 +7,9 @@
 
 ## 2. Converter
 
-- [ ] 2.1 Write `scripts/backlog-migrate`: its preconditions and outcomes, the temporary directory moved into place, the seeded README from its own copy (decision 8). Verify with the derived outcome cases
-- [ ] 2.2 Implement the field mapping, known names and the nothing-dropped rule for all three shapes, and the report. Verify with the derived mapping cases and fixtures of the oldest, middle and current shapes, the current one with the seeded preamble and its fenced example
-- [ ] 2.3 Dry-run the converter on a scratch copy of each of the eight projects' backlogs (outside every repository, nothing committed) and read each report for text it mapped wrongly or dropped. Verify that every level-2 heading outside fenced code that names an entry has a file, that no file exists for a heading inside a fence, and that the text of each old entry appears in its new file
+- [x] 2.1 Write `scripts/backlog-migrate`: its preconditions and outcomes, the temporary directory moved into place, the seeded README from its own copy (decision 8). Verify with the derived outcome cases
+- [x] 2.2 Implement the field mapping, known names and the nothing-dropped rule for all three shapes, and the report. Verify with the derived mapping cases and fixtures of the oldest, middle and current shapes, the current one with the seeded preamble and its fenced example
+- [x] 2.3 Dry-run the converter on a scratch copy of each of the eight projects' backlogs (outside every repository, nothing committed) and read each report for text it mapped wrongly or dropped. Verify that every level-2 heading outside fenced code that names an entry has a file, that no file exists for a heading inside a fence, and that the text of each old entry appears in its new file
 
 ## 3. Workflow fragment and skills
 
