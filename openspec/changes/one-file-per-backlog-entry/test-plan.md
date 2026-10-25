@@ -39,13 +39,13 @@ Tasks 2.3, 3.4 and 4.x–6.x are verified by reading or by commands the tasks na
 
 ## Scenario accounting
 
-The delta specs have 133 scenarios: backlog-migration 22, toolkit-structure 8, project-bootstrap 26, session-workflow 24 and backlog-maintenance 53. **124 are covered** and **9 are uncovered**, each with its reason.
+The delta specs have 138 scenarios: backlog-migration 27, toolkit-structure 8, project-bootstrap 26, session-workflow 24 and backlog-maintenance 53. **129 are covered** and **9 are uncovered**, each with its reason. Five backlog-migration scenarios were added at code review round 1, after this plan was derived; their cases were written at apply, not by `change-test-writer`, and are marked so below.
 
 "In part" marks a scenario whose case reads the stated text, not a session's conduct. That is the limit the suite already records for the skill and the fragment in `tests/coverage.md`.
 
 Each case's own header states which of its assertions are **specified** and which are **derived**, with the reason. The labels in the tables below summarise those headers.
 
-### backlog-migration (ADDED, 22)
+### backlog-migration (ADDED, 27)
 
 | Scenario | Covered by | Classification |
 |---|---|---|
@@ -71,6 +71,13 @@ Each case's own header states which of its assertions are **specified** and whic
 | A kept note is reported | `backlog-migrate-waits-on-nothing-note.sh` | Specified. Derived: one line (Q3). |
 | The README comes from the tool's own copy | `backlog-migrate-readme-from-own-copy.sh` | Specified. Derived: the decoy variables are `AI_TOOLKIT_ROOT`, `CLAUDE_PLUGIN_ROOT` and `TOOLKIT_ROOT`. |
 | An older bash | `backlog-migrate-older-bash.sh` (in part) | Specified: the shebang. Derived proxy: a static scan for constructs bash 3.2 lacks, discriminated on specimens. The run half executes only where a bash 3.2 exists. **None exists here, so that half has not been executed** (Q7). |
+| A malformed first entry blocks | `backlog-migrate-blocks-malformed-first-heading.sh` | Specified. Written at apply (code review round 1). |
+| Windows line endings | `backlog-migrate-crlf-converts.sh` | Specified. Written at apply (code review round 1); the fixture's discriminator checks it carries a carriage return. |
+| A fence after a field stays out of the value | `backlog-migrate-fence-after-field.sh` | Specified. Written at apply (code review round 1). |
+| A fence of the other marker does not close | `backlog-migrate-mixed-fence-markers.sh` | Specified. Written at apply (code review round 1). |
+| An unmapped Recorded by is reported | `backlog-migrate-recorded-by-unmapped.sh` | Specified. Derived: one line (Q3). Written at apply (code review round 1). |
+
+`backlog-migrate-rechecked-note-kept.sh`, written at apply, covers no scenario of its own: it is a regression for *Each entry's fields are mapped into frontmatter, and nothing is dropped*, found by the dry run over the consuming projects' backlogs.
 
 `backlog-migrate-blocks-preconditions.sh` covers no scenario of its own. It covers requirement text under *Every run ends in one of three outcomes*, all specified: BLOCKED when there is no git repository, no file, an untracked file, a symbolic-link file, a duplicate name, or a missing seed.
 
