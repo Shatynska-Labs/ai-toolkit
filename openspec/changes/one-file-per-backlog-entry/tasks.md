@@ -20,9 +20,9 @@
 
 ## 4. This repository
 
-- [ ] 4.1 Convert this repository's `docs/backlog.md` with `scripts/backlog-migrate` once its own entries are committed, and act on the report: move into values any text the tool kept as prose that is plainly one. Verify that the report's entry count matches the old entry headings outside fenced code
-- [ ] 4.2 Bring `docs/workstreams/README.md` to the seeded text. Verify by diffing it against the seed
-- [ ] 4.3 Record `backlog-board` as an entry in `docs/backlog/`, waiting on this change, in the workstream. Verify with the `backlog` skill's record procedure
+- [x] 4.1 Convert this repository's `docs/backlog.md` with `scripts/backlog-migrate` once its own entries are committed, and act on the report: move into values any text the tool kept as prose that is plainly one. Verify that the report's entry count matches the old entry headings outside fenced code
+- [x] 4.2 Bring `docs/workstreams/README.md` to the seeded text. Verify by diffing it against the seed
+- [x] 4.3 Record `backlog-board` as an entry in `docs/backlog/`, waiting on this change, in the workstream. Verify with the `backlog` skill's record procedure
 
 ## 5. Tests and records
 
