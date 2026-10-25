@@ -266,9 +266,9 @@ From the requirement's definition of a shadowing file rather than a scenario: `s
   - `workstreams-seeded-fields-are-a-list.sh`, `workstreams-seeded-abandoned-item.sh`.
 - **The seeded rules, re-read in either layout**: `backlog-seeded-item-priority-values.sh`, `backlog-seeded-item-kind-definition.sh`, `backlog-seeded-item-priority-transitions.sh`, `backlog-seeded-item-priority-no-low.sh` and `backlog-seeded-item-priority-statements.sh`. They replace the deleted `backlog-seeded-priority-values`, `-kind-definition`, `-priority-transitions`, `-priority-no-low` and `-priority-statements`, with assertions unchanged.
 - **Other deletions**:
-  - `backlog-seeded-priority-field` is deleted. `backlog-seeded-workstream-field` and the item cases carry its order and content assertions.
+  - `backlog-seeded-priority-field` is deleted. `backlog-seeded-fields-are-a-list` carries its order assertion, and the item cases carry its content.
   - `backlog-seeded-workstream-default` is deleted. `backlog-seeded-workstream-default-none` replaces it.
 - **The skill**:
   - `backlog-skill-record-absent-value.sh`, which replaces the deleted `backlog-skill-record-workstream.sh` and repeats its four surviving scans;
   - `backlog-skill-pick-no-workstream.sh`, `backlog-skill-sweep-absent-value.sh`, `backlog-skill-older-shape-earlier-nothing.sh`, `backlog-skill-older-shape-paragraph-fields.sh`.
-- **Shared arrangement**: `fenced_line` in `tests/lib.sh` now accepts a list marker, and `fenced_field` is promoted beside it.
+- **Arrangement**: `fenced_line` in `tests/lib.sh` now accepts a list marker. `fenced_field` stays local to its seven cases, because `AGENTS.md` records no shared test arrangement (`record-this-repositorys-shared-test-arrangement`).

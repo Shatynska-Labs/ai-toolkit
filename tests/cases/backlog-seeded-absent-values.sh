@@ -20,8 +20,15 @@ source "$TESTLIB"
 
 # Local arrangement (test-plan.md, Missing shared arrangement): the first
 # fenced line beginning `**<label>**` or `- **<label>**`. tests/lib.sh's
-# fenced_line is the near-miss: it returns a line number, not the line, and
-# does not accept the list marker.
+# fenced_line is the near-miss: it returns a line number, not the line. Kept local:
+# AGENTS.md records no shared test arrangement (test-plan.md).
+fenced_field() {
+  awk -v label="$2" '
+    /^[[:space:]]*(```|~~~)/ { infence = !infence; next }
+    infence { l = $0; sub(/^- /, "", l); if (index(l, "**" label "**") == 1) { print; exit } }
+  ' "$1"
+}
+
 work="$TESTDIR/work"
 mkdir -p "$work"
 cd "$work" || exit 1

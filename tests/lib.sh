@@ -83,12 +83,3 @@ fenced_line() {
   ' "$1"
 }
 
-# fenced_field <markdown-file> <label>
-# Prints the first line inside a fenced block that begins with **<label>**,
-# as a paragraph or as a list item ("- "), or nothing where none does.
-fenced_field() {
-  awk -v label="$2" '
-    /^[[:space:]]*(```|~~~)/ { infence = !infence; next }
-    infence { l = $0; sub(/^- /, "", l); if (index(l, "**" label "**") == 1) { print; exit } }
-  ' "$1"
-}

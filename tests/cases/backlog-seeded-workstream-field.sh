@@ -6,9 +6,10 @@
 # SPECIFIED: the seeded entry shape names Workstream. (Priority, Kind, Waits
 # on, Design with, Recorded by, Re-checked and the absence of Depends on stay
 # asserted by backlog-seeded-structured-fields.sh and
-# backlog-seeded-priority-field.sh.)
+# backlog-seeded-fields-are-a-list.sh.)
 # DERIVED (placement): the entry shape is the fenced example; Workstream is a
-# line of it beginning `**Workstream**`, after the `**Design with**` line
+# line of it beginning `**Workstream**`, or `- **Workstream**` in the list
+# layout, after the `**Design with**` line
 # (design.md decision 9) and before the `**Recorded by**` line (the
 # requirement's listing order).
 #

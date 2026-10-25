@@ -169,7 +169,7 @@ The shared arrangement named by the dispatch is `tests/lib.sh` and `tests/cases/
 The specimen-checking functions (`check_list`, `check_shape`, `check`, `abandonment`) are each case's own assertion logic, not arrangement.
 
 **Dispositions at `apply`:**
-- `fenced_field` (in the two red backlog seeded cases and the five `item-*` cases): **promoted.** Added to `tests/lib.sh` unchanged and listed in `tests/README.md`. The seven cases drop their identical local copies, and their assertions are unchanged.
+- `fenced_field` (in the two red backlog seeded cases and the five `item-*` cases): **kept local.** `AGENTS.md` records no shared test arrangement, so nothing can be promoted into one. Creating or recording one is a testing-strategy decision, not a step of this change, and the backlog's `record-this-repositorys-shared-test-arrangement` is the change that would make it. The seven identical copies are the cost, and that entry is where they would be consolidated.
 - `fenced_item_line` (`backlog-seeded-fields-are-a-list`): **kept local.** It requires the `- ` marker, which is this one case's assertion, and no other case needs it.
 - `fenced_prefixed_line` (`workstreams-seeded-fields-are-a-list`): **kept local**, for the same reason: one case, one assertion-bearing variant.
 - `fenced_line` itself, extended in `tests/lib.sh` to accept a list marker (task 3.1), keeps `backlog-seeded-workstream-field` green.

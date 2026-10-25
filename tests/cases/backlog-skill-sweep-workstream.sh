@@ -5,7 +5,7 @@
 #
 # SPECIFIED: where the change's archive archives a workstream, sweep searches
 # for entries naming that workstream and presents each to be re-pointed or
-# set to `nothing` as `docs/workstreams/README.md` directs.
+# set to the file's absent value as `docs/workstreams/README.md` directs.
 # DERIVED (structure, as backlog-skill-sweep.sh assumes): read from the
 # section under a heading naming `sweep`.
 # DERIVED (operationalisation), each on one sentence: `workstream` with
