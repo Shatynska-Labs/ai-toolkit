@@ -27,13 +27,6 @@ source "$TESTLIB"
 # backlog-seeded-fields-are-a-list.sh's to assert. tests/lib.sh's fenced_line is
 # the near-miss: it returns a line number, not the line, and does not accept
 # the list marker.
-fenced_field() {
-  awk -v label="$2" '
-    /^[[:space:]]*(```|~~~)/ { infence = !infence; next }
-    infence { l = $0; sub(/^- /, "", l); if (index(l, "**" label "**") == 1) { print; exit } }
-  ' "$1"
-}
-
 # The reader must find a field in either layout, or this case could only ever
 # pass on the layout this change retires.
 spec="$TESTDIR/specimen.md"

@@ -22,13 +22,6 @@ source "$TESTLIB"
 # Local arrangement (test-plan.md, Missing shared arrangement): as in
 # backlog-seeded-absent-values.sh, declared here because a test module never
 # imports from another.
-fenced_field() {
-  awk -v label="$2" '
-    /^[[:space:]]*(```|~~~)/ { infence = !infence; next }
-    infence { l = $0; sub(/^- /, "", l); if (index(l, "**" label "**") == 1) { print; exit } }
-  ' "$1"
-}
-
 work="$TESTDIR/work"
 mkdir -p "$work"
 cd "$work" || exit 1

@@ -279,19 +279,13 @@ An entry takes this shape:
 
 What the change is and why it is needed, written for a session that has not seen the work that found it.
 
-**Priority**: `high`, `normal`, or `parked until` a condition that can be checked, and why. `high` needs evidence of harm happening now — an incident, a measurement, an observation; `parked` is an entry that could be taken but is not worth taking until its condition holds, and is not folded into another change before then. When the condition holds the entry becomes `normal`, or `high` with evidence; when a `high` entry's evidence no longer holds it becomes `normal`. An entry without this field is `normal`.
-
-**Kind**: `fix` or `change`, and why. A fix owes no specification delta, needs no decision from the operator, and fits one review sitting; anything else is a change, and says which delta it owes, which decision it needs, or that it is too large.
-
-**Waits on**: `nothing`, or something that can be checked: a change by name, a person's answer, an event.
-
-**Design with**: the entries that share a design with this one, by name, or `nothing`.
-
-**Workstream**: the workstream this entry is a step of or serves, by name, or `nothing`. An entry recorded by a change in a workstream takes that workstream unless it serves another goal. An entry without this field is `nothing`.
-
-**Recorded by**: the change that identified it, and why it was not done there.
-
-**Re-checked**: the date the entry was last verified against the repository.
+- **Priority**: `high`, `normal`, or `parked until` a condition that can be checked, and why. `high` needs evidence of harm happening now — an incident, a measurement, an observation; `parked` is an entry that could be taken but is not worth taking until its condition holds, and is not folded into another change before then. When the condition holds the entry becomes `normal`, or `high` with evidence; when a `high` entry's evidence no longer holds it becomes `normal`. An entry without this field is `normal`.
+- **Kind**: `fix` or `change`, and why. A fix owes no specification delta, needs no decision from the operator, and fits one review sitting; anything else is a change, and says which delta it owes, which decision it needs, or that it is too large.
+- **Waits on**: `nothing`, or something that can be checked: a change by name, a person's answer, an event.
+- **Design with**: the entries that share a design with this one, by name, or `none`.
+- **Workstream**: the workstream this entry is a step of or serves, by name, or `none`. An entry recorded by a change in a workstream takes that workstream unless it serves another goal. An entry without this field is `none`.
+- **Recorded by**: the change that identified it, and why it was not done there.
+- **Re-checked**: the date the entry was last verified against the repository.
 ```
 BACKLOG
   then
@@ -318,7 +312,7 @@ A change or a backlog entry may name the workstream it serves before any step na
 
 When a workstream's Done when holds, move its file to `archive/<YYYY-MM-DD>-<name>.md`, dated the day it is archived, in the commit that carries the record of the change that completed it. Before moving it, remove from the steps each step not done, other than the change whose record that commit carries. Where a removed step is still wanted, it is first recorded as a backlog entry naming no workstream if it is not yet in flight, and it continues as its own change if it is. Then re-point or clear every backlog entry still naming it.
 
-The operator may abandon a workstream whose goal will not be met. Add an **Abandoned** line with the date and the reason, deal with its steps and entries as above, and move it to `archive/` the same way, as work too small to be a change.
+The operator may abandon a workstream whose goal will not be met. Add an `- **Abandoned**: <date>, <reason>` item after Opened, deal with its steps and entries as above, and move it to `archive/` the same way, as work too small to be a change.
 
 Keep a workstream short: its goal, what finishes it and its steps. Lasting decisions belong in a document or a change's design that the file points to. Keep this file when there is no workstream.
 
@@ -335,13 +329,10 @@ A workstream takes this shape:
 
 1. `change-name` — what the step does.
 
-**Not in scope**: what the workstream deliberately leaves out, or leaves to another workstream by name, or `nothing`.
-
-**Open questions**: questions whose answers shape the steps, each deleted once answered, the answer recorded where Decisions points, or `nothing`.
-
-**Decisions**: where the workstream's lasting decisions are recorded, or `nothing`.
-
-**Opened**: the date, and the change or the operator that opened it.
+- **Not in scope**: what the workstream deliberately leaves out, or leaves to another workstream by name, or `none`.
+- **Open questions**: questions whose answers shape the steps, each deleted once answered, the answer recorded where Decisions points, or `none`.
+- **Decisions**: where the workstream's lasting decisions are recorded, or `none`.
+- **Opened**: the date, and the change or the operator that opened it.
 ```
 WORKSTREAMS
   then

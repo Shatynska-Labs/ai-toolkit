@@ -148,6 +148,8 @@ Every entry is a **candidate for human confirmation** at `apply`, not a conclusi
 | `backlog-seeded-workstream-default` | same requirement — layout, and absent value `none` (scenario *Workstream's default is stated*, revised THEN) | extracts `/^\*\*Workstream\*\*/` and requires the phrase ``An entry without this field is `nothing` ``; carried by `backlog-seeded-workstream-default-none` |
 | `backlog-skill-record-workstream` | backlog-maintenance *Record writes an entry…*, MODIFIED — absent value is the file's (`none` in the seeded file) | scan `ws-or-nothing` requires `workstream[^.]*nothing\|nothing[^.]*workstream` in the record section; its other four scans still hold and are repeated in `backlog-skill-record-absent-value` |
 
+**Disposition at `apply`: all eight confirmed obsolete and deleted.** Each asserts the paragraph layout, or `nothing`, which the modified requirements replace. Each is red against the implemented text for that reason alone. Each assertion that still holds is carried unchanged by its successor named above: the five `backlog-seeded-item-*` cases, `backlog-seeded-workstream-default-none`, and `backlog-skill-record-absent-value`, which repeats `backlog-skill-record-workstream`'s four surviving scans. No coverage is lost.
+
 Searched and judged **not** obsolete:
 
 - `backlog-seeded-workstream-field` — will fail at task 1.1 (it calls `tests/lib.sh`'s `fenced_line`, which does not accept `- `), but its assertion (Workstream between Design with and Recorded by) is not superseded; task 3.1's extension of `fenced_line` restores it, per design decision 5.
@@ -165,6 +167,12 @@ The shared arrangement named by the dispatch is `tests/lib.sh` and `tests/cases/
 | `fenced_prefixed_line FILE PREFIX LABEL` — line number of the first fenced line beginning `PREFIX**LABEL**` | `workstreams-seeded-fields-are-a-list` | requiring a field to be a paragraph (`""`) or a list item (`"- "`) | `workstreams-seeded-fields-are-a-list` | `fenced_line`: prefix fixed to none | no | `tests/lib.sh`; it generalises both `fenced_line` and `fenced_item_line` |
 
 The specimen-checking functions (`check_list`, `check_shape`, `check`, `abandonment`) are each case's own assertion logic, not arrangement.
+
+**Dispositions at `apply`:**
+- `fenced_field` (in the two red backlog seeded cases and the five `item-*` cases): **promoted.** Added to `tests/lib.sh` unchanged and listed in `tests/README.md`. The seven cases drop their identical local copies, and their assertions are unchanged.
+- `fenced_item_line` (`backlog-seeded-fields-are-a-list`): **kept local.** It requires the `- ` marker, which is this one case's assertion, and no other case needs it.
+- `fenced_prefixed_line` (`workstreams-seeded-fields-are-a-list`): **kept local**, for the same reason: one case, one assertion-bearing variant.
+- `fenced_line` itself, extended in `tests/lib.sh` to accept a list marker (task 3.1), keeps `backlog-seeded-workstream-field` green.
 
 ## Unresolved project questions
 

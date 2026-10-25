@@ -38,7 +38,7 @@ The skill merges every agent's return into one report, in these sections, each l
 
 1. **Done or obsolete**: proposed for deletion.
 2. **Recorded twice**: pairs (or more) that are one change, as duplicates proposed to merge into one entry under one name. An agent sees only its own range, so the skill compares across ranges for this.
-3. **Stale facts**: each with its correction, among them each `high` entry whose evidence no longer holds, its Priority corrected as the file directs, and each entry naming a workstream that is archived or absent, proposed re-pointed to an open workstream or set to `nothing`.
+3. **Stale facts**: each with its correction, among them each `high` entry whose evidence no longer holds, its Priority corrected as the file directs, and each entry naming a workstream that is archived or absent, proposed re-pointed to an open workstream or set to the file's absent value (`none` in the seeded file).
 4. **Partly done**: each with what remains, proposed as a rewrite of the entry.
 5. **Now unblocked or unparked**: entries whose trigger fired, proposed with Waits on set to `nothing`, and parked entries whose condition now holds, with the evidence that it holds and their Priority proposed as the file directs.
 6. **Groups**: entries that share a design, proposed for Design with.

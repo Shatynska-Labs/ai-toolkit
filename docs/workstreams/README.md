@@ -12,7 +12,7 @@ A change or a backlog entry may name the workstream it serves before any step na
 
 When a workstream's Done when holds, move its file to `archive/<YYYY-MM-DD>-<name>.md`, dated the day it is archived, in the commit that carries the record of the change that completed it. Before moving it, remove from the steps each step not done, other than the change whose record that commit carries. Where a removed step is still wanted, it is first recorded as a backlog entry naming no workstream if it is not yet in flight, and it continues as its own change if it is. Then re-point or clear every backlog entry still naming it.
 
-The operator may abandon a workstream whose goal will not be met. Add an **Abandoned** line with the date and the reason, deal with its steps and entries as above, and move it to `archive/` the same way, as work too small to be a change.
+The operator may abandon a workstream whose goal will not be met. Add an `- **Abandoned**: <date>, <reason>` item after Opened, deal with its steps and entries as above, and move it to `archive/` the same way, as work too small to be a change.
 
 Keep a workstream short: its goal, what finishes it and its steps. Lasting decisions belong in a document or a change's design that the file points to. Keep this file when there is no workstream.
 
@@ -29,11 +29,8 @@ A workstream takes this shape:
 
 1. `change-name` — what the step does.
 
-**Not in scope**: what the workstream deliberately leaves out, or leaves to another workstream by name, or `nothing`.
-
-**Open questions**: questions whose answers shape the steps, each deleted once answered, the answer recorded where Decisions points, or `nothing`.
-
-**Decisions**: where the workstream's lasting decisions are recorded, or `nothing`.
-
-**Opened**: the date, and the change or the operator that opened it.
+- **Not in scope**: what the workstream deliberately leaves out, or leaves to another workstream by name, or `none`.
+- **Open questions**: questions whose answers shape the steps, each deleted once answered, the answer recorded where Decisions points, or `none`.
+- **Decisions**: where the workstream's lasting decisions are recorded, or `none`.
+- **Opened**: the date, and the change or the operator that opened it.
 ```
