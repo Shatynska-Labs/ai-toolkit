@@ -1,6 +1,6 @@
 # tests/
 
-Exercises `scripts/project-init` — the repository's only executable and the first thing in this library verified by running code rather than by review.
+Exercises `scripts/project-init` and `scripts/backlog-migrate`, the library's shipped tools — the first things in this library verified by running code rather than by review.
 
 ## Why these cases are written directly, not dispatched
 
@@ -35,7 +35,9 @@ Target: <absolute path>
 repository: created | already present
 specification tooling: created via `openspec init --tools <value>` | already present
 ignore file: created | already present
-backlog: created | already present
+backlog: created | created beside existing entries | already present
+       | present as the single file docs/backlog.md; convert it with scripts/backlog-migrate
+       | docs/backlog is not a directory the tool writes into; nothing written
 workstreams: created | already present
 conventions file: created with block (version N)
            | block appended (version N)
@@ -62,5 +64,25 @@ project-init [--tools <value>] [--help|-h] [TARGET_DIR]
 - `--tools <value>`: passthrough to `openspec init --tools <value>`.
 - `--help` / `-h`: prints usage covering modes, arguments, flags, outcomes, and exit codes; makes no filesystem change; exits 0.
 - Exit codes: `0` SUCCESS, `1` ERROR, `2` BLOCKED.
+
+## backlog-migrate's report
+
+`scripts/backlog-migrate [--help|-h] [TARGET_DIR]` takes `project-init`'s outcomes and exit codes: `0` SUCCESS, `1` ERROR, `2` BLOCKED. Its report:
+
+```
+Outcome: SUCCESS | BLOCKED | ERROR
+Reason: <text>   [BLOCKED or ERROR only; one line per offending heading where headings block]
+converted: <N> entries into docs/backlog/   [SUCCESS only]
+preamble: the old preamble was not carried over; ...   [SUCCESS only]
+kept or written for review:   [SUCCESS, where any line follows]
+  <entry>: <Field> kept in the body: <why>
+  <entry>: field <Label> kept as written
+  <entry>: no kind written; the entry has no Kind field
+  <entry>: Depends on read as waits_on
+  <entry>: waits_for written: "<text>"
+  <entry>: parked_until written: "<text>"
+```
+
+Each review line names its entry and its field or key on one line, so a case reads it with one `grep` for the entry and one for the field.
 
 See `coverage.md` for which specification scenario each case (or its absence) accounts for.

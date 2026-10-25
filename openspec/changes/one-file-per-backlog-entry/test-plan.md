@@ -356,6 +356,15 @@ Each entry gives the case, its superseding delta, and the evidence:
 - `backlog-skill-older-shape-earlier-nothing.sh`: the `nothing` clause survives the delta.
 - `workflow-fragment-second-change-excludes-folded.sh` and `workflow-fragment-archive-workstream-reread.sh`: they name the path only in fixtures.
 
+## Obsolete tests: dispositions at apply
+
+Every candidate above was judged, and five cases the search did not find were added after they failed against the implementation.
+
+- **Retired, 28 cases**, each with a successor among the derived cases: `backlog-seeded-new-project`, `-adoption`, `-absent-values`, `-fields-are-a-list`, `-item-kind-definition`, `-item-priority-no-low`, `-item-priority-statements`, `-item-priority-transitions`, `-item-priority-values`, `-no-entry-numbering`, `-structured-fields`, `-structured-statements`, `-workstream-default-none`, `-workstream-field`; `backlog-existing-preserved`; `workstreams-seeded-order-gates-nothing`; `backlog-skill-older-shape-paragraph-fields` (its requirement clause is removed by the delta); `workflow-fragment-backlog-no-entry-numbers`, `-backlog-not-created-by-fragment`, `-backlog-rules-not-restated`, `-routing-recording-owed`, `-backlog-routing-names-no-workstream`, `-archive-backlog-reread`, `-archive-reread-names-no-field`, `-apply-backlog-pickup`, `-apply-pickup-names-no-field`, `-names-handoff`, `-no-proposal-only-branch`.
+- **Re-anchored, kept**: where only the old path, label or report token was stale and the rest of the case still tests a live requirement, that anchor, and the case's own conforming fixture where it carried the old wording, moved to the new one; no scan was dropped or loosened. `backlog-dangling-symlink-not-written-through` (the single-file report), `repeated-execution-backlog` and `partial-init-reports-backlog` (`docs/backlog/README.md`), `workflow-fragment-fixed-paths` (`docs/backlog/`), `workstreams-seeded-statements` ("holds an entry of that name"), `backlog-skill-record` (name checked against entry files), `backlog-skill-record-absent-value` (`design_with`'s empty value), `backlog-skill-pick` (unwaited), `backlog-skill-close` (`waits_on`, `design_with`), `backlog-skill-sweep-priority` ("as the README directs").
+- **Found by running, not by the search**: `executable-bit-not-relied-upon` copies `project-init` alone into a fixture library, which now blocks for want of the seed; its fixture copies `scripts/seed/` too. `backlog-skill-record-fold-in` anchored the name check on "heading"; it and its fixtures now anchor on "entry files". `backlog-skill-close-workstream`, `backlog-skill-older-shape-priority-default` and `backlog-skill-pick-priority` failed on the skill's first rewrite, not on a stale anchor: their requirements are unchanged, so the skill's wording was restored to meet them.
+- **Kept unchanged**: `backlog-skill-identity` and `backlog-skill-absent-backlog` still pass against the skill's refusal text, which names `docs/backlog.md` as the single-file shape, and assert nothing the deltas contradict.
+
 ## Unresolved project questions
 
 - **Q1 — The seeded README's entry shape is a fenced example.**
@@ -400,7 +409,7 @@ The dispatch named `tests/lib.sh` and `tests/cases/lib/` (`static-scan.sh`, `lin
   - Near-miss: `tests/lib.sh`'s `assert_unchanged` checks one file, not a directory's contents. Nothing in the arrangement makes a git fixture or reads frontmatter.
   - Found in a test module: no.
   - Proposed home: `tests/lib.sh` for `fm_value`, `fm_keys`, `fm_body` and `assert_untouched`; a new `tests/cases/lib/migrate-fixture.sh` for `new_repo` and `require_migrate`.
-  - Disposition: *to be recorded at apply*.
+  - Disposition: **kept**: `AGENTS.md` records no shared test arrangement, so the workflow keeps every entry local, and where shared arrangement should live is `record-this-repositorys-shared-test-arrangement`'s decision, not this change's. The 22 copies are byte-identical, so that entry can move them as one block; `backlog-migrate-rechecked-note-kept.sh`, written at apply, declares the same block.
 - **Seeded-output scan wrappers**
   - What: `fixture_readme`, `seed_and_check` and `R`.
   - Declared in: `backlog-dir-seeded-new-project.sh`, `-kind-definition.sh`, `-priority-values.sh`, `-priority-no-low.sh`, `-priority-transitions.sh`, `-workstream-default.sh`, `-absent-values.sh`, `-waits-on-names-only.sh`, `-frontmatter-flat.sh`. They are also declared but unused in `-structured-keys.sh` and `-fields-are-a-list.sh`, which source the same block.
@@ -409,7 +418,7 @@ The dispatch named `tests/lib.sh` and `tests/cases/lib/` (`static-scan.sh`, `lin
   - Near-miss: `static-scan.sh`'s `scan_run` and `line-scan.sh`'s `line_run` run the check over `$TOOLKIT_ROOT` only, and their root is not a parameter. Extending them is editing shared arrangement, which this pass does not do.
   - Found in a test module: no.
   - Proposed home: `scan_run_at ROOT` in `tests/cases/lib/static-scan.sh`, and `line_run_at FILE` in `line-scan.sh`.
-  - Disposition: *to be recorded at apply*.
+  - Disposition: **kept**: `AGENTS.md` records no shared test arrangement, so the workflow keeps every entry local, and where shared arrangement should live is `record-this-repositorys-shared-test-arrangement`'s decision, not this change's. The eleven copies are byte-identical.
 - **`fenced_fm_keys`**
   - Declared in: `backlog-dir-seeded-structured-keys.sh`, `backlog-dir-seeded-fields-are-a-list.sh`.
   - Stands in for: a reader for the frontmatter keys of a fenced example.
@@ -417,7 +426,7 @@ The dispatch named `tests/lib.sh` and `tests/cases/lib/` (`static-scan.sh`, `lin
   - Near-miss: `tests/lib.sh`'s `fenced_line` finds `**<label>**` lines in a fence, not `key:` lines between `---` delimiters.
   - Found in a test module: no.
   - Proposed home: `tests/lib.sh`.
-  - Disposition: *to be recorded at apply*.
+  - Disposition: **kept**: `AGENTS.md` records no shared test arrangement, so the workflow keeps every entry local, and where shared arrangement should live is `record-this-repositorys-shared-test-arrangement`'s decision, not this change's.
 - **`fenced_item_line`**
   - Declared in: `backlog-dir-seeded-fields-are-a-list.sh`.
   - Stands in for: the line of a fenced `- **<label>**` list item.
@@ -425,7 +434,7 @@ The dispatch named `tests/lib.sh` and `tests/cases/lib/` (`static-scan.sh`, `lin
   - Near-miss: `tests/lib.sh`'s `fenced_line` accepts the label with or without the list marker, so it cannot require the marker.
   - Found in a test module: yes, the superseded `backlog-seeded-fields-are-a-list.sh` (list-the-entry-fields' local declaration), copied rather than imported.
   - Proposed home: `tests/lib.sh`, beside `fenced_line`.
-  - Disposition: *to be recorded at apply*.
+  - Disposition: **kept**: `AGENTS.md` records no shared test arrangement, so the workflow keeps every entry local, and where shared arrangement should live is `record-this-repositorys-shared-test-arrangement`'s decision, not this change's.
 - **Check logic carried from superseded test modules**
   - What: `restated_rules`, `number_mentions` and `create_directions` in `workflow-fragment-backlog-dir-defers.sh`; `check` and `mutate_and_expect` in `workflow-fragment-backlog-dir-archive-reread.sh`; `check` and `expect` in `workflow-fragment-backlog-dir-routing-names-no-workstream.sh`; `numbered_headings` and `number_mentions` in `backlog-dir-seeded-no-entry-numbering.sh`.
   - Stands in for: these are assertion logic rather than builders or fakes, so arguably not arrangement at all. They are recorded because each was found in a test module and copied rather than imported.
@@ -433,7 +442,7 @@ The dispatch named `tests/lib.sh` and `tests/cases/lib/` (`static-scan.sh`, `lin
   - Near-miss: none.
   - Found in: `workflow-fragment-backlog-rules-not-restated.sh`, `-backlog-no-entry-numbers.sh`, `-backlog-not-created-by-fragment.sh`, `-archive-backlog-reread.sh`, `-archive-reread-names-no-field.sh`, `-backlog-routing-names-no-workstream.sh` and `backlog-seeded-no-entry-numbering.sh`.
   - Proposed home: none. They are specific to each case.
-  - Disposition: *to be recorded at apply*.
+  - Disposition: **kept**: `AGENTS.md` records no shared test arrangement, so the workflow keeps every entry local, and where shared arrangement should live is `record-this-repositorys-shared-test-arrangement`'s decision, not this change's. They are also assertion logic, one use each.
 
 ## Findings in the artifacts
 

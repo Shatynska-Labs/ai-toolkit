@@ -272,3 +272,15 @@ From the requirement's definition of a shadowing file rather than a scenario: `s
   - `backlog-skill-record-absent-value.sh`, which replaces the deleted `backlog-skill-record-workstream.sh` and repeats its four surviving scans;
   - `backlog-skill-pick-no-workstream.sh`, `backlog-skill-sweep-absent-value.sh`, `backlog-skill-older-shape-earlier-nothing.sh`, `backlog-skill-older-shape-paragraph-fields.sh`.
 - **Arrangement**: `fenced_line` in `tests/lib.sh` now accepts a list marker. `fenced_field` stays local to its seven cases, because `AGENTS.md` records no shared test arrangement (`record-this-repositorys-shared-test-arrangement`).
+
+## one-file-per-backlog-entry (133 delta scenarios)
+
+`one-file-per-backlog-entry` adds the `backlog-migration` capability (22 scenarios) and modifies `toolkit-structure` (8), `project-bootstrap` (26), `session-workflow` (24) and `backlog-maintenance` (53). Its cases were derived by `ai-toolkit:change-test-writer`. The per-scenario accounting, the obsolete cases and the arrangement dispositions are in the change's `test-plan.md`. 124 scenarios are covered and 9 uncovered: the 7 `toolkit-structure` scenarios carried over unchanged, which describe documentation this suite does not exercise, and two `session-workflow` scenarios about what a session does, which a static scan cannot observe. The skill's and the fragment's scenarios are covered in part, since each case reads the stated text rather than a session's conduct.
+
+- **The converter**: `backlog-migrate-*.sh`, 22 cases, and `backlog-migrate-rechecked-note-kept.sh`, a regression written at apply for a note after a Re-checked date that the dry run over the consuming projects' backlogs found dropped.
+- **The seeded README and project-init's backlog concern**: `backlog-dir-*.sh`; the workstream README's new wording, `workstreams-dir-*.sh`; the seed's place in `AGENTS.md`, `toolkit-structure-seed-has-one-home.sh`.
+- **The fragment**: `workflow-fragment-backlog-dir-*.sh` and `workflow-fragment-version-after-backlog-dir.sh`.
+- **The skill**: `backlog-skill-dir-*.sh`.
+- **Retired**: the 28 cases asserting the single file whose subjects the cases above carry — the `backlog-seeded-*` cases, `backlog-existing-preserved`, `workstreams-seeded-order-gates-nothing`, `backlog-skill-older-shape-paragraph-fields`, and the `workflow-fragment-*` cases anchored on `docs/backlog.md`. The rows above that name them now describe what this change replaced.
+- **Re-anchored**: twelve kept cases whose only stale part was the path, a label, a report token or a fixture missing the seed; `test-plan.md` lists each.
+- **Arrangement**: every local declaration is kept, because `AGENTS.md` records no shared test arrangement (`record-this-repositorys-shared-test-arrangement`).

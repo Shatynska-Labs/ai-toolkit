@@ -26,13 +26,13 @@
 
 ## 5. Tests and records
 
-- [ ] 5.1 Judge each existing case `test-plan.md` lists as obsolete, and rewrite or retire the cases asserting `docs/backlog.md`. Verify that `bash tests/run.sh` passes
-- [ ] 5.2 Deal with every entry under the test plan's *Missing shared arrangement*, promoting into `tests/lib.sh` or keeping with a reason, recorded against the entry
-- [ ] 5.3 Account for the modified and added scenarios in `tests/coverage.md`, and describe `scripts/backlog-migrate` and its report in `tests/README.md`
+- [x] 5.1 Judge each existing case `test-plan.md` lists as obsolete, and rewrite or retire the cases asserting `docs/backlog.md`. Verify that `bash tests/run.sh` passes
+- [x] 5.2 Deal with every entry under the test plan's *Missing shared arrangement*, promoting into `tests/lib.sh` or keeping with a reason, recorded against the entry
+- [x] 5.3 Account for the modified and added scenarios in `tests/coverage.md`, and describe `scripts/backlog-migrate` and its report in `tests/README.md`
 
 ## 6. Verify
 
-- [ ] 6.1 `bash tests/run.sh` passes
-- [ ] 6.2 `shellcheck scripts/project-init scripts/backlog-migrate tests/*.sh tests/cases/*.sh tests/cases/lib/*.sh` is clean
-- [ ] 6.3 `openspec validate one-file-per-backlog-entry --strict` passes
-- [ ] 6.4 Correct the Purpose of `openspec/specs/backlog-maintenance/spec.md`, which names `docs/backlog.md` and which a delta cannot change, to name `docs/backlog/`. Verify by reading
+- [x] 6.1 `bash tests/run.sh` passes
+- [x] 6.2 `shellcheck scripts/project-init scripts/backlog-migrate tests/*.sh tests/cases/*.sh tests/cases/lib/*.sh` is clean
+- [x] 6.3 `openspec validate one-file-per-backlog-entry --strict` passes
+- [x] 6.4 Correct the Purpose of `openspec/specs/backlog-maintenance/spec.md`, which names `docs/backlog.md` and which a delta cannot change, to name `docs/backlog/`. Verify by reading

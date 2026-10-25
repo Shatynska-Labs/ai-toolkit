@@ -1,7 +1,7 @@
 # backlog-maintenance Specification
 
 ## Purpose
-Defines the `backlog` skill: the on-demand operations a session performs over a project's `docs/backlog.md` — recording, picking, closing, sweeping at archive, and auditing entries — and the seam that keeps those operations from becoming a second statement of the entry rules or of the workflow's obligations.
+Defines the `backlog` skill: the on-demand operations a session performs over a project's backlog in `docs/backlog/` — recording, picking, closing, sweeping at archive, and auditing entries — and the seam that keeps those operations from becoming a second statement of the entry rules or of the workflow's obligations.
 
 ## Requirements
 
