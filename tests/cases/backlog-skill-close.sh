@@ -16,8 +16,8 @@ source "$TESTLIB"
 source "$(dirname "${BASH_SOURCE[0]}")/lib/static-scan.sh"
 
 S=skills/backlog/SKILL.md
-scan require "$S" close references-in-waits-on 'waits on'
-scan require "$S" close references-in-design-with 'design with'
+scan require "$S" close references-in-waits-on 'waits_on'
+scan require "$S" close references-in-design-with 'design_with'
 
 fixture="$TESTDIR/fixture"
 mkdir -p "$fixture/skills/backlog"
@@ -26,8 +26,8 @@ cat > "$fixture/$S" <<'FIXTURE'
 
 ## Close
 
-Delete the entry. In the same edit, update every entry naming it in Waits on.
-Also update every entry naming it in Design with.
+Delete the entry. In the same edit, update every entry naming it in `waits_on`.
+Also update every entry naming it in `design_with`.
 
 ## Sweep
 

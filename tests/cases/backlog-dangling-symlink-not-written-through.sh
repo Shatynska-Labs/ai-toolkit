@@ -25,7 +25,7 @@ bash "$PROJECT_INIT" >"$report" 2>&1
 status=$?
 
 assert_exit 0 "$status"
-assert_contains "$report" "backlog: already present" "a dangling link counts as present"
+assert_contains "$report" "backlog: present as the single file docs/backlog.md" "a dangling link counts as present, in the single-file shape"
 assert_file_absent "$outside" "nothing written through the link to its target"
 if [ ! -L "$work/docs/backlog.md" ]; then
   echo "FAIL: docs/backlog.md is no longer a symbolic link" >&2

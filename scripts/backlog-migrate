@@ -1,0 +1,324 @@
+#!/usr/bin/env bash
+# Deterministic conversion of a project's single-file backlog, docs/backlog.md,
+# into the directory shape project-init seeds: docs/backlog/README.md and one
+# frontmatter file per entry. See `--help` for usage; the backlog-migration
+# specification states what each field maps to.
+set -u
+
+# Inherited from a hook or wrapper, these would point every git call below at
+# the caller's repository instead of the target.
+if command -v git >/dev/null 2>&1; then
+  # shellcheck disable=SC2046 # word splitting is intended: one name per word
+  unset $(git rev-parse --local-env-vars 2>/dev/null)
+fi
+unset GIT_DIR GIT_WORK_TREE GIT_COMMON_DIR GIT_INDEX_FILE
+
+print_help() {
+  cat <<'HELP'
+backlog-migrate — convert docs/backlog.md into docs/backlog/, one file per entry
+
+Usage:
+  backlog-migrate [--help|-h] [TARGET_DIR]
+
+Arguments:
+  TARGET_DIR   The project to convert. Defaults to the current working
+               directory if omitted.
+
+Writes docs/backlog/README.md (the README project-init seeds) and one
+docs/backlog/<name>.md per entry, with the entry's values as frontmatter,
+then deletes docs/backlog.md. Text it cannot map into a value is kept in the
+entry's body and named in the report. Never commits, stages or pushes.
+
+Outcomes and exit codes:
+  0   SUCCESS   the backlog was converted
+  1   ERROR     a write was attempted and failed; docs/backlog.md is kept
+  2   BLOCKED   a precondition was unmet; nothing was written
+HELP
+}
+
+# --- Self-location: never resolved from the environment. -------------------
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SEED="$SCRIPT_DIR/seed/backlog-README.md"
+
+target=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --help|-h)
+      print_help
+      exit 0
+      ;;
+    -*)
+      echo "Outcome: BLOCKED"
+      echo "Reason: unknown flag: $1"
+      exit 2
+      ;;
+    *)
+      target="$1"
+      shift
+      ;;
+  esac
+done
+[ -n "$target" ] || target="$(pwd)"
+
+finish_blocked() {
+  echo "Outcome: BLOCKED"
+  echo "Reason: $1"
+  exit 2
+}
+
+workdir=""
+finish_error() {
+  [ -n "$workdir" ] && rm -rf "$workdir"
+  echo "Outcome: ERROR"
+  echo "Reason: $1"
+  exit 1
+}
+
+# --- Preconditions, all checked before any write. ---------------------------
+[ -d "$target" ] || finish_blocked "target is not a directory: $target"
+target="$(CDPATH='' cd -- "$target" && pwd)"
+command -v git >/dev/null 2>&1 || finish_blocked "git not found, required to check that docs/backlog.md is committed"
+[ "$(git -C "$target" rev-parse --is-inside-work-tree 2>/dev/null)" = "true" ] \
+  || finish_blocked "target is not inside a git repository: $target"
+[ -f "$SEED" ] || finish_blocked "backlog seed not found at $SEED"
+
+backlog_dir="$target/docs/backlog"
+single="$target/docs/backlog.md"
+if [ -e "$backlog_dir" ] || [ -L "$backlog_dir" ]; then
+  finish_blocked "docs/backlog already exists; the backlog is converted already, or a conversion is in progress"
+fi
+if [ ! -e "$single" ] && [ ! -L "$single" ]; then
+  finish_blocked "docs/backlog.md does not exist"
+fi
+if [ -L "$single" ] || [ ! -f "$single" ]; then
+  finish_blocked "docs/backlog.md is not a regular file"
+fi
+git -C "$target" ls-files --error-unmatch -- docs/backlog.md >/dev/null 2>&1 \
+  || finish_blocked "docs/backlog.md is not tracked by git; commit it first, so its deletion can be undone"
+if ! git -C "$target" diff --quiet -- docs/backlog.md 2>/dev/null \
+  || ! git -C "$target" diff --cached --quiet -- docs/backlog.md 2>/dev/null; then
+  finish_blocked "docs/backlog.md differs from its committed content; commit or discard the edit first"
+fi
+
+# An entry heading is a level-2 heading outside fenced code holding exactly
+# one backticked kebab-case name. Before the first one, any heading is
+# preamble unless it is backticked like an entry's; after it, a level-2
+# heading that is not a name blocks. A fence closes only on its own marker,
+# and a carriage return before the newline is ignored.
+scan="$(awk '
+  { sub(/\r$/, "") }
+  /^[ \t]*(```|~~~)/ {
+    m = $0; sub(/^[ \t]*/, "", m); m = substr(m, 1, 3)
+    if (!fence) { fence = 1; fmark = m } else if (m == fmark) fence = 0
+    next
+  }
+  fence { next }
+  /^## / {
+    if ($0 ~ /^## `[a-z0-9]+(-[a-z0-9]+)*`[ \t]*$/) {
+      name = $0; sub(/^## `/, "", name); sub(/`[ \t]*$/, "", name)
+      if (tolower(name) == "readme") { print "BLOCK an entry is named readme, which collides with README.md where the filesystem ignores case: " name; next }
+      if (name in seen) { print "BLOCK two entries carry the name " name; next }
+      seen[name] = 1; started = 1; print "NAME " name
+    } else if (started) {
+      print "BLOCK a level-2 heading after the first entry is not one backticked kebab-case name: " $0
+    } else if ($0 ~ /^## `/) {
+      print "BLOCK a level-2 heading before the first entry is backticked like an entry but is not one kebab-case name: " $0
+    }
+  }
+' "$single")"
+blocks="$(printf '%s\n' "$scan" | sed -n 's/^BLOCK //p')"
+if [ -n "$blocks" ]; then
+  echo "Outcome: BLOCKED"
+  printf '%s\n' "$blocks" | sed 's/^/Reason: /'
+  exit 2
+fi
+
+# Known names: the file's own entries, and every change directory, open or
+# archived, an archived one without its date prefix.
+known="$(printf '%s\n' "$scan" | sed -n 's/^NAME //p'
+  if [ -d "$target/openspec/changes" ]; then
+    for d in "$target"/openspec/changes/*/; do
+      [ -d "$d" ] || continue
+      n="$(basename "$d")"
+      [ "$n" = "archive" ] || printf '%s\n' "$n"
+    done
+    for d in "$target"/openspec/changes/archive/*/; do
+      [ -d "$d" ] || continue
+      basename "$d" | sed 's/^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]-//'
+    done
+  fi)"
+
+# --- Conversion, into a temporary directory moved into place. ---------------
+workdir="$target/docs/.backlog-migrate.$$"
+mkdir "$workdir" 2>/dev/null || { workdir=""; finish_error "could not create a temporary directory in docs/"; }
+notes="$workdir/.notes"
+
+if ! printf '%s\n' "$known" | awk -v out="$workdir" -v notes="$notes" '
+  function trim(s) { sub(/^[ \t]+/, "", s); sub(/[ \t]+$/, "", s); return s }
+  function q(s) { gsub(/\\/, "\\\\", s); gsub(/"/, "\\\"", s); return "\"" s "\"" }
+  # The value with backticks stripped from its start, lower-cased.
+  function lead(v) { v = trim(v); gsub(/^`+/, "", v); return tolower(v) }
+  # What follows the leading word or phrase of length n, its surrounding
+  # backticks and punctuation removed.
+  function rest(v, n,   t) {
+    t = trim(v); gsub(/^`+/, "", t); t = substr(t, n + 1)
+    sub(/^`+/, "", t); sub(/^[ \t]*[-.,:;]*[ \t]*/, "", t)
+    return trim(t)
+  }
+  function starts_absent(v,   l) { l = lead(v); return l ~ /^(nothing|none)([^a-z]|$)/ }
+  # Known names in v, as "a, b"; leftover text is left in LEFT.
+  function names(v,   s, n, out, nm) {
+    s = v; out = ""; LEFT = v
+    while (match(s, /`[a-z0-9]+(-[a-z0-9]+)*`/)) {
+      nm = substr(s, RSTART + 1, RLENGTH - 2); s = substr(s, RSTART + RLENGTH)
+      if (nm in known && !(nm in used)) { used[nm] = 1; out = out (out == "" ? "" : ", ") nm }
+      if (nm in known) gsub("`" nm "`", "", LEFT)
+    }
+    for (nm in used) delete used[nm]
+    return out
+  }
+  function only_separators(s) { s = tolower(s); gsub(/(^|[^a-z])and([^a-z]|$)/, " ", s); gsub(/[ \t,;.]/, "", s); return s == "" }
+  function item(label, text) { if (text != "") items[++ni] = "- **" label "**: " text }
+  function note(text) { print entry ": " text >> notes }
+
+  function flush(   f, i, k, body) {
+    if (entry == "") return
+    f = out "/" entry ".md"
+    print "---" > f
+    for (i = 1; i <= 9; i++) { k = order[i]; if (k in fm) print k ": " fm[k] > f }
+    print "---" > f
+    print "" > f
+    sub(/^\n+/, "", prose); sub(/\n+$/, "", prose)
+    sub(/^\n+/, "", other); sub(/\n+$/, "", other)
+    body = prose
+    if (other != "") body = body (body == "" ? "" : "\n\n") other
+    if (body != "") { print body > f }
+    if (ni > 0) {
+      if (body != "") print "" > f
+      for (i = 1; i <= ni; i++) print items[i] > f
+    }
+    close(f)
+    if (!("kind" in fm)) note("no kind written; the entry has no Kind field")
+    if ("waits_for" in fm) note("waits_for written: " fm["waits_for"])
+    if ("parked_until" in fm) note("parked_until written: " fm["parked_until"])
+    count++
+  }
+
+  function field(label, v,   l, nm, n) {
+    l = tolower(label)
+    if (l == "priority") {
+      n = lead(v)
+      if (n ~ /^parked until/) { fm["priority"] = "parked"; fm["parked_until"] = q(rest(v, 12)) }
+      else if (n ~ /^high([^a-z]|$)/) { fm["priority"] = "high"; item(label, rest(v, 4)) }
+      else if (n ~ /^normal([^a-z]|$)/) { fm["priority"] = "normal"; if (rest(v, 6) != "") { item(label, rest(v, 6)); note(label " kept in the body in part") } }
+      else { item(label, v); note(label " kept in the body: no value read") }
+    } else if (l == "kind") {
+      n = lead(v)
+      if (n ~ /^fix([^a-z]|$)/) { fm["kind"] = "fix"; item(label, rest(v, 3)) }
+      else if (n ~ /^change([^a-z]|$)/) { fm["kind"] = "change"; item(label, rest(v, 6)) }
+      else { item(label, v); note(label " kept in the body: no value read") }
+    } else if (l == "waits on" || l == "depends on") {
+      if (starts_absent(v)) {
+        fm["waits_on"] = "[]"
+        n = rest(v, lead(v) ~ /^nothing/ ? 7 : 4)
+        if (n != "") { item(label, n); note(label " kept in the body: text after its absent value") }
+      } else {
+        nm = names(v); fm["waits_on"] = "[" nm "]"
+        if (!only_separators(LEFT)) fm["waits_for"] = q(trim(v))
+        if (l == "depends on") note("Depends on read as waits_on")
+      }
+    } else if (l == "design with") {
+      if (starts_absent(v)) {
+        fm["design_with"] = "[]"
+        n = rest(v, lead(v) ~ /^nothing/ ? 7 : 4)
+        if (n != "") { item(label, n); note(label " kept in the body: text after its absent value") }
+      } else {
+        nm = names(v); fm["design_with"] = "[" nm "]"
+        if (!only_separators(LEFT)) { item(label, trim(v)); note(label " kept in the body: text beside its names") }
+      }
+    } else if (l == "workstream") {
+      if (starts_absent(v)) {
+        fm["workstream"] = "none"
+        n = rest(v, lead(v) ~ /^nothing/ ? 7 : 4)
+        if (n != "") { item(label, n); note(label " kept in the body: text after its absent value") }
+      } else if (match(trim(v), /^`[a-z0-9]+(-[a-z0-9]+)*`/)) {
+        n = trim(v); fm["workstream"] = substr(n, 2, RLENGTH - 2)
+        n = substr(n, RLENGTH + 1); sub(/^[ \t]*[.,;:]?[ \t]*/, "", n)
+        if (n != "") { item(label, n); note(label " kept in the body in part") }
+      } else { item(label, v); note(label " kept in the body: no value read") }
+    } else if (l == "recorded by") {
+      nm = names(v); sub(/,.*/, "", nm)
+      if (nm != "") fm["recorded_by"] = nm
+      else note(label " kept in the body: no known name")
+      item(label, trim(v))
+    } else if (l == "re-checked") {
+      if (match(v, /[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/)) {
+        fm["re_checked"] = substr(v, RSTART, RLENGTH)
+        n = trim(substr(v, 1, RSTART - 1) substr(v, RSTART + RLENGTH))
+        if (!only_separators(n)) { item(label, trim(v)); note(label " kept in the body: text beside its date") }
+      } else { item(label, v); note(label " kept in the body: no date read") }
+    } else {
+      item(label, v); note("field " label " kept as written")
+    }
+  }
+
+  function close_field() { if (flabel != "") field(flabel, fvalue); flabel = "" }
+
+  BEGIN {
+    split("priority parked_until kind waits_on waits_for design_with workstream recorded_by re_checked", order, " ")
+  }
+  FILENAME == "-" { if ($0 != "") known[$0] = 1; next }
+
+  { sub(/\r$/, ""); fl = 0 }
+  /^[ \t]*(```|~~~)/ {
+    fl = 1; m = $0; sub(/^[ \t]*/, "", m); m = substr(m, 1, 3)
+    if (!fence) { fence = 1; fmark = m } else if (m == fmark) fence = 0
+  }
+  !fence && !fl && /^## `[a-z0-9]+(-[a-z0-9]+)*`[ \t]*$/ {
+    close_field(); flush()
+    entry = $0; sub(/^## `/, "", entry); sub(/`[ \t]*$/, "", entry)
+    split("", fm); split("", items); ni = 0; prose = ""; other = ""; seenfield = 0
+    next
+  }
+  entry == "" { next }
+  !fence && !fl && /^(- )?\*\*[^*]+\*\*:/ {
+    close_field()
+    flabel = $0; sub(/^(- )?\*\*/, "", flabel); sub(/\*\*:.*/, "", flabel)
+    fvalue = $0; sub(/^(- )?\*\*[^*]+\*\*:[ \t]*/, "", fvalue)
+    seenfield = 1
+    next
+  }
+  flabel != "" && !fence && !fl && $0 !~ /^[ \t]*$/ && $0 !~ /^[ \t]*(- |#)/ { fvalue = fvalue " " trim($0); next }
+  { close_field()
+    if (!seenfield) prose = prose $0 "\n"
+    else other = other $0 "\n"
+  }
+  END { close_field(); flush(); print count > (out "/.count") }
+' - "$single"; then
+  finish_error "the conversion failed while writing entry files"
+fi
+
+if ! cat "$SEED" > "$workdir/README.md" 2>/dev/null; then
+  finish_error "docs/backlog/README.md could not be written"
+fi
+count="$(cat "$workdir/.count" 2>/dev/null)"
+report_notes=""
+[ -f "$notes" ] && report_notes="$(cat "$notes")"
+rm -f "$workdir/.count" "$notes"
+
+if ! mv "$workdir" "$backlog_dir" 2>/dev/null; then
+  finish_error "the converted backlog could not be moved into docs/backlog"
+fi
+workdir=""
+if ! rm -f "$single" 2>/dev/null || [ -e "$single" ]; then
+  rm -rf "$backlog_dir"
+  finish_error "docs/backlog.md could not be deleted"
+fi
+
+echo "Outcome: SUCCESS"
+echo "converted: ${count:-0} entries into docs/backlog/"
+echo "preamble: the old preamble was not carried over; docs/backlog/README.md is the seeded README, so compare it in the diff"
+if [ -n "$report_notes" ]; then
+  echo "kept or written for review:"
+  printf '%s\n' "$report_notes" | sed 's/^/  /'
+fi

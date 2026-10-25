@@ -26,4 +26,4 @@ status=$?
 assert_exit 0 "$status" "should complete the missing concerns"
 assert_contains "$report" "repository: already present" "repository concern reported separately"
 assert_contains "$report" "backlog: created" "backlog concern completed and reported separately"
-assert_file "$work/docs/backlog.md" "backlog completed"
+assert_file "$work/docs/backlog/README.md" "backlog completed"

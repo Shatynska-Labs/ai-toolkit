@@ -42,7 +42,7 @@ scan require "$S" record ws-open-only 'open workstream'
 scan require "$S" record ws-name-check-archived 'workstream[^.]*archived|archived[^.]*workstream'
 scan require "$S" "" ws-applies-where-named 'where[^.]*(shape|file)[^.]*workstream|workstream[^.]*where[^.]*(shape|file)'
 scan require "$S" record ws-absent-value 'workstream[^.]*absent value|absent value[^.]*workstream'
-scan require "$S" record dw-absent-value 'design with[^.]*absent value|absent value[^.]*design with'
+scan require "$S" record dw-absent-value 'design_with[^.]*empty value|empty value[^.]*design_with'
 # shellcheck disable=SC2016 # backticks are literal markdown in the regex
 scan require "$S" record names-none '`none`'
 
@@ -59,7 +59,7 @@ Each Workstream step applies only where the file's shape names Workstream.
 
 Check the name against the backlog's headings.
 Where the register exists, the name check also covers workstream names, open and archived.
-Present each overlapping entry as a candidate, and write into Design with only the confirmed ones, or else the file's absent value.
+Present each overlapping entry as a candidate, and write into `design_with` only the confirmed ones, or else the README's empty value.
 Set Workstream by default to the workstream of the change the session is in.
 Where the entry serves another goal or none, set the Workstream to that goal or to the file's absent value.
 The absent value is the one the file states, `none` in the seeded file.
