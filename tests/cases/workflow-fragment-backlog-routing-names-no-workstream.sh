@@ -11,7 +11,7 @@
 # `docs/backlog.md` and `record`, other than the archive re-read (a line also
 # carrying `re-read`/`reread`, which the archive insertion may share with the
 # workstream re-read); none of them names `workstream`. The half that the
-# file gives the entry its workstream is backlog-seeded-workstream-default.sh.
+# file gives the entry its workstream is backlog-seeded-workstream-default-none.sh.
 #
 # Static read: green on the pre-change fragment, which names no workstream at
 # all, so the fixtures below are what establish the check can fail.

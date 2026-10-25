@@ -14,10 +14,7 @@
 
 The status lookups first, then the review, then the retrospective. The order is intended, not a wait.
 
-**Not in scope**: planning before a goal is known — briefs, product requirements, UX — which BMAD covers and this library does not; storing a workstream's progress; building a workstream's steps unattended.
-
-**Open questions**: whether a workstream is reviewed by `change-plan-reviewer` or by an agent of its own; whether a retrospective also runs at a change's archive; whether a retrospective leaves a line in the archived workstream file or only its routed lessons.
-
-**Decisions**: `openspec/changes/archive/2026-10-24-add-workstreams/design.md`, for the workstream model these steps extend.
-
-**Opened**: 2026-10-25, by the operator.
+- **Not in scope**: planning before a goal is known — briefs, product requirements, UX — which BMAD covers and this library does not; storing a workstream's progress; building a workstream's steps unattended.
+- **Open questions**: whether a workstream is reviewed by `change-plan-reviewer` or by an agent of its own; whether a retrospective also runs at a change's archive; whether a retrospective leaves a line in the archived workstream file or only its routed lessons.
+- **Decisions**: `openspec/changes/archive/2026-10-24-add-workstreams/design.md`, for the workstream model these steps extend.
+- **Opened**: 2026-10-25, by the operator.

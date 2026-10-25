@@ -256,3 +256,19 @@ From the requirement's definition of a shadowing file rather than a scenario: `s
 - **The fragment** — `workflow-fragment-status-row-workstream-first.sh`, `workflow-fragment-status-row-workstream-source.sh`, `workflow-fragment-draft-names-workstream.sh`, `workflow-fragment-archive-workstream-reread.sh`, `workflow-fragment-workstream-rules-not-restated.sh`, `workflow-fragment-backlog-routing-names-no-workstream.sh`.
 - **The skill** — `backlog-skill-absent-workstream-register.sh`, `backlog-skill-workstream-rules-not-restated.sh`, `backlog-skill-identity-workstreams.sh`, `backlog-skill-record-workstream.sh`, `backlog-skill-pick-workstream.sh`, `backlog-skill-close-workstream.sh`, `backlog-skill-sweep-workstream.sh`, `backlog-skill-audit-workstream.sh`, `backlog-skill-workstreams-operation.sh`.
 - **Uncovered** — *A session resumes a working tree left by another session*, *A session reports on the way out as well as the way in*, *An unprovisioned working tree's green is not reported as a result* and *The report is derived rather than recalled*, carried over verbatim. Their accounting is unchanged. The entering report's verification cell is deliberately unasserted: `reconcile-the-status-row-verification-cell` carries it.
+
+## list-the-entry-fields (46 delta scenarios)
+
+`list-the-entry-fields` modifies two requirements in `project-bootstrap`: *A backlog is seeded where none exists* and *A workstream register is seeded where none exists* (19 scenarios, 3 of them new). It also modifies four in `backlog-maintenance`: *Record writes an entry the file can be relied on for*, *Pick lists what can be taken now*, *Sweep performs the archive step's re-read* and *Entries in an older shape are reported, not rewritten* (27 scenarios, 2 of them new). Its cases were derived by `ai-toolkit:change-test-writer`. The per-scenario accounting, the obsolete cases and the arrangement dispositions are in the change's `test-plan.md`. No scenario is uncovered. The skill's scenarios are covered in part, since each case reads the stated text rather than a session's conduct.
+
+- **The seeded layout and absent values**:
+  - `backlog-seeded-fields-are-a-list.sh`, `backlog-seeded-absent-values.sh`, `backlog-seeded-workstream-default-none.sh`;
+  - `workstreams-seeded-fields-are-a-list.sh`, `workstreams-seeded-abandoned-item.sh`.
+- **The seeded rules, re-read in either layout**: `backlog-seeded-item-priority-values.sh`, `backlog-seeded-item-kind-definition.sh`, `backlog-seeded-item-priority-transitions.sh`, `backlog-seeded-item-priority-no-low.sh` and `backlog-seeded-item-priority-statements.sh`. They replace the deleted `backlog-seeded-priority-values`, `-kind-definition`, `-priority-transitions`, `-priority-no-low` and `-priority-statements`, with assertions unchanged.
+- **Other deletions**:
+  - `backlog-seeded-priority-field` is deleted. `backlog-seeded-fields-are-a-list` carries its order assertion, and the item cases carry its content.
+  - `backlog-seeded-workstream-default` is deleted. `backlog-seeded-workstream-default-none` replaces it.
+- **The skill**:
+  - `backlog-skill-record-absent-value.sh`, which replaces the deleted `backlog-skill-record-workstream.sh` and repeats its four surviving scans;
+  - `backlog-skill-pick-no-workstream.sh`, `backlog-skill-sweep-absent-value.sh`, `backlog-skill-older-shape-earlier-nothing.sh`, `backlog-skill-older-shape-paragraph-fields.sh`.
+- **Arrangement**: `fenced_line` in `tests/lib.sh` now accepts a list marker. `fenced_field` stays local to its seven cases, because `AGENTS.md` records no shared test arrangement (`record-this-repositorys-shared-test-arrangement`).
