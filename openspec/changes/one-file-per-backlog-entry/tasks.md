@@ -1,9 +1,9 @@
 ## 1. Seed
 
-- [ ] 1.0 State in `AGENTS.md`'s *Three categories* what `scripts/seed/` holds and why it is not `rules/` (`toolkit-structure` delta). Verify with the derived toolkit-structure case
-- [ ] 1.1 Create `scripts/seed/backlog-README.md` with every statement *A backlog is seeded where none exists* lists (design.md decisions 1–4) (decision 5). Verify by reading it against the requirement's list
-- [ ] 1.2 In `scripts/project-init`, replace the backlog heredoc with a copy of the seed into `docs/backlog/README.md`; block on the seed's absence only where the backlog concern is outstanding; report a single-file backlog as present in that shape naming `scripts/backlog-migrate`; add a README beside existing entry files (decisions 5, 6). Verify with the derived seeded-backlog cases
-- [ ] 1.3 In `scripts/project-init`'s seeded workstream README, name `docs/backlog/` in the recorded-status lookup and `waits_on` where it names Waits on. Verify with the derived workstream-register cases
+- [x] 1.0 State in `AGENTS.md`'s *Three categories* what `scripts/seed/` holds and why it is not `rules/` (`toolkit-structure` delta). Verify with the derived toolkit-structure case
+- [x] 1.1 Create `scripts/seed/backlog-README.md` with every statement *A backlog is seeded where none exists* lists (design.md decisions 1–4) (decision 5). Verify by reading it against the requirement's list
+- [x] 1.2 In `scripts/project-init`, replace the backlog heredoc with a copy of the seed into `docs/backlog/README.md`; block on the seed's absence only where the backlog concern is outstanding; report a single-file backlog as present in that shape naming `scripts/backlog-migrate`; add a README beside existing entry files (decisions 5, 6). Verify with the derived seeded-backlog cases
+- [x] 1.3 In `scripts/project-init`'s seeded workstream README, name `docs/backlog/` in the recorded-status lookup and `waits_on` where it names Waits on. Verify with the derived workstream-register cases
 
 ## 2. Converter
 
