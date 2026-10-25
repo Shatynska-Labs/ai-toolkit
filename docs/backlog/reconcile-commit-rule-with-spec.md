@@ -2,6 +2,7 @@
 kind: change
 waits_on: []
 design_with: [name-the-fragments-third-owner]
+recorded_by: "the operator"
 re_checked: 2026-10-18
 ---
 

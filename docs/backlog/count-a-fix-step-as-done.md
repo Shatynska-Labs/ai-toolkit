@@ -4,6 +4,7 @@ kind: change
 waits_on: []
 design_with: [name-a-shared-step-once]
 workstream: complete-the-workstream-loop
+recorded_by: "commerce-ops's adopt-workstreams plan review"
 re_checked: 2026-10-24
 ---
 

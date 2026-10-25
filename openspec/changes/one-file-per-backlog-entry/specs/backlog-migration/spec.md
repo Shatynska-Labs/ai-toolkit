@@ -8,7 +8,7 @@ Defines `scripts/backlog-migrate`, the shipped tool that converts a project's si
 
 The library SHALL ship an executable at `scripts/backlog-migrate`, run as `scripts/backlog-migrate [<target>]`, the target defaulting to the current directory. It SHALL read `<target>/docs/backlog.md` and write `<target>/docs/backlog/`: a `README.md`, and one file `<name>.md` for each entry, named for the entry's heading. It SHALL then delete `docs/backlog.md`. It SHALL write nothing else, and SHALL NOT commit, stage or push.
 
-An **entry heading** is a level-2 heading — a line starting `## ` — outside any fenced code block, consisting of exactly one kebab-case name in backticks. The **preamble** is everything before the first entry heading; an entry is its heading and everything up to the next level-2 heading outside a fenced code block, or the end of the file. Headings inside fenced code blocks are text: the seeded preamble shows an example entry, `` ## `change-name` ``, inside a fence, and it is not an entry.
+An **entry heading** is a level-2 heading — a line starting `## ` — outside any fenced code block, consisting of exactly one kebab-case name in backticks. The **preamble** is everything before the first entry heading; an entry is its heading and everything up to the next level-2 heading outside a fenced code block, or the end of the file. Headings inside fenced code blocks are text: the seeded preamble shows an example entry, `` ## `change-name` ``, inside a fence, and it is not an entry. A fenced code block opens on a line starting ```` ``` ```` or `~~~` and closes only on a line starting with the same marker. A carriage return at a line's end is ignored, so a file with Windows line endings reads as any other.
 
 The README it writes SHALL be byte-for-byte the README `scripts/project-init` seeds. The preamble is not carried into it; the report says so.
 
@@ -40,7 +40,7 @@ The tool SHALL report `BLOCKED` and write nothing where:
 - `git` is unavailable, or the target is not inside a git repository;
 - `docs/backlog/` exists, of any type, including a symbolic link — the backlog is converted already, or a conversion is in progress by hand;
 - `docs/backlog.md` does not exist, is not a regular file, is not tracked by git, or differs from its committed content in the working tree or the index;
-- after the first entry heading, a level-2 heading outside a fenced code block is not an entry heading; two entries carry one name; or an entry's name is `readme` in any case, which would collide with `README.md` on a filesystem that ignores case;
+- after the first entry heading, a level-2 heading outside a fenced code block is not an entry heading; or, before it, a level-2 heading outside a fenced code block begins with a backtick, as an entry's does, but is not an entry heading, which would otherwise be read as preamble and left out; two entries carry one name; or an entry's name is `readme` in any case, which would collide with `README.md` on a filesystem that ignores case;
 - the seeded README is absent from the tool's own copy.
 
 Every precondition SHALL be checked before any write. The tool SHALL write the new directory under a temporary name in `docs/` and move it into place, then delete `docs/backlog.md`; where a write fails, it SHALL remove what it wrote, leave `docs/backlog.md` in place, and report `ERROR`.
@@ -76,6 +76,16 @@ Every precondition SHALL be checked before any write. The tool SHALL write the n
 
 - **WHEN** a backlog holds an entry headed `` ## `readme` ``
 - **THEN** the tool reports `BLOCKED`, names the entry, and writes nothing
+
+#### Scenario: A malformed first entry blocks
+
+- **WHEN** a backlog's first backticked level-2 heading reads `` ## `First_Entry` ``, which is not a kebab-case name
+- **THEN** the tool reports `BLOCKED`, names the heading, and writes nothing, rather than reading the entry as preamble
+
+#### Scenario: Windows line endings
+
+- **WHEN** a backlog's lines end in a carriage return and a newline
+- **THEN** its entries convert as they do with newlines alone
 
 #### Scenario: A failed write leaves the old file
 
@@ -127,6 +137,16 @@ A **known name** is the name of an entry in the same file, or of a change direct
 - **WHEN** an entry's Waits on reads `` `nothing`. The open change `update-managed-block` must be designed with it. ``
 - **THEN** its file carries `waits_on: []`, and the note is kept in the body under **Waits on**
 
+#### Scenario: A fence after a field stays out of the value
+
+- **WHEN** a fenced code block starts on the line after an entry's last field, with no blank line between
+- **THEN** the field's value holds none of the fenced text, and the block is kept in the body whole
+
+#### Scenario: A fence of the other marker does not close
+
+- **WHEN** an entry's prose holds a `~~~` fence containing a ```` ``` ```` line, followed by the next entry's heading
+- **THEN** the next entry converts as an entry of its own
+
 #### Scenario: An unknown field is kept
 
 - **WHEN** an entry carries `- **Must not undo**: the pinned project name`
@@ -152,6 +172,11 @@ The report is what the operator reads before committing the conversion, so it na
 
 - **WHEN** an entry's Priority reads `parked until` a condition followed by its reason
 - **THEN** the report names that entry's `parked_until` among the conditions written
+
+#### Scenario: An unmapped Recorded by is reported
+
+- **WHEN** an entry's Recorded by names no entry or change
+- **THEN** its file carries no `recorded_by`, the value is kept in the body, and the report names the entry and its Recorded by
 
 #### Scenario: A kept note is reported
 

@@ -3,6 +3,7 @@ kind: change
 waits_on: []
 design_with: [count-a-fix-step-as-done]
 workstream: complete-the-workstream-loop
+recorded_by: "the operator"
 re_checked: 2026-10-25
 ---
 

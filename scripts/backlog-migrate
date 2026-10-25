@@ -102,9 +102,16 @@ fi
 
 # An entry heading is a level-2 heading outside fenced code holding exactly
 # one backticked kebab-case name. Before the first one, any heading is
-# preamble; after it, a level-2 heading that is not a name blocks.
+# preamble unless it is backticked like an entry's; after it, a level-2
+# heading that is not a name blocks. A fence closes only on its own marker,
+# and a carriage return before the newline is ignored.
 scan="$(awk '
-  /^[ \t]*(```|~~~)/ { fence = !fence; next }
+  { sub(/\r$/, "") }
+  /^[ \t]*(```|~~~)/ {
+    m = $0; sub(/^[ \t]*/, "", m); m = substr(m, 1, 3)
+    if (!fence) { fence = 1; fmark = m } else if (m == fmark) fence = 0
+    next
+  }
   fence { next }
   /^## / {
     if ($0 ~ /^## `[a-z0-9]+(-[a-z0-9]+)*`[ \t]*$/) {
@@ -114,6 +121,8 @@ scan="$(awk '
       seen[name] = 1; started = 1; print "NAME " name
     } else if (started) {
       print "BLOCK a level-2 heading after the first entry is not one backticked kebab-case name: " $0
+    } else if ($0 ~ /^## `/) {
+      print "BLOCK a level-2 heading before the first entry is backticked like an entry but is not one kebab-case name: " $0
     }
   }
 ' "$single")"
@@ -240,6 +249,7 @@ if ! printf '%s\n' "$known" | awk -v out="$workdir" -v notes="$notes" '
     } else if (l == "recorded by") {
       nm = names(v); sub(/,.*/, "", nm)
       if (nm != "") fm["recorded_by"] = nm
+      else note(label " kept in the body: no known name")
       item(label, trim(v))
     } else if (l == "re-checked") {
       if (match(v, /[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/)) {
@@ -259,22 +269,26 @@ if ! printf '%s\n' "$known" | awk -v out="$workdir" -v notes="$notes" '
   }
   FILENAME == "-" { if ($0 != "") known[$0] = 1; next }
 
-  /^[ \t]*(```|~~~)/ { fence = !fence }
-  !fence && /^## `[a-z0-9]+(-[a-z0-9]+)*`[ \t]*$/ {
+  { sub(/\r$/, ""); fl = 0 }
+  /^[ \t]*(```|~~~)/ {
+    fl = 1; m = $0; sub(/^[ \t]*/, "", m); m = substr(m, 1, 3)
+    if (!fence) { fence = 1; fmark = m } else if (m == fmark) fence = 0
+  }
+  !fence && !fl && /^## `[a-z0-9]+(-[a-z0-9]+)*`[ \t]*$/ {
     close_field(); flush()
     entry = $0; sub(/^## `/, "", entry); sub(/`[ \t]*$/, "", entry)
     split("", fm); split("", items); ni = 0; prose = ""; other = ""; seenfield = 0
     next
   }
   entry == "" { next }
-  !fence && /^(- )?\*\*[^*]+\*\*:/ {
+  !fence && !fl && /^(- )?\*\*[^*]+\*\*:/ {
     close_field()
     flabel = $0; sub(/^(- )?\*\*/, "", flabel); sub(/\*\*:.*/, "", flabel)
     fvalue = $0; sub(/^(- )?\*\*[^*]+\*\*:[ \t]*/, "", fvalue)
     seenfield = 1
     next
   }
-  flabel != "" && $0 !~ /^[ \t]*$/ && $0 !~ /^[ \t]*(- |#)/ { fvalue = fvalue " " trim($0); next }
+  flabel != "" && !fence && !fl && $0 !~ /^[ \t]*$/ && $0 !~ /^[ \t]*(- |#)/ { fvalue = fvalue " " trim($0); next }
   { close_field()
     if (!seenfield) prose = prose $0 "\n"
     else other = other $0 "\n"

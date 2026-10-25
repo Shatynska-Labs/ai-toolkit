@@ -2,6 +2,7 @@
 kind: change
 waits_on: []
 design_with: []
+recorded_by: "the operator"
 re_checked: 2026-10-21
 ---
 
