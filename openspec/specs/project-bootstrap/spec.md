@@ -518,7 +518,8 @@ The created file SHALL state, as prose a session reads before adding an entry:
 - that an entry is deleted when its change is archived, when the operator takes it as a fix rather than a change, when a change makes it obsolete, or when the operator decides the change will not be made;
 - that when a change is archived, the entries it unblocked, unparked or made stale are updated and their re-checked date set;
 - that the file is kept when it has no entries;
-- the shape of an entry: its heading; what the change is and why, written for a session that has not seen the work that found it; its **Priority**, `high`, `normal` or `parked until` a condition that can be checked, with the reason, that a parked entry is not folded into another change before its condition holds, that a parked entry whose condition holds becomes `normal`, or `high` with evidence, that a `high` entry whose evidence no longer holds becomes `normal`, and that an entry without the field is `normal`; its **Kind**, `fix` or `change`, with the reason; what it **Waits on**, as `nothing` or as something that can be checked — a change by name, a person's answer, an event; which entries it is to be **designed with**, or nothing; which **workstream** it is a step of or serves, by name, or `nothing`, that an entry recorded by a change in a workstream takes that workstream unless it serves another goal, and that an entry without the field is `nothing`; what **recorded** it and why it was not done there; and the date it was last **re-checked** against the repository.
+- the shape of an entry: its heading; what the change is and why, written for a session that has not seen the work that found it; its **Priority**, `high`, `normal` or `parked until` a condition that can be checked, with the reason, that a parked entry is not folded into another change before its condition holds, that a parked entry whose condition holds becomes `normal`, or `high` with evidence, that a `high` entry whose evidence no longer holds becomes `normal`, and that an entry without the field is `normal`; its **Kind**, `fix` or `change`, with the reason; what it **Waits on**, as `nothing` or as something that can be checked — a change by name, a person's answer, an event; which entries it is to be **designed with**, or `none`; which **workstream** it is a step of or serves, by name, or `none`, that an entry recorded by a change in a workstream takes that workstream unless it serves another goal, and that an entry without the field is `none`; what **recorded** it and why it was not done there; and the date it was last **re-checked** against the repository;
+- that the fields follow the entry's prose as one list, one item per field, in that order, with no blank line between them.
 
 **Kind is `fix` only where the entry owes no specification delta, needs no decision from the operator, and is small enough to review in one sitting**; otherwise it is `change`. The size condition is the workflow's own: a fix is work too small to be a change, which skips `plan`, so an entry too large for one sitting is not one whatever it owes. The reason is stated because the label alone cannot be checked, and an entry's kind is the first thing a session picking work reads.
 
@@ -526,11 +527,15 @@ The created file SHALL state, as prose a session reads before adding an entry:
 
 **Priority is `high` only with evidence of harm happening now** — an incident, a measurement, an observation — and **`parked` only with a condition that can be checked**, under which the entry becomes worth taking. Both are stated so that a later reading can tell whether they still hold, which a bare label cannot show. There is no `low`: an entry not worth taking with no condition under which it would be is one the operator has decided will not be made, which is already a deletion ground. Parked is not a wait: a waiting entry cannot be taken, a parked one can and is deliberately deferred, and an entry may be both. An entry without the field is `normal`, stated in the file so that a backlog written before the field existed needs no edit.
 
-**Workstream is not Design with.** Design with groups entries that share a design, a property of the work; Workstream places an entry in a goal's sequence of changes, a property of the plan. Two entries may share either without the other, so neither field stands in for the other. The default is the recording change's workstream because work a change identifies usually serves the goal that change serves, and an entry recorded without it is detached from the plan it belongs to. An entry without the field is `nothing`, stated in the file so that a backlog written before the field existed needs no edit.
+**Workstream is not Design with.** Design with groups entries that share a design, a property of the work; Workstream places an entry in a goal's sequence of changes, a property of the plan. Two entries may share either without the other, so neither field stands in for the other. The default is the recording change's workstream because work a change identifies usually serves the goal that change serves, and an entry recorded without it is detached from the plan it belongs to. An entry without the field is `none`, stated in the file so that a backlog written before the field existed needs no edit.
 
 A blocked entry waits on more than changes — an answer, an access grant, a production event — and a trigger stated as something checkable is the one that can be noticed when it fires.
 
 Entry brevity is stated because the details it excludes are the ones that go stale first, and the session that takes the entry up redoes them anyway. A census worth keeping belongs in the change's own artifacts once the change is opened.
+
+**A field's absent value is `none`, except Waits on's, which is `nothing`.** Each reads as the field's name followed by its value: an entry *waits on nothing*, is *designed with none* and serves *workstream none*. `none` is also the word the status row and a proposal already use for a change in no workstream, so one absence reads one way wherever a workstream is named.
+
+**The fields are a list.** Seven fields as seven paragraphs cost six blank lines an entry, which in a backlog of a hundred entries is several hundred lines that carry nothing. Lines that are not a list would render as one run-on paragraph wherever the file is read as Markdown, so the list is what makes them both compact and legible.
 
 **This requirement owns the backlog's entry rules**; `session-workflow` owns only routing work to the file and when it is re-read, and its fragment defers to the file for these rules rather than restating them. `backlog-maintenance` performs operations over the file and likewise reads these rules from it.
 
@@ -583,7 +588,17 @@ The file is kept when empty because the tool created it: deleting it would leave
 #### Scenario: Workstream's default is stated
 
 - **WHEN** the seeded file is created
-- **THEN** its entry shape states that an entry recorded by a change in a workstream takes that workstream unless it serves another goal, and that an entry without the field is `nothing`
+- **THEN** its entry shape states that an entry recorded by a change in a workstream takes that workstream unless it serves another goal, and that an entry without the field is `none`
+
+#### Scenario: The seeded entry's fields are a list
+
+- **WHEN** the seeded file is created
+- **THEN** its entry shape gives the fields as consecutive list items, `- **Priority**: …` to `- **Re-checked**: …`, with no blank line between them
+
+#### Scenario: An absent value reads as its field
+
+- **WHEN** the seeded file is created
+- **THEN** its entry shape gives Waits on's absent value as `nothing`, and Design with's and Workstream's as `none`
 
 ### Requirement: A wrapper offers the direct initial commit only to a repository without one, and shows what it holds
 
@@ -669,9 +684,9 @@ The created file SHALL state, as prose a session reads before opening, editing o
 - that a workstream is opened when the operator decides a goal needs more than one change, and committed with the plan of the first change that advances it or as work too small to be a change;
 - that a change or a backlog entry may name the workstream it serves before any step names it, and that each such change or entry is placed among the steps or detached at the next edit of the workstream, and at the latest at the archive of a change in it;
 - that when what finishes a workstream holds, its file moves to `archive/<YYYY-MM-DD>-<name>.md`, dated the day it is archived, in the commit that carries the record of the change that completed it, after each step not done, other than the change whose record that commit carries, is removed from the steps, first recorded as a backlog entry naming no workstream where it is still wanted and not yet in flight, an in-flight one continuing as its own change, and every backlog entry still naming it is re-pointed or cleared;
-- that the operator may abandon a workstream whose goal will not be met, which gains an **Abandoned** line with the date and the reason, has its steps and entries dealt with as on completion, and is moved to `archive/` the same way, as work too small to be a change;
+- that the operator may abandon a workstream whose goal will not be met, which gains an **Abandoned** item after Opened, with the date and the reason, has its steps and entries dealt with as on completion, and is moved to `archive/` the same way, as work too small to be a change;
 - that a workstream is kept short, its lasting decisions recorded in a document or a change's design it points to, and that the README is kept when there is no workstream;
-- the shape of a workstream: its heading, the name; its **Goal**; its **Done when**, a condition that can be checked against the repository, the forge or production; its **Steps**, an ordered list each naming a change in kebab-case with what it does; what is **Not in scope**, or `nothing`; its **Open questions**, each deleted once answered with the answer recorded where its decisions are, or `nothing`; its **Decisions**, where they are recorded, or `nothing`; and when and by what it was **Opened**.
+- the shape of a workstream: its heading, the name; its **Goal**; its **Done when**, a condition that can be checked against the repository, the forge or production; its **Steps**, an ordered list each naming a change in kebab-case with what it does; what is **Not in scope**, or `none`; its **Open questions**, each deleted once answered with the answer recorded where its decisions are, or `none`; its **Decisions**, where they are recorded, or `none`; and when and by what it was **Opened** — Goal and Done when as paragraphs, and the fields after the steps as one list, one item per field, with no blank line between them.
 
 **The file holds no status because status written by hand goes stale.** Progress happens in every session, and a status field is edited by none of them at the moment it changes; a status read from the repository by name is current whenever it is read. That is why a step is named by the change it is expected to be: the name is the key the lookups use. **The precedence and the trunk are stated because the sources overlap**: a backlog entry survives until its change is archived, and a branch until the record's pull request merges, so a step matches more than one source in the ordinary course of its life; and a session's own working tree may predate a step's archive, so reading it would give each session a different answer.
 
@@ -717,3 +732,8 @@ The created file SHALL contain no workstream.
 
 - **WHEN** a session reads the seeded file to learn whether a step may start before the step listed above it
 - **THEN** the file directs it to that step's backlog entry's Waits on, and states that list order gates nothing
+
+#### Scenario: The seeded workstream's fields are a list
+
+- **WHEN** the seeded file is created
+- **THEN** its workstream shape gives Not in scope, Open questions, Decisions and Opened as consecutive list items after the steps, each absent value as `none`
