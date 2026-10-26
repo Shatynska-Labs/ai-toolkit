@@ -220,7 +220,10 @@ cold_run_check:
       c_none_named_conventions_state_none:
         fixture: >-
           As (b), but AGENTS.md states the project has no shared test
-          arrangement.
+          arrangement, and there is no tests_support/. A tests_support/ left in
+          place contradicts the stated conventions, and the agent rightly
+          raises that contradiction as a question, failing this variant for a
+          reason that is not about the agent.
         payload_adds: nothing.
         pass_criteria:
           - As (b), except that no unresolved project question is raised about
