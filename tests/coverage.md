@@ -30,7 +30,7 @@ Most scenarios this suite cannot cover are of one kind, and it is worth naming o
 | Existing specification tooling is skipped, not reinitialized | Covered — `existing-git-and-openspec.sh` |
 | Failure midway leaves a reported, recoverable state | Covered — `delegated-init-failure.sh`, `recovery-after-failure.sh` |
 | A delegated command's writes are attributed, not concealed | Covered — `adoption-agents-md-diff-only.sh` |
-| An existing ignore file is preserved exactly | Covered — `existing-gitignore-preserved.sh` |
+| An existing ignore file is preserved exactly | Covered — `existing-gitignore-preserved.sh`, and `gitignore-dangling-symlink-not-written-through.sh` for a link that does not resolve |
 | An existing conventions file receives only the managed block | Covered — `existing-agents-md-appended.sh` |
 | Created ignore file carries no stack assumption | Covered — `gitignore-enumerated-entries.sh` |
 | A project's adopted version is readable | Covered — `managed-block-current-version.sh` for the version marker, `inlined-body-matches-fragment.sh` for the body, which is compared against the fragment byte-for-byte. The latter guards faithful inlining by the script; it cannot detect a project whose block has fallen behind the toolkit, because the script always re-inlines from the current fragment |

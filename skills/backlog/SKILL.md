@@ -113,4 +113,4 @@ Given a name, report that workstream alone.
 
 - **Positive** — "Add this to the backlog: the install script should verify the plugin version before writing the managed block." → expected routing: `backlog`.
 - **Positive** — "Where does the test-speed workstream stand, and what's next in it?" → expected routing: `backlog`.
-- **Negative** — "Open a change for the `count-a-dangling-ignore-file-link-as-present` backlog entry." → expected routing: `openspec-new-change`.
+- **Negative** — "Open a change for the `seed-the-worktree-ignore-entry` backlog entry." → expected routing: `openspec-new-change`.
