@@ -43,9 +43,11 @@ build_binding() {
 }
 
 # The text after the first occurrence of verdict $2 in $1, up to the next
-# verdict token.
+# verdict token. The text reaches awk through the environment, which, unlike
+# `-v`, does not interpret backslash escapes.
 clause_after() {
-  awk -v text="$1" -v tok="$2" 'BEGIN {
+  CLAUSE_TEXT="$1" CLAUSE_TOK="$2" awk 'BEGIN {
+    text = ENVIRON["CLAUSE_TEXT"]; tok = ENVIRON["CLAUSE_TOK"]
     i = index(text, tok); if (i == 0) exit 1
     rest = substr(text, i + length(tok))
     n = split("`APPROVED`|`CONDITIONALLY APPROVED`|`FIX REQUIRED`|`REJECTED`", v, "|")
@@ -55,7 +57,8 @@ clause_after() {
   }'
 }
 
-has() { printf '%s\n' "$1" | grep -qiF -- "$2"; }
+# Whole words only, so "nonstop" does not satisfy "stop".
+has() { printf '%s\n' "$1" | grep -qiwF -- "$2"; }
 
 check() {
   local root="$1"
@@ -142,6 +145,18 @@ _Claude Code binding:_ run `ai-toolkit:change-code-reviewer` over the change's c
 ### ship
 FIXTURE
 
+# Fixture three: `REJECTED`'s act holds "stop" only inside another word —
+# the shape a substring match accepts.
+substring_act="$TESTDIR/substring-act"
+mkdir -p "$substring_act/rules"
+cat >"$substring_act/$FRAGMENT_REL" <<'FIXTURE'
+### build
+
+_Claude Code binding:_ run `ai-toolkit:change-code-reviewer` over the change's committed diff. On `FIX REQUIRED` fix and re-review where the fixes were substantial; on `CONDITIONALLY APPROVED` apply the `[MINOR]` fixes and continue; on `APPROVED` continue; on `REJECTED` work nonstop and raise it.
+
+### ship
+FIXTURE
+
 discriminate() {
   local root="$1" expected="$2" what="$3" reason status
   assert_file "$root/$FRAGMENT_REL" "the falsifying fixture was not written"
@@ -171,3 +186,6 @@ discriminate "$plan_only" 'does not state the verdict `REJECTED`' \
 # shellcheck disable=SC2016 # the backticks are literal markdown, not a command substitution
 discriminate "$wrong_act" 'does not state the act for `REJECTED`' \
   "a build binding stating the wrong act for REJECTED"
+# shellcheck disable=SC2016 # the backticks are literal markdown, not a command substitution
+discriminate "$substring_act" 'does not state the act for `REJECTED`' \
+  "a build binding whose REJECTED act holds stop only inside another word"
