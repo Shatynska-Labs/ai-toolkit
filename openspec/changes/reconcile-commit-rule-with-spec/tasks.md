@@ -10,4 +10,4 @@
 ## 3. Record
 
 - [ ] 3.1 Add a section to `tests/coverage.md` for this change, recording each added and modified scenario against its case or as uncovered with the reason; verify by reading.
-- [ ] 3.2 Run `openspec validate reconcile-commit-rule-with-spec --strict` and `bash tests/run.sh`; verify both pass.
+- [ ] 3.2 Run `openspec validate reconcile-commit-rule-with-spec --strict` and `bash tests/run.sh`; verify both pass. `tests/cases/session-workflow-publication-names-third-owner.sh` reads the main specification, which takes the delta's text only at archive, so it is left out of the work's pull request and committed with the archive record, where it must pass (test-plan.md, Q2).
