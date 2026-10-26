@@ -14,3 +14,8 @@
 - [x] 3.1 `bash tests/run.sh` passes
 - [x] 3.2 `shellcheck tests/*.sh tests/cases/*.sh tests/cases/lib/*.sh` is clean
 - [x] 3.3 `openspec validate oblige-removing-a-cold-run-worktree --strict` passes
+
+## 4. Ship
+
+- [x] 4.1 Merged as Shatynska-Labs/ai-toolkit#63 (commit `c5488d8b`, 2026-10-26).
+- [x] 4.2 **Confirm waived by the operator, 2026-10-26**: the change edits only the authoring standard's prose, so no observation can be made of it beyond reading the text, and the next write-capable agent's cold run that would exercise it is not scheduled.
