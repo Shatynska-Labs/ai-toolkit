@@ -284,3 +284,13 @@ From the requirement's definition of a shadowing file rather than a scenario: `s
 - **Retired**: the 28 cases asserting the single file whose subjects the cases above carry — the `backlog-seeded-*` cases, `backlog-existing-preserved`, `workstreams-seeded-order-gates-nothing`, `backlog-skill-older-shape-paragraph-fields`, and the `workflow-fragment-*` cases anchored on `docs/backlog.md`. The rows above that name them now describe what this change replaced.
 - **Re-anchored**: twelve kept cases whose only stale part was the path, a label, a report token or a fixture missing the seed; `test-plan.md` lists each.
 - **Arrangement**: every local declaration is kept, because `AGENTS.md` records no shared test arrangement (`record-this-repositorys-shared-test-arrangement`).
+
+## oblige-removing-a-cold-run-worktree (9 delta scenarios)
+
+`oblige-removing-a-cold-run-worktree` modifies *Cold runs are isolated when the agent can write* in `agent-authoring`: 9 scenarios, 3 of them new. The 6 carried scenarios have no case here and gain none: this suite has never covered `agent-authoring`, and the change does not alter them. The 3 new ones are covered by reading the standard's prose, which states the obligation; whether a session removes the worktree is the cold-run check's to observe, not this harness's.
+
+- **The worktree is removed once the outcome is read**: `cold-run-check-worktree-removed-after-outcome.sh`.
+- **An aborted run's worktree is removed**: `cold-run-check-aborted-run-worktree-removed.sh`.
+- **A revised body runs in a fresh worktree**: `cold-run-check-revised-body-fresh-worktree.sh`.
+- **The skill's summary**: `create-agent-skill-isolation-names-removal.sh`, derived from task 1.3 rather than a scenario.
+- **Arrangement**: nothing declared locally; every case takes `tests/lib.sh` and `tests/cases/lib/static-scan.sh`.

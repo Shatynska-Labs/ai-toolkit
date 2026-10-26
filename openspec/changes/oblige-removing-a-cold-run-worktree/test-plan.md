@@ -90,3 +90,5 @@ None, on two grounds stated separately. The delta supersedes nothing: comparing 
 ## Missing shared arrangement
 
 Nothing declared locally. Every case takes its arrangement from the dispatched shared arrangement: `tests/lib.sh` (`assert_file`) and `tests/cases/lib/static-scan.sh` (`scan`, `scan_run`). The shared arrangement held everything these cases needed, with no near-miss.
+
+**Disposition (apply):** no entries to promote or keep; nothing was declared locally.
