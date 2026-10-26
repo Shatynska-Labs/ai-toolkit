@@ -291,3 +291,13 @@ From the requirement's definition of a shadowing file rather than a scenario: `s
 
 - **A fragment names only agents and skills the library ships** — `workflow-fragment-names-shipped-assets.sh`, which resolves every `ai-toolkit:<name>` in both fragment bodies to `agents/<name>.md` or `skills/<name>/SKILL.md`, and is checked against a fixture naming an unshipped name it must report and one naming a shipped agent and skill it must not.
 - `workflow-fragment-no-dangling-reference.sh` is unchanged; it still guards the `rules/` path, fragment-file and import bans.
+
+## oblige-removing-a-cold-run-worktree (9 delta scenarios)
+
+`oblige-removing-a-cold-run-worktree` modifies *Cold runs are isolated when the agent can write* in `agent-authoring`: 9 scenarios, 3 of them new. The 6 carried scenarios have no case here and gain none: this suite has never covered `agent-authoring`, and the change does not alter them. The 3 new ones are covered by reading the standard's prose, which states the obligation; whether a session removes the worktree is the cold-run check's to observe, not this harness's.
+
+- **The worktree is removed once the outcome is read**: `cold-run-check-worktree-removed-after-outcome.sh`.
+- **An aborted run's worktree is removed**: `cold-run-check-aborted-run-worktree-removed.sh`.
+- **A revised body runs in a fresh worktree**: `cold-run-check-revised-body-fresh-worktree.sh`.
+- **The skill's summary**: `create-agent-skill-isolation-names-removal.sh`, derived from task 1.3 rather than a scenario.
+- **Arrangement**: nothing declared locally; every case takes `tests/lib.sh` and `tests/cases/lib/static-scan.sh`.
