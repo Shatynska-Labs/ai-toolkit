@@ -286,3 +286,10 @@ From the requirement's definition of a shadowing file rather than a scenario: `s
 - **Retired**: the 28 cases asserting the single file whose subjects the cases above carry — the `backlog-seeded-*` cases, `backlog-existing-preserved`, `workstreams-seeded-order-gates-nothing`, `backlog-skill-older-shape-paragraph-fields`, and the `workflow-fragment-*` cases anchored on `docs/backlog.md`. The rows above that name them now describe what this change replaced.
 - **Re-anchored**: twelve kept cases whose only stale part was the path, a label, a report token or a fixture missing the seed; `test-plan.md` lists each.
 - **Arrangement**: every local declaration is kept, because `AGENTS.md` records no shared test arrangement (`record-this-repositorys-shared-test-arrangement`).
+
+## extend-dangling-reference-to-agent-names (5 delta scenarios)
+
+`extend-dangling-reference-to-agent-names` modifies *The session obligations are published in the workflow fragment and one binding fragment* in `session-workflow`, adding a ban on an `ai-toolkit:` name the library does not ship and one scenario for it. Its case was derived by `ai-toolkit:change-test-writer`; the per-scenario accounting is in the change's `test-plan.md`. 1 scenario is new and covered; 4 are carried over verbatim and keep their accounting above.
+
+- **A fragment names only agents and skills the library ships** — `workflow-fragment-names-shipped-assets.sh`, which resolves every `ai-toolkit:<name>` in both fragment bodies to `agents/<name>.md` or `skills/<name>/SKILL.md`, and is checked against a fixture naming an unshipped name it must report and one naming a shipped agent and skill it must not.
+- `workflow-fragment-no-dangling-reference.sh` is unchanged; it still guards the `rules/` path, fragment-file and import bans.
