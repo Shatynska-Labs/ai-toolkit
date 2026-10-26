@@ -158,7 +158,9 @@ else
   spec_outstanding=1
 fi
 
-if [ -f "$target/.gitignore" ]; then
+# A dangling link at the ignore file counts as present: writing to it would
+# follow it.
+if [ -e "$target/.gitignore" ] || [ -L "$target/.gitignore" ]; then
   gitignore_outstanding=0
 else
   gitignore_outstanding=1
