@@ -303,3 +303,13 @@ From the requirement's definition of a shadowing file rather than a scenario: `s
 - **A revised body runs in a fresh worktree**: `cold-run-check-revised-body-fresh-worktree.sh`.
 - **The skill's summary**: `create-agent-skill-isolation-names-removal.sh`, derived from task 1.3 rather than a scenario.
 - **Arrangement**: nothing declared locally; every case takes `tests/lib.sh` and `tests/cases/lib/static-scan.sh`.
+
+## reconcile-commit-rule-with-spec (19 delta scenarios)
+
+`reconcile-commit-rule-with-spec` modifies *A second change surfacing in a session is recorded in the backlog* and *The session obligations are published in the workflow fragment and one binding fragment* in `session-workflow`, and adds *Fragment prose is not hard-wrapped*. The fragment's text is unchanged; the cases check that it already says what the amended requirements say. Its cases were derived by `ai-toolkit:change-test-writer`; the per-scenario accounting is in the change's `test-plan.md`. 4 scenarios are new or revised and covered in their mechanical half; 13 are carried over verbatim and keep their accounting above; 2 carried over are uncovered, as before.
+
+- **A handoff is not left uncommitted on a branch the session leaves** (revised): `workflow-fragment-handoff-branch-committed.sh`, which requires the fragment to commit the handoff branch at once and forbids a proposed commit or a declined path.
+- **An editor learns every owner of the fragment's content from this capability**: `session-workflow-publication-names-third-owner.sh`, reading the main specification, so it arrives with the archive record; `session-workflow-purpose-names-third-owner.sh` checks the Purpose, which task 2.1 edits directly.
+- **A session writing prose keeps a paragraph on one line**: `workflow-fragment-prose-one-line.sh`.
+- **Markdown structure still takes its own line breaks**: `workflow-fragment-prose-structure-exception.sh`.
+- **Arrangement**: the three fragment cases take `tests/cases/lib/line-scan.sh`, promoted from a local helper; the two specification cases take `tests/cases/lib/static-scan.sh`.

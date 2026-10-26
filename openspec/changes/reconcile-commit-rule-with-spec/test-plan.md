@@ -123,5 +123,5 @@ Dispatched shared arrangement: `tests/lib.sh`, `tests/cases/lib/static-scan.sh`.
 
 ## Dispositions
 
-- **Q2** — resolved: `session-workflow-publication-names-third-owner` keeps reading the main specification. It is not committed with the work, whose pull request must pass `bash tests/run.sh`, and is committed in the archive commit, beside the record that makes it pass (tasks.md 3.2).
+- **Q2** — resolved: `session-workflow-publication-names-third-owner` keeps reading the main specification. During the work it is held at `held/` in this change directory, outside `tests/cases/`, so the work's pull request passes `bash tests/run.sh`; the archive commit moves it into `tests/cases/`, beside the record that makes it pass (tasks.md 3.2).
 - **Missing shared arrangement, `lscan` / `lselect` / `lcheck` / `ldiscriminate`** — promoted onto the existing `tests/cases/lib/line-scan.sh`. The three fragment cases now take `line_select`, `line_scan` and `line_run` from it; their selectors, scans, specimens and fixtures are unchanged. `line-scan.sh` does not skip fenced code, which none of the three selectors meets in the fragment, and its failures print a scan's tag and regex, not the fragment's text. Each case was checked red against a fragment mutated to propose the handoff commit or to wrap prose, and restored with `git restore`.
