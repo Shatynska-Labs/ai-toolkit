@@ -312,4 +312,4 @@ From the requirement's definition of a shadowing file rather than a scenario: `s
 - **An editor learns every owner of the fragment's content from this capability**: `session-workflow-publication-names-third-owner.sh`, reading the main specification, so it arrives with the archive record; `session-workflow-purpose-names-third-owner.sh` checks the Purpose, which task 2.1 edits directly.
 - **A session writing prose keeps a paragraph on one line**: `workflow-fragment-prose-one-line.sh`.
 - **Markdown structure still takes its own line breaks**: `workflow-fragment-prose-structure-exception.sh`.
-- **Arrangement**: the three fragment cases take `tests/cases/lib/line-scan.sh`, promoted from a local helper; the two specification cases take `tests/cases/lib/static-scan.sh`.
+- **Arrangement**: the three fragment cases keep their line-scan helper declared locally, because `AGENTS.md` records no shared test arrangement; the two specification cases take `tests/cases/lib/static-scan.sh`.
