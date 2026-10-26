@@ -97,4 +97,7 @@ The dispatch named `tests/lib.sh` as the shared arrangement. Two local declarati
   - Found in another test module: no.
   - Proposed home: `tests/lib.sh`.
 
+**Dispositions at `apply`:**
+- `prose_line` and `next_nonblank` (`workstreams-seeded-done-when-statement`): **kept local.** `AGENTS.md` records no shared test arrangement, so nothing can be promoted into one; creating or recording one is a testing-strategy decision, not a step of this change. The backlog's `record-this-repositorys-shared-test-arrangement` is where they would move.
+
 `workstreams-seeded-done-when-shape` declares nothing locally. It uses `fenced_line`, `assert_*` from `tests/lib.sh`.
