@@ -320,6 +320,8 @@ Open a workstream when the operator decides a goal needs more than one change. C
 
 A change or a backlog entry may name the workstream it serves before any step names it. Place each such change or entry among the steps, or detach it, at the next edit of the workstream, and at the latest at the archive of a change in it.
 
+What finishes a workstream is an effect of its Goal that someone can observe: what to look at in the repository, the forge or production, what provokes it where something must, and what result means the Goal holds. "Every step is archived" shows only that the step list was worked through, and a list missing a step meets it all the same. It may stand beside the effect where every step is wanted whatever the effect shows, never in its place.
+
 When a workstream's Done when holds, move its file to `archive/<YYYY-MM-DD>-<name>.md`, dated the day it is archived, in the commit that carries the record of the change that completed it. Before moving it, remove from the steps each step not done, other than the change whose record that commit carries. Where a removed step is still wanted, it is first recorded as a backlog entry naming no workstream if it is not yet in flight, and it continues as its own change if it is. Then re-point or clear every backlog entry still naming it.
 
 The operator may abandon a workstream whose goal will not be met. Add an `- **Abandoned**: <date>, <reason>` item after Opened, deal with its steps and entries as above, and move it to `archive/` the same way, as work too small to be a change.
@@ -333,7 +335,7 @@ A workstream takes this shape:
 
 **Goal**: what is true when the workstream is finished, and why it is wanted.
 
-**Done when**: a condition that can be checked against the repository, the forge or production.
+**Done when**: an effect of the Goal that can be observed in the repository, the forge or production, and what result means it holds; add "every step is archived" beside it where that is wanted.
 
 **Steps**:
 
