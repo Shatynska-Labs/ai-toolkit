@@ -76,6 +76,7 @@ When the drafted agent's tool grant includes `Write`, `Edit`, or `Bash`, the liv
 git worktree add <wt> HEAD
 cp agents/<name>.md <wt>/agents/
 cd <wt> && claude -p --plugin-dir <wt> ...
+# read the run's report and any writes under <wt> before removing it
 cd <authoring-checkout> && git worktree remove --force <wt>
 ```
 
