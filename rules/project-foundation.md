@@ -40,7 +40,7 @@ Nine decisions, falling into two groups by how they may be reached.
 - **Continuous integration** — the gate every change must pass before it reaches the trunk, and which checks it runs.
 - **Toolchain pinning** — how the language runtime and tool versions are fixed so every working copy and the gate run the same ones.
 - **Branch protection** — what the forge requires before a change reaches the trunk.
-- **Provisioning** — what a new working tree needs before its verification can be trusted.
+- **Provisioning** — what a new working tree needs before its verification can be trusted, including how every tool that recurses the tree without reading the ignore file — test collection, a linter, a container build context — is kept out of the roots the workflow places working trees under (`.worktrees/`, and `.claude/worktrees/` by its Claude Code binding), whether or not the ignore file names them.
 
 Three of these carry a position rather than an open choice. Each is what makes its concern a control rather than a convenience, so record it as stated:
 

@@ -11,7 +11,7 @@ The obligation was recorded in `rules/worktree-isolation.md`, which `project-ini
 - The enumerated ignore file gains a fourth category, `# Working trees`, with `.worktrees/` and `.claude/worktrees/`.
 - The requirement states that the ignore file reaches only tools that read it. Recursive tools that do not read it, such as test collection, linters and a container build context, must be kept out of those roots by the project's own tooling configuration. The tool writes none of that configuration.
 - Foundation discovery's *Provisioning* concern takes ownership of keeping those tools out of the working-tree roots, so the obligation has an actor.
-- `scripts/project-init` writes the new category, and `tests/cases/gitignore-enumerated-entries.sh` asserts it.
+- `scripts/project-init` writes the new category. The derived cases assert it, superseding `tests/cases/gitignore-enumerated-entries.sh`.
 
 ## Capabilities
 
@@ -26,7 +26,7 @@ None.
 
 ## Impact
 
-- `scripts/project-init` (the ignore-file heredoc), `tests/cases/gitignore-enumerated-entries.sh`, `tests/coverage.md`.
+- `scripts/project-init` (the ignore-file heredoc), `tests/coverage.md`; `tests/cases/gitignore-enumerated-entries.sh` is retired in favour of the derived cases.
 - `rules/project-foundation.md` (the *Provisioning* concern's line). Its checklist items and `design.md` sections are unchanged.
 - Existing projects are untouched: the tool never rewrites an ignore file that already exists. A project initialized earlier adds the two lines by hand.
 - The workflow fragment is unchanged, so the managed block's version does not move.
