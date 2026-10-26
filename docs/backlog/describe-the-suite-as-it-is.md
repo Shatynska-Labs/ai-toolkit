@@ -1,7 +1,7 @@
 ---
 kind: change
 waits_on: []
-design_with: [harden-the-test-runner]
+design_with: []
 recorded_by: state-the-committed-artifact-situation
 re_checked: 2026-10-18
 ---
