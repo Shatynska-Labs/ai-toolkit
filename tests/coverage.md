@@ -32,7 +32,8 @@ Most scenarios this suite cannot cover are of one kind, and it is worth naming o
 | A delegated command's writes are attributed, not concealed | Covered — `adoption-agents-md-diff-only.sh` |
 | An existing ignore file is preserved exactly | Covered — `existing-gitignore-preserved.sh`, and `gitignore-dangling-symlink-not-written-through.sh` for a link that does not resolve |
 | An existing conventions file receives only the managed block | Covered — `existing-agents-md-appended.sh` |
-| Created ignore file carries no stack assumption | Covered — `gitignore-enumerated-entries.sh` |
+| Created ignore file carries no stack assumption | Covered — `gitignore-four-categories.sh` |
+| Created ignore file ignores the working-tree roots | Covered — `gitignore-working-tree-roots.sh` |
 | A project's adopted version is readable | Covered — `managed-block-current-version.sh` for the version marker, `inlined-body-matches-fragment.sh` for the body, which is compared against the fragment byte-for-byte. The latter guards faithful inlining by the script; it cannot detect a project whose block has fallen behind the toolkit, because the script always re-inlines from the current fragment |
 | Project content below the block survives | Covered — `existing-agents-md-appended.sh` |
 | A project with only a CLAUDE.md | Covered — `claude-md-only.sh` |
@@ -67,6 +68,7 @@ All 33 are uncovered by `tests/cases/`, for the same reason: this directory exer
 | The checklist does not accumulate in projects | Structural review — `rules/project-foundation.md` is `kind: procedural-checklist`, never inlined |
 | Non-goals are recorded even when scope is clear | Structural review — `rules/project-foundation.md` states this explicitly |
 | Stack-specific ignore entries are a foundation deliverable | Structural review — task 6.6 |
+| Recursive tools are kept out of the working-tree roots | Covered, checklist half — `project-foundation-provisioning-worktree-roots.sh`; the decision itself is structural review |
 | The quality layer is reached even when nobody raises it | Structural review — `rules/project-foundation.md`'s named concerns, proposed as one set |
 | The checklist names concerns, not tools | Structural review — `rules/project-foundation.md` names no particular tool |
 | A technical decision is proposed rather than asked | Structural review — `skills/project-foundation/SKILL.md`'s classification |
