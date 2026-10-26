@@ -1,10 +1,10 @@
 ---
 kind: change
 waits_on: []
-design_with: [observe-what-finishes-a-workstream]
+design_with: []
 workstream: complete-the-workstream-loop
 recorded_by: "the operator"
-re_checked: 2026-10-25
+re_checked: 2026-10-26
 ---
 
 `change-plan-reviewer` reviews one change's artifacts; nothing reviews a workstream. Whether its steps together reach its Goal, agree with the document its Decisions names, and leave out what Not in scope says, is checked by no one when it is opened or when its steps change. BMAD's readiness check does this for its epics against the product requirements and architecture. Add the review and the point in `rules/development-workflow.md` at which it is dispatched, bounded like the plan review. Whether it is a second mode of `change-plan-reviewer` or an agent of its own is open.
