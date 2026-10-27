@@ -242,16 +242,29 @@ Thumbs.db
 # Editors
 .idea/
 .vscode/
+
+# Working trees
+.worktrees/
+.claude/worktrees/
 ```
 
 The entries are enumerated here, in the specification, rather than characterized as "minimal" or "generic". An adjective invites growth that each addition can justify individually; an enumeration does not. They are enumerated *here* rather than in a design document because a design document is archived with its change, while this requirement outlives it — a durable constraint that pointed at a transient file could not be checked later.
 
+The working-tree entries are the roots the workflow the tool installs places a change's working tree under: `.worktrees/` by the workflow's own rule, and `.claude/worktrees/` by its Claude Code binding. Unignored, a sibling working tree fills the main tree's `git status`, and `git add -A` commits it as an embedded repository.
+
 The tool SHALL NOT include stack-specific entries. It cannot know the project's language, and a wrong entry asserts something false about the project. Stack-specific exclusions belong to foundation discovery as a deliverable.
+
+The ignore file reaches only tools that read it. A recursive tool that does not — test collection, a linter, a container build context — still descends into the working-tree roots. Keeping such tools out of them is stack-specific configuration, which foundation discovery decides under its provisioning concern; the tool SHALL NOT write any of it.
 
 #### Scenario: Created ignore file carries no stack assumption
 
 - **WHEN** an ignore file is created in a directory whose language is not yet decided
-- **THEN** it contains only the three enumerated categories, and no entry naming a language's dependency directory, build output, or cache
+- **THEN** it contains only the four enumerated categories, and no entry naming a language's dependency directory, build output, or cache
+
+#### Scenario: Created ignore file ignores the working-tree roots
+
+- **WHEN** an ignore file is created
+- **THEN** it contains `.worktrees/` and `.claude/worktrees/`
 
 ### Requirement: Workflow rules reach a project as a versioned managed block
 
@@ -709,6 +722,8 @@ The tool itself SHALL NOT configure a remote or push. The remote step is the wra
 
 *Modified by `one-file-per-backlog-entry`: a step is recorded where `docs/backlog/` holds an entry of its name, and a step's ordering wait is its entry's `waits_on`.*
 
+*Modified by `observe-what-finishes-a-workstream`: a workstream's Done when names an observable effect of its Goal, and every step being archived may stand beside it but never in its place.*
+
 Where `docs/workstreams/README.md` does not exist in the target, the tool SHALL create it, in both the new-project and the adoption mode, creating `docs/workstreams/` if absent. Where the file exists, the tool SHALL leave it byte-for-byte unchanged and report it present. The file is present where a path exists at `docs/workstreams/README.md` of any type, including a symbolic link whether or not it resolves. The tool SHALL NOT create `docs/workstreams/archive/`.
 
 A workstream is a goal that takes more than one change. The workflow fragment sends a session to this directory at a change's proposal and at its archive, and defers to the README for how a workstream is written, as it defers to the backlog's README for an entry. Unseeded, each project's first session would invent those rules, and the fragment's references would mean something different in every project.
@@ -721,12 +736,15 @@ The created file SHALL state, as prose a session reads before opening, editing o
 - that the file is edited only when the plan changes — a step added, removed, reordered or renamed, what finishes it or what is out of scope revised, an open question added or answered, or the workstream archived;
 - that a workstream is opened when the operator decides a goal needs more than one change, and committed with the plan of the first change that advances it or as work too small to be a change;
 - that a change or a backlog entry may name the workstream it serves before any step names it, and that each such change or entry is placed among the steps or detached at the next edit of the workstream, and at the latest at the archive of a change in it;
+- that what finishes a workstream, its Done when, is an observable effect of its Goal — what to look at in the repository, the forge or production, what provokes it where something must, and the result that means the Goal holds — and that every step being archived may stand beside that effect where it is wanted but never in its place, since it shows only that the step list was worked through, which a list missing a step satisfies as well;
 - that when what finishes a workstream holds, its file moves to `archive/<YYYY-MM-DD>-<name>.md`, dated the day it is archived, in the commit that carries the record of the change that completed it, after each step not done, other than the change whose record that commit carries, is removed from the steps, first recorded as a backlog entry naming no workstream where it is still wanted and not yet in flight, an in-flight one continuing as its own change, and every backlog entry still naming it is re-pointed or cleared;
 - that the operator may abandon a workstream whose goal will not be met, which gains an **Abandoned** item after Opened, with the date and the reason, has its steps and entries dealt with as on completion, and is moved to `archive/` the same way, as work too small to be a change;
 - that a workstream is kept short, its lasting decisions recorded in a document or a change's design it points to, and that the README is kept when there is no workstream;
-- the shape of a workstream: its heading, the name; its **Goal**; its **Done when**, a condition that can be checked against the repository, the forge or production; its **Steps**, an ordered list each naming a change in kebab-case with what it does; what is **Not in scope**, or `none`; its **Open questions**, each deleted once answered with the answer recorded where its decisions are, or `none`; its **Decisions**, where they are recorded, or `none`; and when and by what it was **Opened** — Goal and Done when as paragraphs, and the fields after the steps as one list, one item per field, with no blank line between them.
+- the shape of a workstream: its heading, the name; its **Goal**; its **Done when**, an observable effect of the Goal that can be checked against the repository, the forge or production, with every step being archived beside it where that is wanted; its **Steps**, an ordered list each naming a change in kebab-case with what it does; what is **Not in scope**, or `none`; its **Open questions**, each deleted once answered with the answer recorded where its decisions are, or `none`; its **Decisions**, where they are recorded, or `none`; and when and by what it was **Opened** — Goal and Done when as paragraphs, and the fields after the steps as one list, one item per field, with no blank line between them.
 
 **The file holds no status because status written by hand goes stale.** Progress happens in every session, and a status field is edited by none of them at the moment it changes; a status read from the repository by name is current whenever it is read. That is why a step is named by the change it is expected to be: the name is the key the lookups use. **The precedence and the trunk are stated because the sources overlap**: a backlog entry survives until its change is archived, and a branch until the record's pull request merges, so a step matches more than one source in the ordinary course of its life; and a session's own working tree may predate a step's archive, so reading it would give each session a different answer.
+
+**Done when names an effect of the Goal because the steps are the plan's guess at reaching it.** "Every step is archived" is checked against the repository, so it meets the old wording, yet it holds for a step list that missed a step as surely as for one that did not: it confirms the plan was carried out, not that the Goal was reached. A change's `confirm` already asks for its effect to be observed rather than inferred from a merge; a workstream's Done when asks the same of its Goal. Archiving every step stays available beside the effect, for a workstream whose steps are each wanted whatever the effect shows.
 
 **Order gates nothing because precedence already has one authority.** `waits_on` is the side the pick and the archive re-read read, and the backlog dropped a second side because two statements of one constraint drift; a step's "comes after" in the workstream file would reintroduce it.
 
@@ -780,3 +798,8 @@ The created file SHALL contain no workstream.
 
 - **WHEN** the seeded file is created
 - **THEN** it states that a step is recorded where `docs/backlog/` holds an entry of the step's name, and does not name `docs/backlog.md`
+
+#### Scenario: Done when asks for an observable effect of the Goal
+
+- **WHEN** the seeded file is created
+- **THEN** its workstream shape gives Done when as an observable effect of the Goal, and its prose states that every step being archived may stand beside that effect but never in its place

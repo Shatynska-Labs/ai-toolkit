@@ -304,6 +304,12 @@ From the requirement's definition of a shadowing file rather than a scenario: `s
 - **The skill's summary**: `create-agent-skill-isolation-names-removal.sh`, derived from task 1.3 rather than a scenario.
 - **Arrangement**: nothing declared locally; every case takes `tests/lib.sh` and `tests/cases/lib/static-scan.sh`.
 
+## observe-what-finishes-a-workstream (10 delta scenarios)
+
+`observe-what-finishes-a-workstream` modifies *A workstream register is seeded where none exists* in `project-bootstrap`: it revises the Done when clause of the workstream shape, adds a statement on what finishes a workstream, and adds one scenario. Its cases were derived by `ai-toolkit:change-test-writer`; the per-scenario accounting and the dispositions of the arrangement it declared locally are in the change's `test-plan.md`. The new scenario and the revised parts of *A project without a workstream register receives the seeded file* are covered; the other 8 scenarios are carried over verbatim and keep their accounting under `add-workstreams`, `list-the-entry-fields` and `one-file-per-backlog-entry`.
+
+- **Done when asks for an observable effect of the Goal** — `workstreams-seeded-done-when-shape.sh`, which reads the shape's Done when line, and `workstreams-seeded-done-when-statement.sh`, which reads the new paragraph and its placement before the archive paragraph.
+
 ## reconcile-commit-rule-with-spec (19 delta scenarios)
 
 `reconcile-commit-rule-with-spec` modifies *A second change surfacing in a session is recorded in the backlog* and *The session obligations are published in the workflow fragment and one binding fragment* in `session-workflow`, and adds *Fragment prose is not hard-wrapped*. The fragment's text is unchanged; the cases check that it already says what the amended requirements say. Its cases were derived by `ai-toolkit:change-test-writer`; the per-scenario accounting is in the change's `test-plan.md`. 4 scenarios are new or revised and covered in their mechanical half; 13 are carried over verbatim and keep their accounting above; 2 carried over are uncovered, as before.
