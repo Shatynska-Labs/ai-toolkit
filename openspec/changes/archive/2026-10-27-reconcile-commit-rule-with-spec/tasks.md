@@ -11,3 +11,7 @@
 
 - [x] 3.1 Add a section to `tests/coverage.md` for this change, recording each added and modified scenario against its case or as uncovered with the reason; verify by reading.
 - [x] 3.2 Run `openspec validate reconcile-commit-rule-with-spec --strict` and `bash tests/run.sh`; verify both pass. `tests/cases/session-workflow-publication-names-third-owner.sh` reads the main specification, which takes the delta's text only at archive, so it is held at `openspec/changes/reconcile-commit-rule-with-spec/held/` during the work and moved into `tests/cases/` in the archive commit, where it must pass (test-plan.md, Q2).
+
+## 4. Confirmation
+
+- [x] 4.1 Confirmation waived by the operator on 2026-10-27, after PR #70 merged: the change amends `session-workflow` and its tests only, leaves the fragment unchanged, and so has no externally observable effect to observe (no observation can actually be made).

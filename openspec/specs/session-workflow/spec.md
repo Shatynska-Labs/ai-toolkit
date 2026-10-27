@@ -190,9 +190,9 @@ Where a binding is itself a fragment rather than a tool name written inline, the
 
 Neither fragment SHALL name an `ai-toolkit:` agent or skill that this library does not ship. A consuming project reaches the library's agents and skills only through the installed plugin, so a name with no `agents/<name>.md` or `skills/<name>/SKILL.md` behind it is a dispatch that finds nothing — the same dangling reference as a path the reader cannot open, met at the gate that needs it.
 
-`project-bootstrap` owns how the workflow fragment reaches a project and what shape it takes there — the managed block, the version and its increment condition, that a role is named before a tool, that the gates form an ordered sequence with checkable preconditions, and that an automatic dispatch loop is bounded, what happens on reaching the bound, and which outcomes exit the loop rather than consume a round. This capability owns what the session-derived rules say, and MAY fix the numeric value of a bound for a loop it states — `project-bootstrap` requires that a bound exist and fixes no number.
+`project-bootstrap` owns how the workflow fragment reaches a project and what shape it takes there — the managed block, the version and its increment condition, that a role is named before a tool, that the gates form an ordered sequence with checkable preconditions, and that an automatic dispatch loop is bounded, what happens on reaching the bound, and which outcomes exit the loop rather than consume a round. `change-code-review` owns one sentence of the workflow fragment: the content of `build`'s Claude Code binding, what the session does on each of the reviewer's four verdicts. This capability owns what the rest of the session-derived rules say, and MAY fix the numeric value of a bound for a loop it states — `project-bootstrap` requires that a bound exist and fixes no number.
 
-Where this capability states a loop, it SHALL state the value, what happens on reaching the bound, **and** the outcomes that exit it — all three of what `project-bootstrap` requires of every loop the rules state, since a loop introduced here would otherwise arrive carrying only the part this capability remembered. The seam is stated because both capabilities bear on one file, and an unstated seam is resolved by whoever amends it first.
+Where this capability states a loop, it SHALL state the value, what happens on reaching the bound, **and** the outcomes that exit it — all three of what `project-bootstrap` requires of every loop the rules state, since a loop introduced here would otherwise arrive carrying only the part this capability remembered. The seams are stated because all three capabilities bear on one file, and an unstated seam is resolved by whoever amends it first — an editor starting from this capability would otherwise not learn that the binding's content is governed elsewhere.
 
 #### Scenario: A session obligation is stated once
 
@@ -218,6 +218,11 @@ Where this capability states a loop, it SHALL state the value, what happens on r
 
 - **WHEN** a publication for another project shape is written
 - **THEN** this capability owns it alongside the workflow fragment and the binding fragment, and states each shared obligation once naming which publications it binds
+
+#### Scenario: An editor learns every owner of the fragment's content from this capability
+
+- **WHEN** an editor reads this capability before amending the workflow fragment
+- **THEN** it names `project-bootstrap` as owning how the fragment reaches a project and its shape, `change-code-review` as owning the content of `build`'s Claude Code binding, and this capability as owning what the rest of the rules say
 
 ### Requirement: A change's stage is named from a fixed vocabulary
 
@@ -539,7 +544,7 @@ Teardown SHALL cover the change's branch, locally and on the remote, and the wor
 
 ### Requirement: A second change surfacing in a session is recorded in the backlog
 
-*Modified by `one-file-per-backlog-entry`: the backlog is the directory `docs/backlog/`, its entry rules stated in `docs/backlog/README.md`. Every scenario keeps its title.*
+*Modified by `one-file-per-backlog-entry`: the backlog is the directory `docs/backlog/`, its entry rules stated in `docs/backlog/README.md`. Modified by `reconcile-commit-rule-with-spec`: the handoff branch is committed, not proposed for a commit. Every scenario keeps its title.*
 
 The workflow fragment SHALL state that a session works on one change, and SHALL state what happens when a second change is identified while the first is in progress and the fragment's scope rule does not fold it in. Work that rule folds in is not a second change, and nothing below reaches it.
 
@@ -553,7 +558,7 @@ Where the change in progress depends on the identified change, the fragment SHAL
 
 The name SHALL NOT be reserved to this use. A change that already has a proposal MAY carry a `handoff.md` for something else — a survey handed from one session to another, say — so what marks an *identified* change is the handoff standing where a proposal is not, rather than the filename alone.
 
-**The fragment SHALL direct proposing a commit on that branch as soon as it is opened**, and SHALL state what happens where that commit is declined: report that the handoff is unsaved and stop, as the plan-commit rule does, rather than continuing and leaving it to be lost. The session that opened it is by definition not returning to it, so no later commit will carry the handoff and an uncommitted one is lost with the session. It is proposed rather than made, per the fragment's commit rule.
+**The fragment SHALL direct committing that branch as soon as it is opened.** The session that opened it is by definition not returning to it, so no later commit will carry the handoff and an uncommitted one is lost with the session. The commit is made, not proposed, so the fragment states no path for a declined one.
 
 The path SHALL be fixed here, at the identified change's root, for the reason `docs/backlog/` and `.worktrees/` are fixed: a location stated only in a change's own artifacts is archived with them.
 
@@ -615,7 +620,7 @@ The fragment SHALL state that recording is the obligation and branching is the o
 #### Scenario: A handoff is not left uncommitted on a branch the session leaves
 
 - **WHEN** a session opens an identified change on a branch of its own and then continues with its own change
-- **THEN** it has proposed a commit on that branch already, because no later commit of its own will carry the handoff
+- **THEN** it has committed that branch already, because no later commit of its own will carry the handoff
 
 #### Scenario: An opened-and-left branch does not become the session's working branch
 
@@ -881,3 +886,21 @@ A change is usually smaller than the goal it serves, and an operator running sev
 
 - **WHEN** a session reads the fragment to learn how a workstream is shaped or archived
 - **THEN** the fragment directs it to `docs/workstreams/README.md`, and states no workstream field, file shape or archive path itself
+
+### Requirement: Fragment prose is not hard-wrapped
+
+The workflow fragment SHALL direct that Markdown prose is not hard-wrapped: each paragraph is kept on a single line whatever its length, and a line break is used only where Markdown's own structure requires one.
+
+The reason is the diff. A paragraph wrapped at a column makes every later edit reflow the lines around it, so an edit and a reflow cannot be told apart in review, and a reviewer reading a diff of prose reads the reflow as change.
+
+The direction SHALL be stated as an imperative, and SHALL NOT enumerate the structures it leaves alone beyond Markdown's own line structure: the fragment states it in those terms, and a requirement listing more would govern text the fragment does not carry.
+
+#### Scenario: A session writing prose keeps a paragraph on one line
+
+- **WHEN** a session following the fragment writes or edits a paragraph of Markdown prose
+- **THEN** the paragraph stays on a single line, and the fragment has told it so
+
+#### Scenario: Markdown structure still takes its own line breaks
+
+- **WHEN** a session following the fragment writes a list, a heading, a table or a fenced block
+- **THEN** it breaks lines where that structure requires, and the prose rule does not forbid it
