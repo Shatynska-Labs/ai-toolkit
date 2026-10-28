@@ -4,8 +4,9 @@
 # Change: add-workstreams (project-bootstrap, ADDED).
 #
 # SPECIFIED: the workstream shape names Goal, Done when, Steps, Not in scope,
-# Open questions, Decisions and Opened, and names no field recording a step's
-# status.
+# Open questions and Opened, and names no field recording a step's status.
+# The Context and Decisions sections (hold-shared-research-in-a-workstream)
+# are asserted by workstreams-seeded-shape-sections-no-status.
 # DERIVED (placement): the shape is the fenced example (design.md decision 8),
 # each field a line of it beginning `**<label>**`.
 # DERIVED (operationalisation of "no status field"): no line of the fenced
@@ -34,7 +35,7 @@ if [ ! -s "$shape" ]; then
   exit 1
 fi
 
-for label in "Goal" "Done when" "Steps" "Not in scope" "Open questions" "Decisions" "Opened"; do
+for label in "Goal" "Done when" "Steps" "Not in scope" "Open questions" "Opened"; do
   if ! grep -q -F -- "**$label**" "$shape"; then
     echo "FAIL: the seeded workstream shape does not name **$label**" >&2
     exit 1

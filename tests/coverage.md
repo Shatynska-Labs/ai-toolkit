@@ -319,3 +319,16 @@ From the requirement's definition of a shadowing file rather than a scenario: `s
 - **A session writing prose keeps a paragraph on one line**: `workflow-fragment-prose-one-line.sh`.
 - **Markdown structure still takes its own line breaks**: `workflow-fragment-prose-structure-exception.sh`.
 - **Arrangement**: the three fragment cases keep their line-scan helper declared locally, because `AGENTS.md` records no shared test arrangement; the two specification cases take `tests/cases/lib/static-scan.sh`.
+
+## hold-shared-research-in-a-workstream (14 delta scenarios)
+
+`hold-shared-research-in-a-workstream` modifies *A workstream register is seeded where none exists* in `project-bootstrap`: a workstream holds, besides its plan, the context and decisions its steps share, under `## Context` and `## Decisions`, which replace the `Decisions` list item and the "keep a workstream short" statement. It revises two scenarios and adds four. Its cases were derived by `ai-toolkit:change-test-writer`; the per-scenario accounting, the obsolete assertions and the dispositions of the arrangement it declared locally are in the change's `test-plan.md`. No scenario is uncovered; the 8 carried over verbatim keep their accounting above.
+
+- **The seeded register carries no status field** (revised): `workstreams-seeded-shape-sections-no-status.sh`; `workstreams-seeded-no-status-field.sh` no longer names Decisions among the fields.
+- **The seeded workstream's fields are a list** (revised): `workstreams-seeded-fields-list-then-sections.sh`; `workstreams-seeded-fields-are-a-list.sh` no longer expects a Decisions item.
+- **Research shared by several steps has a place in the workstream**: `workstreams-seeded-shared-research-placed.sh`.
+- **A decision for one step stays in that step's design**: `workstreams-seeded-one-step-decision-in-design.sh`.
+- **What a workstream holds is not progress**: `workstreams-seeded-holds-not-progress.sh`.
+- **Overturned content is revised in place**: `workstreams-seeded-overturned-revised-in-place.sh`.
+- **The widened edit statement**, in *A project without a workstream register receives the seeded file*: `workstreams-seeded-edit-rule-what-it-holds.sh`; `workstreams-seeded-statements.sh` asserts the new sentence and drops its two "kept short" assertions.
+- **Arrangement**: `fenced_text`, `fenced_prefixed_line`, `fenced_exact_line` and `section_omits` are kept local, because `AGENTS.md` records no shared test arrangement; the prose cases take `tests/cases/lib/line-scan.sh` and `static-scan.sh`.

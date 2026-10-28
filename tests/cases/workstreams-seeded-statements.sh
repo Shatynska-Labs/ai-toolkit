@@ -11,13 +11,15 @@
 # file holds the plan and never its progress, a step's status read from the
 # repository by name, first match winning, from the freshly fetched trunk,
 # branches and pull requests, and the backlog; order gates nothing, Waits on
-# says so; the file is edited only when the plan changes; opened on the
+# says so; the file is edited only when the plan or what it holds changes;
+# opened on the
 # operator's decision and committed with the first change's plan or as work
 # too small to be a change; attached changes and entries placed or detached
 # at the next edit and at the latest at a change's archive; archived to a
 # dated `archive/` file in the record's commit after unfinished steps and
-# entries are dealt with; abandonment; kept short, decisions pointed to; the
-# README kept when there is no workstream.
+# entries are dealt with; abandonment; the README kept when there is no
+# workstream. What a workstream holds besides its plan is asserted by the
+# workstreams-seeded-* cases of hold-shared-research-in-a-workstream.
 #
 # DERIVED (wording): the requirement fixes what the text states, not the text.
 # Each statement is asserted by one stable phrase from the seeded text in
@@ -53,7 +55,7 @@ assert_contains "$r" "local or remote branch" "in flight: a local or remote bran
 assert_contains "$r" "open pull request" "in flight: an open pull request"
 assert_contains "$r" "holds an entry of that name" "recorded: a backlog entry of that name"
 assert_contains "$r" "planned otherwise" "planned otherwise"
-assert_contains "$r" "Edit the file only when the plan changes" "edited only when the plan changes"
+assert_contains "$r" "Edit the file only when the plan or what it holds changes" "edited only when the plan or what it holds changes"
 assert_contains "$r" "gates nothing" "step order gates nothing"
 assert_contains "$r" "Open a workstream when the operator decides" "opened on the operator's decision"
 assert_contains "$r" "with the plan of the first change that advances it" "committed with the first change's plan"
@@ -66,6 +68,4 @@ assert_contains "$r" "backlog entry naming no workstream" "a still-wanted step k
 assert_contains "$r" "continues as its own change" "an in-flight step continues as its own change"
 assert_contains "$r" "re-point or clear every backlog entry still naming it" "entries re-pointed or cleared"
 assert_contains "$r" "**Abandoned**" "abandonment line"
-assert_contains "$r" "Keep a workstream short" "kept short"
-assert_contains "$r" "that the file points to" "lasting decisions pointed to"
 assert_contains "$r" "Keep this file when there is no workstream" "README kept when there is no workstream"

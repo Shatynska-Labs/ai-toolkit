@@ -187,3 +187,7 @@ The dispatch named `tests/lib.sh` and `tests/cases/lib/` as shared arrangement. 
   - Near-miss: `static-scan.sh`'s `scan_heading_section`. It reads a section under a heading, but it skips fenced code, and these sections are inside a fence.
   - Found in another test module: no.
   - Proposed home: none proposed. It is specific to this shape.
+
+**Dispositions at `apply`:**
+- `fenced_text`, `fenced_prefixed_line`, `fenced_exact_line`, `section_omits`: **kept local.** `AGENTS.md` records no shared test arrangement, so nothing can be promoted into one; creating or recording one is a testing-strategy decision, not a step of this change. The backlog's `record-this-repositorys-shared-test-arrangement` is where they would move.
+- Obsolete assertions (above): **confirmed and revised** in task 2.1. `workstreams-seeded-statements` asserts the new edit sentence and drops "Keep a workstream short" and "that the file points to"; `workstreams-seeded-fields-are-a-list` drops the Decisions item from its lists and specimen; `workstreams-seeded-no-status-field` drops Decisions from its label loop. Only what the delta replaced was changed; the revised scenarios' new halves are asserted by the derived cases.
