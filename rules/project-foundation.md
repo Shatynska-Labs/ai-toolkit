@@ -35,6 +35,7 @@ Nine decisions, falling into two groups by how they may be reached.
 - **Build tooling** — how the project is built, packaged and run. The test runner is decided under Testing Strategy, not here.
 - **Local hooks** — which checks run before a commit or push in a working copy.
 - **Commit messages** — the convention commit messages follow, and whether anything checks it.
+- **Pull requests** — what a pull request's title and description carry, whether the forge supplies a template for them, and whether anything checks it. Decided on its own, apart from the commit-message convention: a pull request spans several commits, often on different concerns.
 - **Secrets** — how credentials and other secrets stay out of version control, and how a working copy gets them.
 - **Dependency updates and audit** — how dependencies are kept current and checked for known vulnerabilities.
 - **Continuous integration** — the gate every change must pass before it reaches the trunk, and which checks it runs.
@@ -95,6 +96,7 @@ Write each decision into the change's `design.md` as it settles, rather than hol
    - Build tooling
    - Local hooks
    - Commit messages
+   - Pull requests
    - Secrets
    - Dependency updates and audit
    - Continuous integration
