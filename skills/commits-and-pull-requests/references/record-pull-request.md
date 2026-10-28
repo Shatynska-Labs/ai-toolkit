@@ -1,6 +1,6 @@
 # The record pull request
 
-The record is the last pull request of a change: it carries the change's specification record to the trunk once the work has shipped. Its reader wants to know what shipped, where it is now recorded, and what else the change's closing touched. Write its description from what the repository and the forge show, not from memory of the session.
+The record is the last pull request of a change: it carries the change's specification record to the trunk. Its reader wants to know what shipped, where it is now recorded, and what else the change's closing touched. Write its description from what the repository and the forge show, not from memory of the session.
 
 **Title.** Name the change it records — for example `Archive <change-name>` — so the record is findable by the change's name.
 
