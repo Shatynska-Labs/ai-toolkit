@@ -4,7 +4,7 @@
 # Change: one-file-per-backlog-entry (project-bootstrap, MODIFIED).
 #
 # SPECIFIED: in an existing repository with history and neither docs/backlog/
-# nor docs/backlog.md, docs/backlog/README.md is created "in both the
+# nor docs/backlog.md, docs/backlog/AGENTS.md is created "in both the
 # new-project and the adoption mode", the report states it was created, and
 # no entry file is created. The README is the same text the new-project run
 # seeds (one seed, scripts/seed/backlog-README.md), so the statements
@@ -27,17 +27,18 @@ git add . && git commit -q -m "initial history"
 report="$TESTDIR/report.txt"
 bash "$PROJECT_INIT" >"$report" 2>&1
 assert_exit 0 "$?"
-assert_file "$work/docs/backlog/README.md" "adoption creates the README, with docs/ and docs/backlog/ created for it"
+assert_file "$work/docs/backlog/AGENTS.md" "adoption creates the README, with docs/ and docs/backlog/ created for it"
 assert_file_absent "$work/docs/backlog.md" "no single file is seeded"
 assert_contains "$report" "backlog: created" "the report states the backlog was created"
-[ "$(ls -A "$work/docs/backlog")" = "README.md" ] || { echo "FAIL: docs/backlog/ holds more than the README" >&2; exit 1; }
+# shellcheck disable=SC2012 # names are the tool's own fixed file names
+[ "$(ls -A "$work/docs/backlog" | sort | tr '\n' ' ')" = "AGENTS.md CLAUDE.md " ] || { echo "FAIL: docs/backlog/ holds more than its AGENTS.md and CLAUDE.md" >&2; exit 1; }
 
 fresh="$TESTDIR/fresh"
 mkdir -p "$fresh"
 (cd "$fresh" && bash "$PROJECT_INIT") >/dev/null 2>&1
-assert_file "$fresh/docs/backlog/README.md" "the new-project run this case compares against"
-if ! cmp -s "$fresh/docs/backlog/README.md" "$work/docs/backlog/README.md"; then
+assert_file "$fresh/docs/backlog/AGENTS.md" "the new-project run this case compares against"
+if ! cmp -s "$fresh/docs/backlog/AGENTS.md" "$work/docs/backlog/AGENTS.md"; then
   echo "FAIL: the adoption-mode README differs from the new-project one" >&2
-  diff "$fresh/docs/backlog/README.md" "$work/docs/backlog/README.md" >&2
+  diff "$fresh/docs/backlog/AGENTS.md" "$work/docs/backlog/AGENTS.md" >&2
   exit 1
 fi

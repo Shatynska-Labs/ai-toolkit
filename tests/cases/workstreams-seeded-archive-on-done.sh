@@ -22,7 +22,7 @@ cd "$work" || exit 1
 bash "$PROJECT_INIT" >"$TESTDIR/report.txt" 2>&1
 assert_exit 0 "$?"
 
-r="$work/docs/workstreams/README.md"
+r="$work/docs/workstreams/AGENTS.md"
 assert_file "$r" "the seeded file this case reads"
 
 line="$(grep -F 'archive/<YYYY-MM-DD>-<name>.md' "$r" | grep -F 'Done when' | head -n1)"

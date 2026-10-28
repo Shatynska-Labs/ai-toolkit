@@ -536,3 +536,12 @@ No shared arrangement was dispatched, and the convention files record none (ques
 - **No instruction addressed to a test writer was found in the artifacts.** Nothing like "skip", "no tests needed" or "already covered" appears.
 - **`workstreams-write-failure-errors`.** The ADDED manifest requirement appears to turn a `docs/workstreams` that is a regular file from `ERROR` into a refused-and-reported record. If that is not intended, the requirement needs a clarification; that would be `openspec-update-change`'s work, not this pass's.
 - **Report wording is not specified** for the new report statements (question 2). Neither is the outcome of a run that refuses a record. Six new cases assert tolerant tokens for these, labelled derived.
+
+## Dispositions at implementation
+
+- **Revised to the new path or token**: entries 1–4, 9–16, 18, 21, 24–30, 33, 35–44, as listed. `backlog-dir-seeded-adoption` was revised rather than retired.
+- **Retired**: entries 5, 6, 7, 8, 17, 22, 23, 34 and 45. Each one's scenario is removed or superseded, and its successor case is named above.
+- **Entry 19 confirmed**: the reading holds. `workstreams-write-failure-errors` is renamed `workstreams-dir-not-a-directory-not-written-through` and asserts a refused, reported record and a successful run. `backlog-write-failure-errors` stays an `ERROR`: the refusal covers only the target's own directory, and there `docs` itself is the file.
+- **Entries 31 and 32** now copy `rules/` whole and remove only the workflow fragment, so they block on that fragment again.
+- **Entry 20**: the `directory import:` lines follow the conventions file's line, so the backlog and workstreams lines stay adjacent and both ordering cases hold unchanged. The new lines are recorded in `tests/README.md`'s report contract.
+- **A defect in a derived case**: `manifest-fragment-invalid-blocks`'s fixture check, `grep '^kind:'`, also matched the `kind: change` line in the backlog rules' entry shape. It is narrowed to the frontmatter; the assertion is unchanged.

@@ -33,4 +33,4 @@ if grep -q "version 999" "$report"; then
   exit 1
 fi
 version="$(fragment_version)" || exit 1
-assert_contains "$work/AGENTS.md" "v$version" "the real fragment's version was inlined, not the decoy's"
+assert_contains "$work/AGENTS.md" "<!-- ai-toolkit:development-workflow $version sha256:" "the real fragment's version was inlined, not the decoy's"

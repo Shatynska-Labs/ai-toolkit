@@ -30,7 +30,7 @@ status=$?
 assert_exit 0 "$status" "should complete the missing concerns"
 assert_contains "$report" "repository: already present" "repository concern reported separately"
 assert_contains "$report" "workstreams: created" "register concern completed and reported separately"
-assert_file "$work/docs/workstreams/README.md" "register completed"
+assert_file "$work/docs/workstreams/AGENTS.md" "register completed"
 if [ "$(grep -c '^workstreams:' "$report")" -ne 1 ]; then
   echo "FAIL: the report does not carry exactly one workstreams line" >&2
   cat "$report" >&2

@@ -17,13 +17,13 @@ cd "$work" || exit 1
 bash "$PROJECT_INIT" >/dev/null 2>&1
 first_status=$?
 assert_exit 0 "$first_status" "first run should succeed"
-assert_file "$work/docs/backlog/README.md" "the first run created the backlog"
-sum_backlog_1="$(md5sum docs/backlog/README.md | awk '{print $1}')"
+assert_file "$work/docs/backlog/AGENTS.md" "the first run created the backlog"
+sum_backlog_1="$(md5sum docs/backlog/AGENTS.md | awk '{print $1}')"
 
 report2="$TESTDIR/report2.txt"
 bash "$PROJECT_INIT" >"$report2" 2>&1
 second_status=$?
 
 assert_exit 0 "$second_status" "second run should also succeed"
-assert_unchanged "$work/docs/backlog/README.md" "$sum_backlog_1" "backlog not modified, truncated or duplicated"
+assert_unchanged "$work/docs/backlog/AGENTS.md" "$sum_backlog_1" "backlog not modified, truncated or duplicated"
 assert_contains "$report2" "backlog: already present" "backlog reported as already satisfied"

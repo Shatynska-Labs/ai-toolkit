@@ -31,7 +31,7 @@ line_discriminate "$fixture" || exit 1
 work="$TESTDIR/work"
 mkdir -p "$work"
 (cd "$work" && bash "$PROJECT_INIT") >"$TESTDIR/report.txt" 2>&1
-line_check "$work/docs/workstreams/README.md"
+line_check "$work/docs/workstreams/AGENTS.md"
 st=$?
 [ "$st" -eq 2 ] && echo "FAIL: target absent — the register states no order rule" >&2
 [ "$st" -eq 0 ] || exit 1

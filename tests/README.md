@@ -37,14 +37,20 @@ Target: <absolute path>
 repository: created | already present
 specification tooling: created via `openspec init --tools <value>` | already present
 ignore file: created | already present
-backlog: created | created beside existing entries | already present
+backlog: created | created beside existing entries | block appended to docs/backlog/AGENTS.md (version N)
+       | already present (version N, matches)
+       | already present (existing version N, tool carries version M; reconciling this is out of scope for this tool)
+       | rules present as docs/backlog/README.md, the shape before 1.0.0; converting it is out of scope for this tool, nothing written
        | present as the single file docs/backlog.md; convert it with scripts/backlog-migrate
        | docs/backlog is not a directory the tool writes into; nothing written
-workstreams: created | already present
+       | docs/backlog/AGENTS.md is not a file the tool writes into; nothing written
+workstreams: [the backlog's forms, for docs/workstreams/, with "created beside existing files"; no single-file form]
 conventions file: created with block (version N)
            | block appended (version N)
            | block already present (version N, matches)
-           | block already present (existing version N, tool carries version M)
+           | block already present (existing version N, tool carries version M; reconciling this is out of scope for this tool)
+directory import: docs/<dir>/CLAUDE.md created holding @AGENTS.md   [one per seeded directory where it was absent]
+directory import: add the line @AGENTS.md to docs/<dir>/CLAUDE.md for docs/<dir>/AGENTS.md to load   [where that file exists without it]
 Import needed: add `@AGENTS.md` to this project's own CLAUDE.md (create it if absent) for the rules to take effect   [only when the target's CLAUDE.md does not import AGENTS.md and a shadowing file exists]
 Note: Claude Code reads AGENTS.md without a CLAUDE.md from version 2.1.277 (2.1.281 on Bedrock, Vertex AI, Foundry, gateways and telemetry-disabled sessions), unless its "Project instructions" setting says otherwise; on an earlier version, add `@AGENTS.md` to a CLAUDE.md.   [only when no shadowing file exists]
 Outcome: SUCCESS | BLOCKED | ERROR
@@ -52,6 +58,8 @@ Reason: <text>   [BLOCKED or ERROR only]
 Next step: foundation discovery — run /project-foundation to establish this project's foundation.   [new-project SUCCESS only]
 Next step: none required — foundation discovery is available if you want to record this project's decisions; run /project-foundation.   [adoption SUCCESS only]
 ```
+
+The seeded directories' lines follow the manifest's order, then the conventions file's, whatever order the blocks are written in; a record added to the manifest reports under its own name. A version N is `MAJOR.MINOR.PATCH`, or `v<N>` for a marker written before `1.0.0`.
 
 `Target:` is printed before any filesystem change, per the target-directory requirement. A `BLOCKED` outcome prints `Target:` and `Reason:` and nothing else that implies a change was made.
 

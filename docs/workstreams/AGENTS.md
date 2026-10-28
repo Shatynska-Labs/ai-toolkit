@@ -1,6 +1,10 @@
+<!-- ai-toolkit:workstreams 1.0.0 sha256:53ebef8096a98f822cecde2308584e7023590d36f263cf422bc974e922da46c6 -->
+<!-- Generated. Do not edit inside this block — it is replaced on update.
+     Project-specific conventions belong outside the markers. -->
+
 # Workstreams
 
-A workstream is a goal that takes more than one change. Each open workstream is one file in this directory, named for the workstream in kebab-case: `<name>.md`. A name is unique among workstreams, open and archived, and is not also a change's name. Refer to a workstream only by that name.
+A workstream is a goal that takes more than one change. Each open workstream is one file in this directory, named for the workstream in kebab-case: `<name>.md`. A name is unique among workstreams, open and archived, and is not also a change's name. Refer to a workstream only by that name. `readme`, `agents` and `claude`, in any case, are not a workstream name: their files would collide with `README.md`, `AGENTS.md` and `CLAUDE.md` where the filesystem ignores case.
 
 A workstream file holds the plan and never its progress. It does not say which steps are done or in flight. That is read from the repository by a step's name, and the first of these that holds wins: a step is done when the freshly fetched trunk holds an archived change of that name; in flight when it holds an open change of that name, or a local or remote branch or an open pull request of that name exists; recorded when its `docs/backlog/` holds an entry of that name; and planned otherwise. Edit the file only when the plan or what it holds changes: a step added, removed, reordered or renamed, the Done when or what is out of scope revised, an open question added or answered, context or a decision added or revised, or the workstream archived.
 
@@ -49,3 +53,4 @@ Research, findings and the options considered that the steps share; omit the sec
 
 **1. A decision.** Who took it and when, what was decided and why, or the change's design that records it; omit the section where there are none.
 ```
+<!-- /ai-toolkit:workstreams -->

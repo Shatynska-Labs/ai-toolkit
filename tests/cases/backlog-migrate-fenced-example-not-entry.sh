@@ -125,7 +125,7 @@ assert_exit 0 "$?" "a fenced example does not block the conversion"
 assert_file_absent "$work/docs/backlog/change-name.md" "the fenced example is not an entry"
 # shellcheck disable=SC2012 # names are the test's own fixture names, plain ASCII
 listing="$(ls -A "$work/docs/backlog" | sort | tr '\n' ' ')"
-if [ "$listing" != "README.md first-entry.md second-entry.md " ]; then
-  echo "FAIL: docs/backlog/ should hold the README and exactly two entries, holds: $listing" >&2
+if [ "$listing" != "first-entry.md second-entry.md " ]; then
+  echo "FAIL: docs/backlog/ should hold exactly two entries, holds: $listing" >&2
   exit 1
 fi

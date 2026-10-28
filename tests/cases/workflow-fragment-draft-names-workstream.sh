@@ -32,7 +32,7 @@ line_select 'proposal'
 line_scan require names-workstream 'names? (that|the|its) workstream'
 line_scan require advances-none 'advances none'
 line_scan require propose-opening 'propose[^.]*open|proposing that one be opened'
-line_scan require defers-to-readme 'readme'
+line_scan require defers-to-readme 'agents[.]md'
 
 fixture="$TESTDIR/fragment.md"
 cat > "$fixture" <<'FIXTURE'
@@ -40,7 +40,7 @@ cat > "$fixture" <<'FIXTURE'
 
 **draft** — write the proposal first.
 
-Where a workstream in `docs/workstreams/` names this change among its steps, or the change serves one's goal, the proposal names that workstream; otherwise it states that the change advances none. Where the change is one of several a goal needs and no workstream holds them, propose opening one, as that directory's README directs.
+Where a workstream in `docs/workstreams/` names this change among its steps, or the change serves one's goal, the proposal names that workstream; otherwise it states that the change advances none. Where the change is one of several a goal needs and no workstream holds them, propose opening one, as that directory's `AGENTS.md` directs.
 FIXTURE
 
 line_run "$fixture" rules/development-workflow.md

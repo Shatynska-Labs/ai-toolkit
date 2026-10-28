@@ -7,10 +7,10 @@
 # SPECIFIED: the archive step directs, where the change advanced a
 # workstream, re-reading it: placing the entries attached to it, revising the
 # steps the change made obsolete, and archiving it once what finishes it
-# holds, as `docs/workstreams/README.md` directs, in the commit that carries
+# holds, as `docs/workstreams/AGENTS.md` directs, in the commit that carries
 # the record.
 # DERIVED (operationalisation and placement, design.md decision 10): one
-# paragraph (line) carries `docs/workstreams/README.md` and `advanced`, and
+# paragraph (line) carries `docs/workstreams/AGENTS.md` and `advanced`, and
 # states `re-read`, `entries`, `steps`, "archive (it|the workstream)" and
 # "same commit" or "commit that carries the record".
 #
@@ -24,7 +24,7 @@ source "$TESTLIB"
 # shellcheck disable=SC1091 # resolved beside this case at runtime; the helper is checked on its own
 source "$(dirname "${BASH_SOURCE[0]}")/lib/line-scan.sh"
 
-line_select 'docs/workstreams/readme[.]md'
+line_select 'docs/workstreams/agents[.]md'
 line_select 'advanced'
 line_scan require reread 're-?read'
 line_scan require place-entries 'entries'
@@ -38,7 +38,7 @@ cat > "$fixture" <<'FIXTURE'
 
 **archive** — re-read `docs/backlog.md` for the entries this change completed.
 
-Where the change advanced a workstream, re-read it the same way: place the entries attached to it, revise the steps the change made obsolete, and archive it once what finishes it holds, as `docs/workstreams/README.md` directs, in the same commit.
+Where the change advanced a workstream, re-read it the same way: place the entries attached to it, revise the steps the change made obsolete, and archive it once what finishes it holds, as `docs/workstreams/AGENTS.md` directs, in the same commit.
 FIXTURE
 
 line_run "$fixture" rules/development-workflow.md

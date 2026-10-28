@@ -32,7 +32,7 @@ bash "$PROJECT_INIT" >"$report" 2>&1
 status=$?
 
 assert_exit 0 "$status"
-assert_file "$work/docs/workstreams/README.md" "adoption creates the register, with docs/workstreams/ created for it"
+assert_file "$work/docs/workstreams/AGENTS.md" "adoption creates the register, with docs/workstreams/ created for it"
 assert_contains "$report" "workstreams: created" "the report states the register was created"
 assert_file_absent "$work/docs/workstreams/archive" "no archive/ directory is created"
 assert_unchanged "$work/docs/backlog.md" "$sum_backlog" "the project's own backlog is untouched"
@@ -40,9 +40,9 @@ assert_unchanged "$work/docs/backlog.md" "$sum_backlog" "the project's own backl
 fresh="$TESTDIR/fresh"
 mkdir -p "$fresh"
 (cd "$fresh" && bash "$PROJECT_INIT" >/dev/null 2>&1)
-assert_file "$fresh/docs/workstreams/README.md" "the new-project run this case compares against"
-if ! cmp -s "$fresh/docs/workstreams/README.md" "$work/docs/workstreams/README.md"; then
+assert_file "$fresh/docs/workstreams/AGENTS.md" "the new-project run this case compares against"
+if ! cmp -s "$fresh/docs/workstreams/AGENTS.md" "$work/docs/workstreams/AGENTS.md"; then
   echo "FAIL: the adoption-mode register differs from the new-project one" >&2
-  diff "$fresh/docs/workstreams/README.md" "$work/docs/workstreams/README.md" >&2
+  diff "$fresh/docs/workstreams/AGENTS.md" "$work/docs/workstreams/AGENTS.md" >&2
   exit 1
 fi

@@ -13,12 +13,17 @@ version="$(fragment_version)" || exit 1
 # The marker is printed separately so the fixture body keeps a quoted
 # heredoc: an unquoted one would subject every line to parameter, command
 # and backslash expansion to interpolate one value.
-{
-  printf '<!-- ai-toolkit:development-workflow v%s -->\n' "$version"
-  cat <<'BLOCK'
+inner="$(cat <<'BLOCK'
 <!-- Generated. Do not edit inside this block — it is replaced on update.
-     Project-specific conventions belong below the closing marker. -->
+     Project-specific conventions belong outside the markers. -->
 placeholder existing content at the current version
+BLOCK
+)"
+hash="$(printf '%s\n' "$inner" | sha256sum | cut -d' ' -f1)"
+{
+  printf '<!-- ai-toolkit:development-workflow %s sha256:%s -->\n' "$version" "$hash"
+  printf '%s\n' "$inner"
+  cat <<'BLOCK'
 <!-- /ai-toolkit:development-workflow -->
 BLOCK
 } > AGENTS.md
@@ -37,3 +42,4 @@ if [ "$count" != "1" ]; then
   echo "FAIL: expected exactly one marker, found $count — block must not be duplicated" >&2
   exit 1
 fi
+assert_contains "$report" "(version $version, matches)" "the current version is reported as matching"

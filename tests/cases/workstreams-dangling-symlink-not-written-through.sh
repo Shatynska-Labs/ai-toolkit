@@ -26,7 +26,7 @@ bash "$PROJECT_INIT" >"$report" 2>&1
 status=$?
 
 assert_exit 0 "$status"
-assert_contains "$report" "workstreams: already present" "a dangling link counts as present"
+assert_contains "$report" "workstreams: rules present as docs/workstreams/README.md" "a dangling link counts as present, in the shape before 1.0.0"
 assert_file_absent "$outside" "nothing written through the link to its target"
 if [ ! -L "$work/docs/workstreams/README.md" ]; then
   echo "FAIL: docs/workstreams/README.md is no longer a symbolic link" >&2

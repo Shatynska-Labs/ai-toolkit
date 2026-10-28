@@ -12,7 +12,7 @@ description: >
   requests touched), audit (parallel read-only agents, applied only on the
   operator's word) and workstreams (each open workstream's steps and their
   status, read from the repository). It reads entry and workstream rules
-  from the READMEs themselves. Not for seeding either README (project-init),
+  from each directory's AGENTS.md. Not for writing them (project-init),
   nor for converting a single-file docs/backlog.md (scripts/backlog-migrate),
   nor for opening, proposing or implementing the change an entry names
   (openspec-new-change, openspec-propose, openspec-apply-change).
@@ -22,20 +22,22 @@ metadata:
 
 # backlog
 
-Six operations over `docs/backlog/` and `docs/workstreams/` in the project this skill is invoked in. `docs/backlog/README.md` states how an entry is named, shaped, kept and deleted; `docs/workstreams/README.md` states how a workstream is named, shaped, kept and archived and how a step's status is read; and the project's workflow rules state when each is written and re-read. This skill states none of them. It is how to carry them out, and a session that never loads it still owes everything those documents say.
+Six operations over `docs/backlog/` and `docs/workstreams/` in the project this skill is invoked in. `docs/backlog/AGENTS.md` states how an entry is named, shaped, kept and deleted; `docs/workstreams/AGENTS.md` states how a workstream is named, shaped, kept and archived and how a step's status is read; and the project's workflow rules state when each is written and re-read. This skill states none of them. It is how to carry them out, and a session that never loads it still owes everything those documents say.
 
 ## Before any operation
 
-Find `docs/backlog/README.md` at the project root.
+A directory's **rules file** is its `AGENTS.md` where that file holds the managed block of the directory's rules (`<!-- ai-toolkit:backlog ` or `<!-- ai-toolkit:workstreams `), and its `README.md` where it holds no block: the shape before `1.0.0`, which a project keeps until an update converts it. Read whichever it has; never write a rules file or convert one into the other. Below, a directory's README means its rules file.
+
+Find the rules file of `docs/backlog/` at the project root.
 
 - Where it is absent and `docs/backlog.md` exists, the backlog is still in the single-file shape. Say so, name `scripts/backlog-migrate` as what converts it, and stop: perform no operation, and neither convert the file yourself nor read or write it as if it were the directory.
-- Where neither `docs/backlog/README.md` nor `docs/backlog.md` exists, say so and name `project-init` as what seeds the backlog; create nothing with text of your own.
+- Where `docs/backlog/` holds no rules file — `docs/backlog/AGENTS.md` absent or without its block, and no README — and there is no `docs/backlog.md`, say so and name `project-init` as what writes the backlog's rules; create nothing with text of your own.
 
 Read the README and take the entry shape, the frontmatter's form, the meaning of an absent key and the deletion grounds from it. Where it differs from what you expect, it wins: this skill checks entries against the shape the README states, never against one of its own. Where the README's shape lacks a key an operation below names (`priority`, `kind`, `waits_on`, `waits_for`, `design_with`, `workstream`, `re_checked`), skip that step and say so. Never write a key the README does not define.
 
-The entries are the other files in `docs/backlog/`, one per entry, each named `<name>.md` for the entry's name.
+The entries are the other files in `docs/backlog/`, one per entry, each named `<name>.md` for the entry's name; `AGENTS.md`, `CLAUDE.md` and `README.md` are never entries.
 
-Where `docs/workstreams/` holds a README, read it too, and take the workstream shape, the status lookups and their precedence, and the archive rules from it; it wins over anything here, as the backlog's README does. Where `docs/workstreams/README.md` is absent, say so, name `project-init` as what seeds it, and skip every workstream step below; do not create the file. The steps that read or write an entry's `workstream` apply only where the backlog's README names it; the steps that check a workstream exists, and **workstreams**, need the workstreams README.
+Where `docs/workstreams/` holds a rules file, read it too, and take the workstream shape, the status lookups and their precedence, and the archive rules from it; it wins over anything here, as the backlog's README does. Where `docs/workstreams/AGENTS.md` is absent or holds no block, and the directory has no README either, say so, name `project-init` as what writes it, and skip every workstream step below; do not create the file. The steps that read or write an entry's `workstream` apply only where the backlog's README names it; the steps that check a workstream exists, and **workstreams**, need the workstreams README.
 
 Two terms the operations share:
 
@@ -49,7 +51,7 @@ The checks and gates below bind you only while you run the operation. An entry w
 Write one entry as its own file, `docs/backlog/<name>.md`: its values as frontmatter in the form the README states, its prose and reasons as the body. Create exactly that one file, and change no other entry file and not the README.
 
 1. **Fold in.** Where you are in a change, test the work against the fold-in rule the project's workflow states, if it states one. Where the work meets it, say that it can be folded into that change and write no entry.
-2. **Name.** Check the proposed name against the entry files in `docs/backlog/`, every directory under the project's open and archived changes (for OpenSpec, `openspec/changes/` and `openspec/changes/archive/`, where archived names carry a date prefix), and every local and remote branch. If any already uses it, do not write the entry; ask for another name. Refuse `readme` in any case too: its file would collide with the README where the filesystem ignores case.
+2. **Name.** Check the proposed name against the entry files in `docs/backlog/`, every directory under the project's open and archived changes (for OpenSpec, `openspec/changes/` and `openspec/changes/archive/`, where archived names carry a date prefix), and every local and remote branch. If any already uses it, do not write the entry; ask for another name. Refuse `readme`, `agents` and `claude` in any case too: their files would collide with `README.md`, `AGENTS.md` and `CLAUDE.md` where the filesystem ignores case.
 3. **Kind.** Set `kind` by the README's own definition and write the reason in the body: for a change, which delta it owes, which decision it needs, or that it is too large.
 4. **Waits.** Write into `waits_on` only names, of entries or changes. Write a wait on anything else, such as an answer, an access grant or an event, as a condition in `waits_for`.
 5. **Design with.** Search the existing entries for ones naming the same files, specifications or capabilities. Present each as a Design with candidate and say what they share. Write into `design_with` only the candidates the session or the operator confirms share a design, or the README's empty value, `[]` in the seeded README. A shared pointer is evidence of a shared design, not the same thing.
@@ -80,7 +82,7 @@ Delete the file of the entry you are given. In the same edit, remove its name fr
 Given a change, find the entries it completed, made obsolete, unblocked, unparked or made stale, and update each entry's file as the README directs.
 
 1. **What the change touched.** Read it from the change's merged pull requests on the forge, every one of them, since a change takes at least two: `gh pr list --state merged --head <branch> --json number`, then `gh pr view <number> --json files` for each. Where the forge cannot be reached, fall back to the change's specification deltas and the files its design and tasks name, and say that the fallback was used. Do not use the branch's diff against the trunk: by the archive step the branch has been brought back to the trunk, and a squash merge leaves no ancestry, so that diff holds the record alone.
-2. **Which entries.** Those naming the change; those whose `waits_on` names it, with the name proposed removed; those whose `waits_for` it fulfils; parked entries whose condition, their `parked_until`, it fulfils, and `high` entries whose evidence it removed, each with its `priority` proposed as the README directs; those naming a file, specification or capability it touched; and, where the change's archive archives its workstream, those naming that workstream, to be re-pointed or set to the README's absent value as `docs/workstreams/README.md` directs. The group naming files, specifications or capabilities is the one a search by name misses, because a change that finishes an entry's work seldom names the entry.
+2. **Which entries.** Those naming the change; those whose `waits_on` names it, with the name proposed removed; those whose `waits_for` it fulfils; parked entries whose condition, their `parked_until`, it fulfils, and `high` entries whose evidence it removed, each with its `priority` proposed as the README directs; those naming a file, specification or capability it touched; and, where the change's archive archives its workstream, those naming that workstream, to be re-pointed or set to the README's absent value as `docs/workstreams/AGENTS.md` directs. The group naming files, specifications or capabilities is the one a search by name misses, because a change that finishes an entry's work seldom names the entry.
 3. **Present, then edit.** Show each entry with what the change did to it. Make the edits once the session or the operator agrees.
 4. **Where the edit goes.** Run before the archive commit, leave the edit for that commit. Run after the change's record is already on the trunk, make the same edit and say that it is to be delivered as work too small to be a change.
 

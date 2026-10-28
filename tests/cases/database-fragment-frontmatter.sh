@@ -70,8 +70,8 @@ if ! printf '%s\n' "$frontmatter" | grep -q '^kind:[[:space:]]*standing-constrai
   exit 1
 fi
 
-if ! printf '%s\n' "$frontmatter" | grep -q '^version:[[:space:]]*[0-9][0-9]*[[:space:]]*$'; then
-  echo "FAIL: $fragment does not declare a numeric version" >&2
+if ! printf '%s\n' "$frontmatter" | grep -q -E '^version:[[:space:]]*[0-9]+[.][0-9]+[.][0-9]+[[:space:]]*$'; then
+  echo "FAIL: $fragment does not declare a MAJOR.MINOR.PATCH version" >&2
   printf '%s\n' "$frontmatter" >&2
   exit 1
 fi

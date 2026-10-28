@@ -23,7 +23,7 @@ Assets reach a consuming project by installing this repository as a plugin (`/pl
 `rules/` fragments have no dedicated Claude Code primitive, so nothing loads them automatically the way `skills/` and `agents/` are loaded. That does not mean they are absent from an installed copy: plugin installation copies this repository's entire tree, not only the directories backing a primitive, so `rules/` is present and readable wherever the plugin is installed — it just has no automatic loader. Two paths reach a fragment from there:
 
 - **`@` import** — a project's `CLAUDE.md` or `AGENTS.md` names the fragment's path in this repository (e.g. `@~/projects/shatynska/ai-toolkit/rules/<rule-name>.md`). Needs no tooling, but the path is machine-local — it resolves only where this repository is checked out at that path.
-- **A shipped tool reading it** — an executable under `scripts/` locates a fragment relative to its own installed location and reads it directly, with no import and no harness involved. `scripts/project-init` does this: it inlines `rules/development-workflow.md` into a project's `AGENTS.md`.
+- **A shipped tool reading it** — an executable under `scripts/` locates a fragment relative to its own installed location and reads it directly, with no import and no harness involved. `scripts/project-init` does this: it writes each fragment `rules/manifest` lists as a managed block into the `AGENTS.md` the manifest names — the workflow into the project's own, the backlog's and the workstreams' rules into `docs/backlog/` and `docs/workstreams/`, each beside a `CLAUDE.md` importing it.
 
 Both reach any fragment under `rules/`. What a binding fragment such as `rules/development-workflow-database.md` lacks until tooling catches up is a *tool* route, not a route: it is imported or copied by hand rather than written into a managed block.
 
@@ -32,7 +32,7 @@ A `rules/` fragment is one of two kinds, declared in its own YAML frontmatter:
 ```yaml
 ---
 kind: standing-constraint    # or: procedural-checklist
-version: 1                   # only if the fragment is inlined, now or later
+version: 1.0.0               # only if the fragment is inlined, now or later: MAJOR.MINOR.PATCH
 ---
 ```
 
@@ -60,7 +60,7 @@ This file states conventions, not authoring standards. How to write a skill well
 - **Shipped tooling** — `scripts/`. Executables that ship with the library and are runnable directly, by a consumer, a shell, or an agent of any harness — without any harness-specific loading mechanism. `scripts/` conventionally names a repository's *internal* helpers in most projects; here it does not. Its contents ship and are meant to be run by consumers, exactly like `skills/` and `agents/` — they are simply not discovered by description the way those are, and carry no asset frontmatter. Belongs there: a deterministic operation with exactly one correct outcome, meant to be run directly rather than orchestrated by a model. Code needed by only one skill, that no other consumer invokes, stays inside that skill's own `scripts/` directory instead.
 - **Repository tooling** — `.claude/`. This repository's own working configuration — the OpenSpec skills and commands used to develop this repository — and tooling meant only for working *on* this repository, never on a consuming project. Not part of the library, never shipped as a library asset.
 
-`scripts/seed/` is the one place in `scripts/` that holds no executable: it holds the texts the shipped tools write into a project verbatim, byte for byte, such as the backlog's README, which `scripts/project-init` and `scripts/backlog-migrate` both write as a project's `docs/backlog/README.md` and so read from one file. A seed is not a `rules/` fragment: a fragment carries `kind` frontmatter of the library's own and is read, imported or inlined as instructions, whereas a seed becomes a file the project owns, and frontmatter of the library's would be written into it.
+Every rule text a shipped tool writes into a project is a `rules/` fragment, written as a managed block without its frontmatter, and `rules/manifest` lists which fragments are written and into which `AGENTS.md`. A rule text kept anywhere else would be one no update could reach, since an update replaces what the manifest lists. What a tool writes once and the project then owns — the ignore file, and the one line `@AGENTS.md` in a seeded directory's `CLAUDE.md` — is not a rule text and stays in the tool. A fragment's `version` is a semantic version: a patch changes wording only, a minor changes an obligation that needs no edit in the project, and a major asks the project to do something by hand.
 
 An asset meant to ship belongs in `skills/`, `agents/`, `rules/`, or `scripts/` — never under `.claude/`, which a project installing this plugin never sees.
 

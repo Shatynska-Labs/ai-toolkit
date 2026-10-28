@@ -26,7 +26,7 @@ source "$TESTLIB"
 source "$(dirname "${BASH_SOURCE[0]}")/lib/static-scan.sh"
 
 F=rules/development-workflow.md
-scan require "$F" "" defers-to-readme 'docs/workstreams/readme[.]md'
+scan require "$F" "" defers-to-readme 'docs/workstreams/agents[.]md'
 scan require "$F" "" names-directory 'docs/workstreams/([^r]|$)'
 scan forbid "$F" "" shape-field '[*][*](goal|done when|not in scope|open questions|opened)[*][*]' '**Done when**: a condition that can be checked.'
 # shellcheck disable=SC2016 # backticks are literal markdown in the pattern and specimen
@@ -43,7 +43,7 @@ cat > "$fixture/$F" <<'FIXTURE'
 
 Where a workstream in `docs/workstreams/` names this change, the proposal names it.
 
-At archive, re-read the workstream as `docs/workstreams/README.md` directs.
+At archive, re-read the workstream as `docs/workstreams/AGENTS.md` directs.
 FIXTURE
 
 scan_run "$fixture"

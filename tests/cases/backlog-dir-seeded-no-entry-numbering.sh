@@ -33,7 +33,7 @@ fi
 work="$TESTDIR/work"
 mkdir -p "$work"
 (cd "$work" && bash "$PROJECT_INIT") >/dev/null 2>&1
-r="$work/docs/backlog/README.md"
+r="$work/docs/backlog/AGENTS.md"
 assert_file "$r" "the seeded README this case reads"
 hits="$(numbered_headings "$r")"
 [ -z "$hits" ] || { echo "FAIL: a heading in the seeded README begins with a number:" >&2; echo "$hits" >&2; exit 1; }

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Deterministic conversion of a project's single-file backlog, docs/backlog.md,
-# into the directory shape project-init seeds: docs/backlog/README.md and one
-# frontmatter file per entry. See `--help` for usage; the backlog-migration
+# into the directory shape project-init seeds: one frontmatter file per entry,
+# beside the rules project-init writes into docs/backlog/AGENTS.md. See `--help` for usage; the backlog-migration
 # specification states what each field maps to.
 set -u
 
@@ -24,9 +24,9 @@ Arguments:
   TARGET_DIR   The project to convert. Defaults to the current working
                directory if omitted.
 
-Writes docs/backlog/README.md (the README project-init seeds) and one
-docs/backlog/<name>.md per entry, with the entry's values as frontmatter,
-then deletes docs/backlog.md. Text it cannot map into a value is kept in the
+Writes one docs/backlog/<name>.md per entry, with the entry's values as
+frontmatter, then deletes docs/backlog.md. It writes no rules: run the
+project-init beside it afterwards to write docs/backlog/AGENTS.md. Text it cannot map into a value is kept in the
 entry's body and named in the report. Never commits, stages or pushes.
 
 Outcomes and exit codes:
@@ -38,7 +38,7 @@ HELP
 
 # --- Self-location: never resolved from the environment. -------------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SEED="$SCRIPT_DIR/seed/backlog-README.md"
+PROJECT_INIT="$SCRIPT_DIR/project-init"
 
 target=""
 while [ $# -gt 0 ]; do
@@ -80,7 +80,6 @@ target="$(CDPATH='' cd -- "$target" && pwd)"
 command -v git >/dev/null 2>&1 || finish_blocked "git not found, required to check that docs/backlog.md is committed"
 [ "$(git -C "$target" rev-parse --is-inside-work-tree 2>/dev/null)" = "true" ] \
   || finish_blocked "target is not inside a git repository: $target"
-[ -f "$SEED" ] || finish_blocked "backlog seed not found at $SEED"
 
 backlog_dir="$target/docs/backlog"
 single="$target/docs/backlog.md"
@@ -116,7 +115,7 @@ scan="$(awk '
   /^## / {
     if ($0 ~ /^## `[a-z0-9]+(-[a-z0-9]+)*`[ \t]*$/) {
       name = $0; sub(/^## `/, "", name); sub(/`[ \t]*$/, "", name)
-      if (tolower(name) == "readme") { print "BLOCK an entry is named readme, which collides with README.md where the filesystem ignores case: " name; next }
+      if (tolower(name) == "readme" || tolower(name) == "agents" || tolower(name) == "claude") { print "BLOCK an entry is named " name ", which collides with README.md, AGENTS.md or CLAUDE.md where the filesystem ignores case: " name; next }
       if (name in seen) { print "BLOCK two entries carry the name " name; next }
       seen[name] = 1; started = 1; print "NAME " name
     } else if (started) {
@@ -298,9 +297,6 @@ if ! printf '%s\n' "$known" | awk -v out="$workdir" -v notes="$notes" '
   finish_error "the conversion failed while writing entry files"
 fi
 
-if ! cat "$SEED" > "$workdir/README.md" 2>/dev/null; then
-  finish_error "docs/backlog/README.md could not be written"
-fi
 count="$(cat "$workdir/.count" 2>/dev/null)"
 report_notes=""
 [ -f "$notes" ] && report_notes="$(cat "$notes")"
@@ -317,7 +313,8 @@ fi
 
 echo "Outcome: SUCCESS"
 echo "converted: ${count:-0} entries into docs/backlog/"
-echo "preamble: the old preamble was not carried over; docs/backlog/README.md is the seeded README, so compare it in the diff"
+echo "preamble: the old preamble was not carried over"
+echo "rules: none written; run $PROJECT_INIT in the target to write docs/backlog/AGENTS.md"
 if [ -n "$report_notes" ]; then
   echo "kept or written for review:"
   printf '%s\n' "$report_notes" | sed 's/^/  /'

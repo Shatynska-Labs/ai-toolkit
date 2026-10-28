@@ -25,7 +25,7 @@ A=skills/backlog/references/audit.md
 fixture="$TESTDIR/fixture"
 mkdir -p "$fixture/skills/backlog/references"
 
-scan require "$S" "" reads-readme 'docs/backlog/readme[.]md'
+scan require "$S" "" reads-readme 'docs/backlog/agents[.]md'
 for f in "$S" "$A"; do
   b="${f##*/}"; b="${b%.md}"
   scan forbid "$f" "" "$b-only-identifier" 'only identifier' "The file's name is the entry's only identifier."
@@ -38,7 +38,7 @@ done
 cat > "$fixture/$S" <<'FIXTURE'
 # backlog
 
-Read the entry rules from `docs/backlog/README.md`; do not restate them here.
+Read the entry rules from `docs/backlog/AGENTS.md`; do not restate them here.
 FIXTURE
 cat > "$fixture/$A" <<'FIXTURE'
 # audit brief

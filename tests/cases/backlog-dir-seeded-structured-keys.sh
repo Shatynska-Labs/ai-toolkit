@@ -20,7 +20,7 @@ source "$TESTLIB"
 # shellcheck disable=SC1091 # resolved beside this case at runtime; the helper is checked on its own
 source "$(dirname "${BASH_SOURCE[0]}")/lib/static-scan.sh"
 
-R=docs/backlog/README.md
+R=docs/backlog/AGENTS.md
 
 # Local arrangement (test-plan.md, Missing shared arrangement: seeded-output
 # scan wrappers). static-scan.sh's scan_run checks $TOOLKIT_ROOT only; these
@@ -41,7 +41,7 @@ seed_and_check() {
   scan_check "$work"
   st=$?
   if [ "$st" -eq 2 ]; then
-    echo "FAIL: target absent — project-init seeded no docs/backlog/README.md" >&2
+    echo "FAIL: target absent — project-init seeded no docs/backlog/AGENTS.md" >&2
   fi
   [ "$st" -eq 0 ] || exit 1
 }

@@ -26,7 +26,7 @@ source "$TESTLIB"
 # shellcheck disable=SC1091 # resolved beside this case at runtime; the helper is checked on its own
 source "$(dirname "${BASH_SOURCE[0]}")/lib/static-scan.sh"
 
-scan require skills/backlog/SKILL.md "" reads-readme 'docs/workstreams/readme[.]md'
+scan require skills/backlog/SKILL.md "" reads-readme 'docs/workstreams/agents[.]md'
 for f in skills/backlog/SKILL.md skills/backlog/references/audit.md; do
   b="$(basename "$f" .md)"
   scan forbid "$f" "" "$b-plan-not-progress" 'holds the plan and never' "A workstream file holds the plan and never its progress."
@@ -42,7 +42,7 @@ mkdir -p "$fixture/skills/backlog/references"
 cat > "$fixture/skills/backlog/SKILL.md" <<'FIXTURE'
 # backlog
 
-Read how a workstream is shaped, and how a step's status is derived, from `docs/workstreams/README.md`.
+Read how a workstream is shaped, and how a step's status is derived, from `docs/workstreams/AGENTS.md`.
 FIXTURE
 cat > "$fixture/skills/backlog/references/audit.md" <<'FIXTURE'
 # Audit brief

@@ -48,5 +48,6 @@ nokind="$TESTDIR/nokind"
 toolkit_copy "$nokind"
 # shellcheck disable=SC2016 # backticks and $ are literal markdown or awk, not expansions
 rewrite_fm "$nokind/rules/backlog.md" 'if ($0 !~ /^kind:/) print'
-if grep -q '^kind:' "$nokind/rules/backlog.md"; then echo "FAIL: fixture — the kind was not removed" >&2; exit 1; fi
+# The body's entry shape holds a `kind:` line of its own, so only the frontmatter is checked.
+if sed -n '2,/^---$/p' "$nokind/rules/backlog.md" | grep -q '^kind:'; then echo "FAIL: fixture — the kind was not removed" >&2; exit 1; fi
 run_blocked no-kind "$nokind"

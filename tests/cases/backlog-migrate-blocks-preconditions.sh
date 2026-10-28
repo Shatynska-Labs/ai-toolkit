@@ -2,8 +2,7 @@
 # Requirement text, not a scenario of its own: the BLOCKED preconditions the
 # scenarios do not name — the target not inside a git repository;
 # docs/backlog.md absent, not a regular file (a symbolic link), or not
-# tracked; two entries carrying one name; the seeded README absent from the
-# tool's own copy. Accounted under the requirement Every run ends in one of
+# tracked; two entries carrying one name. Accounted under the requirement Every run ends in one of
 # three outcomes, and the exit code agrees.
 # Change: one-file-per-backlog-entry (backlog-migration, ADDED).
 #
@@ -158,13 +157,3 @@ sum="$(md5sum "$work/docs/backlog.md" | awk '{print $1}')"
 expect_blocked duplicate-name "$work"
 assert_untouched "$work" "$sum"
 
-# The seed absent from the tool's own copy.
-copy="$TESTDIR/copy"
-mkdir -p "$copy"
-cp -R "$TOOLKIT_ROOT/scripts" "$copy/scripts" || exit 1
-rm -f "$copy/scripts/seed/backlog-README.md"
-work="$TESTDIR/no-seed"
-backlog_text | new_repo "$work"
-sum="$(md5sum "$work/docs/backlog.md" | awk '{print $1}')"
-expect_blocked missing-seed "$work" "$copy/scripts/backlog-migrate"
-assert_untouched "$work" "$sum"

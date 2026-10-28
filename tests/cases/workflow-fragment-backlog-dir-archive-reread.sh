@@ -16,7 +16,7 @@
 # DERIVED (carried from the superseded workflow-fragment-archive-backlog-
 # reread.sh and -archive-reread-names-no-field.sh, path and deferral
 # revised): the archive line naming `docs/backlog/` and a re-read carries
-# each term below; "as its README directs" is read as `readme ... directs`;
+# each term below; "as its `AGENTS.md` directs" is read as `readme ... directs`;
 # no field label or frontmatter key anywhere in the fragment; no `date` or
 # `delet` on that line; no backlog skill named on it.
 #
@@ -47,7 +47,7 @@ check() {
   need touched-files 'files'
   need touched-specifications 'specification'
   need not-only-by-name 'not only'
-  need as-readme-directs 'readme[^.]*directs'
+  need as-readme-directs 'agents[.]md[^.]*directs'
   need in-the-record-commit 'commit[^.]*record'
   need before-the-pull-request 'pull request'
   printf '%s\n' "$line" | grep -q -i -E 'backlog skill|ai-toolkit:backlog|skills/backlog|(^|[[:space:]`(])/backlog' && problems="$problems
@@ -64,7 +64,7 @@ check() {
 }
 
 # shellcheck disable=SC2016 # backticks are literal markdown in the fixture
-conforming='**archive** — open the record'"'"'s pull request. Before opening that pull request, re-read `docs/backlog/` for the entries this change completed, made obsolete, unblocked or made stale (including entries naming files or specifications it touched, not only entries naming it) and update each as its README directs, in the commit that carries the record.'
+conforming='**archive** — open the record'"'"'s pull request. Before opening that pull request, re-read `docs/backlog/` for the entries this change completed, made obsolete, unblocked or made stale (including entries naming files or specifications it touched, not only entries naming it) and update each as its `AGENTS.md` directs, in the commit that carries the record.'
 
 fixture="$TESTDIR/fragment.md"
 printf '# Workflow\n\n%s\n' "$conforming" > "$fixture"
@@ -87,7 +87,8 @@ mutate_and_expect touched "$(m 's/ it touched//')"
 mutate_and_expect touched-files "$(m 's/files or //')"
 mutate_and_expect touched-specifications "$(m 's/ or specifications//')"
 mutate_and_expect not-only-by-name "$(m 's/, not only entries naming it//')"
-mutate_and_expect as-readme-directs "$(m 's/as its README directs/as the file says/')"
+# shellcheck disable=SC2016 # the backticks are literal markdown in the sed expression
+mutate_and_expect as-readme-directs "$(m 's/as its `AGENTS.md` directs/as the file says/')"
 mutate_and_expect in-the-record-commit "$(m 's/, in the commit that carries the record//')"
 mutate_and_expect before-the-pull-request "$(m 's/open the record.s pull request\. Before opening that pull request, //')"
 mutate_and_expect names-skill "$(m 's/\.$/, using the backlog skill./')"
