@@ -130,3 +130,10 @@ The dispatch named `tests/lib.sh` as the shared arrangement. Every case uses its
 - **`from_open_pr`**, in `workflow-fragment-open-pr-binds-commits-and-pull-requests`. Stands in for: the fragment's body from the first `open pr` mention. Used by that case only. No near-miss. No proposed home (single use).
 - **`after_tooling`**, in `project-foundation-development-tooling-pull-requests-item`. Stands in for: a checklist from the first "development tooling" mention. Used by that case only. Near-miss: none in `tests/lib.sh`; the `@after:` region of `project-foundation-testing-items.sh`'s local scanner is the same idea, in a test module. Proposed home: with the scanner in `tests/lib.sh`, if it moves.
 - **`at_least_13`**, in `workflow-fragment-version-after-pr-binding`. Stands in for: a version threshold check over a toolkit root, so decoy roots can discriminate it. Near-miss: `fragment_version` in `tests/lib.sh` reads the version but compares nothing; it is used as is. No proposed home (single use, threshold-specific).
+
+## Arrangement dispositions
+
+Recorded at implementation, before `build`'s review.
+
+- **The line scanner** (fifteen cases): **keep** local. `AGENTS.md` records no shared test arrangement's location, so promoting it into `tests/lib.sh` would decide the project's testing strategy, which is not a step of this change.
+- **`from_open_pr`**, **`after_tooling`**, **`at_least_13`**: **keep** local, for the same reason; each is also single-use.

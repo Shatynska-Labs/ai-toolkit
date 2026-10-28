@@ -332,3 +332,16 @@ From the requirement's definition of a shadowing file rather than a scenario: `s
 - **Overturned content is revised in place**: `workstreams-seeded-overturned-revised-in-place.sh`.
 - **The widened edit statement**, in *A project without a workstream register receives the seeded file*: `workstreams-seeded-edit-rule-what-it-holds.sh`; `workstreams-seeded-statements.sh` asserts the new sentence and drops its two "kept short" assertions.
 - **Arrangement**: `fenced_text`, `fenced_prefixed_line`, `fenced_exact_line` and `section_omits` are kept local, because `AGENTS.md` records no shared test arrangement; the prose cases take `tests/cases/lib/line-scan.sh` and `static-scan.sh`.
+
+## describe-commits-and-pull-requests (27 delta scenarios)
+
+`describe-commits-and-pull-requests` adds the `commit-and-pull-request-practice` capability (11 scenarios), adds *Writing a pull request is bound to a skill, not stated in the fragment* to `session-workflow` and modifies *A rule states an action and a defect appears only as its reason* there with a form-skill clause (7), and modifies two `project-foundation` requirements to add the pull request concern and its `Pull requests` item (9). Its cases were derived by `ai-toolkit:change-test-writer`; the per-scenario accounting and which assertions are derived rather than specified are in the change's `test-plan.md`. 16 scenarios are covered by the new cases, the skill's in their mechanical half, since each reads the stated text rather than a session's conduct; 1 is covered in part by existing cases; 10 are carried over verbatim and keep their accounting above.
+
+- **The skill's eleven scenarios**: the `commits-and-pull-requests-skill-*.sh` cases, one per scenario; the record's content is read from `references/record-pull-request.md`.
+- **The binding names a shipped skill**: `workflow-fragment-open-pr-binds-commits-and-pull-requests.sh`, with `workflow-fragment-names-shipped-assets.sh`.
+- **The fragment carries no pull request format**: `workflow-fragment-no-pull-request-format.sh`, with `workflow-fragment-fold-in-named-in-pr.sh` for the obligation that stays.
+- **A form skill carries defaults, not obligations**: in part, by the two existing fragment cases above; that the skill carries no obligation beyond form is verified by reading.
+- **The pull request concern is decided on its own**, and the new concern under *The checklist names concerns, not tools*: `project-foundation-pull-request-concern.sh`.
+- **The `Pull requests` item**, under *A decision absorbed into a shared section stays visible*: `project-foundation-development-tooling-pull-requests-item.sh`.
+- **The fragment's version**: `workflow-fragment-version-after-pr-binding.sh`, from design decision 9 rather than a scenario.
+- **Arrangement**: the line scanner declared in fifteen cases, and `from_open_pr`, `after_tooling` and `at_least_13`, are kept local, because `AGENTS.md` records no shared test arrangement.
