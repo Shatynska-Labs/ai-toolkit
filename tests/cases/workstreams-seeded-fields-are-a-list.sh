@@ -6,17 +6,18 @@
 # Requirement: A workstream register is seeded where none exists.
 # Change: list-the-entry-fields (project-bootstrap, MODIFIED).
 #
-# SPECIFIED: the workstream shape gives Not in scope, Open questions,
-# Decisions and Opened as consecutive list items after the steps, in that
-# order, each absent value as `none`; Goal and Done when stay paragraphs.
+# SPECIFIED: the workstream shape gives Not in scope, Open questions and
+# Opened as consecutive list items after the steps, in that order, each
+# absent value as `none`; Goal and Done when stay paragraphs. Decisions left
+# the list for a section (hold-shared-research-in-a-workstream).
 # DERIVED (placement): the shape is the fenced example; each item is one line
-# beginning `- **<label>**` (AGENTS.md: a list item is one line), so the four
-# occupy four adjacent lines; "after the steps" is read as after the fenced
+# beginning `- **<label>**` (AGENTS.md: a list item is one line), so the three
+# occupy three adjacent lines; "after the steps" is read as after the fenced
 # `**Steps**` line; Goal and Done when are fenced lines beginning
 # `**<label>**` with no list marker.
 # DERIVED (operationalisation of "each absent value"): Opened always has a
-# value (when and by what), so the `none` assertion binds the three fields
-# that can be empty; none of the three may still offer `nothing`.
+# value (when and by what), so the `none` assertion binds the two fields
+# that can be empty; neither of the two may still offer `nothing`.
 #
 # Executes the tool and reads its output (second situation). The local
 # parser is checked first against specimens it must accept and reject. Red
@@ -24,8 +25,8 @@
 # shellcheck disable=SC1090 # $TESTLIB is set by tests/run.sh at runtime, not statically resolvable
 source "$TESTLIB"
 
-ITEMS=("Not in scope" "Open questions" "Decisions" "Opened")
-NONE_ITEMS=("Not in scope" "Open questions" "Decisions")
+ITEMS=("Not in scope" "Open questions" "Opened")
+NONE_ITEMS=("Not in scope" "Open questions")
 
 # Local arrangement (test-plan.md, Missing shared arrangement): line number of
 # the first fenced line beginning PREFIX**<label>**, or nothing. tests/lib.sh's
@@ -70,7 +71,7 @@ check_shape() {
     return 1
   fi
   if [ $((last - first + 1)) -ne ${#ITEMS[@]} ]; then
-    echo "FAIL: the four field items span lines $first-$last; something stands between them" >&2
+    echo "FAIL: the ${#ITEMS[@]} field items span lines $first-$last; something stands between them" >&2
     sed -n "${first},${last}p" "$file" >&2
     return 1
   fi
@@ -105,7 +106,7 @@ conforming() {
   printf '%s\n' '```' '# `name`' '' '**Goal**: g' '' '**Done when**: d' '' '**Steps**:' '' \
     '1. `a` — x' '2. `b` — y' '' \
     '- **Not in scope**: n, or `none`.' '- **Open questions**: q, or `none`.' \
-    '- **Decisions**: d, or `none`.' '- **Opened**: when and by what.' '```'
+    '- **Opened**: when and by what.' '```'
 }
 conforming > "$spec/ok.md"
 check_shape "$spec/ok.md" 2>/dev/null \
@@ -116,7 +117,7 @@ conforming | sed -e 's/^- \*\*/**/' -e 's/^\(\*\*Opened\)/\n\1/' > "$spec/paragr
 conforming | awk '{ print } /^- \*\*Open questions\*\*/ { print "" }' > "$spec/blank.md"
 # `nothing` kept as an absent value.
 # shellcheck disable=SC2016 # backticks are literal markdown in the sed program
-conforming | sed 's/^\(- \*\*Decisions\*\*.*\)`none`/\1`nothing`/' > "$spec/nothing.md"
+conforming | sed 's/^\(- \*\*Open questions\*\*.*\)`none`/\1`nothing`/' > "$spec/nothing.md"
 # Goal turned into a list item.
 conforming | sed 's/^\*\*Goal\*\*/- **Goal**/' > "$spec/goal.md"
 for bad in paragraphs blank nothing goal; do
