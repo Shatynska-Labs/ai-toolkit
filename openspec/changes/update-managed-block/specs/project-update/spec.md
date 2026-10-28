@@ -53,6 +53,26 @@ A run that leaves any record `edited`, `ahead`, `malformed`, `not writable`, `ab
 - **WHEN** one block is edited and every other is current
 - **THEN** the outcome is `SUCCESS`, the exit code `0`, and the line `Attention: ` names the edited block's record only
 
+#### Scenario: Several records to attend to are named in manifest order
+
+- **WHEN** the `workstreams` block is edited and the `backlog` block's target is a symbolic link
+- **THEN** the report holds one line `Attention: backlog, workstreams`
+
+#### Scenario: A fragment without a semantic version blocks
+
+- **WHEN** a fragment the manifest lists carries no `kind`, or a `version` such as `12` that is not `MAJOR.MINOR.PATCH`
+- **THEN** the tool reports `BLOCKED`, exits `2`, and the project is unchanged
+
+#### Scenario: No hash command blocks
+
+- **WHEN** neither `sha256sum` nor `shasum` is on the `PATH`
+- **THEN** the tool reports `BLOCKED`, exits `2`, and the project is unchanged
+
+#### Scenario: A failed write reports what was written
+
+- **WHEN** two blocks are stale and writing the second fails
+- **THEN** the tool reports `ERROR`, exits `1`, and the report states that the first was replaced
+
 #### Scenario: Nothing to attend to
 
 - **WHEN** every block the manifest lists is current
@@ -60,13 +80,15 @@ A run that leaves any record `edited`, `ahead`, `malformed`, `not writable`, `ab
 
 ### Requirement: Each block the manifest lists is classified from the project alone
 
+An **opening marker** of a record is any line beginning `<!-- ai-toolkit:<name> `, with the record's name — the prefix `scripts/project-init` reads a block's presence by, so the two tools agree on whether a block is present. A **well-formed** opening marker is exactly `<!-- ai-toolkit:<name> <version> sha256:<hash> -->`, with `<version>` of the form `MAJOR.MINOR.PATCH` and `<hash>` 64 lowercase hexadecimal digits, or exactly the earlier `<!-- ai-toolkit:<name> v<N> -->`, with `<N>` one or more digits. A **closing marker** is the line `<!-- /ai-toolkit:<name> -->`.
+
 For each record in `rules/manifest`, in order, the tool SHALL determine exactly one state, the first of these that applies, and report it on one line beginning with the record's name:
 
 - `not writable` — the target, or the directory holding it, other than the project root's `AGENTS.md`, is a symbolic link or exists as something other than the file or directory the tool would write there;
 - `single file` — the record is `backlog`, `docs/backlog/` does not exist and `docs/backlog.md` does;
 - `legacy README` — the target's directory, other than the project root, holds `README.md`, and the target holds no opening marker of the record's name;
 - `absent` — the target holds no opening marker of the record's name;
-- `malformed` — the target holds more than one opening marker of the record's name, or no closing marker of that name after it, or an opening marker carrying `sha256:` followed by anything but 64 lowercase hexadecimal digits;
+- `malformed` — the target holds more than one opening marker of the record's name, or its opening marker is not well-formed, or no closing marker of that name follows it;
 - `legacy block` — the opening marker is the earlier form, `<!-- ai-toolkit:<name> v<N> -->`;
 - `edited` — the SHA-256 digest of every line strictly between the opening and closing markers, each with its newline, differs from the hash the opening marker carries;
 - `ahead` — the marker's version is greater than the fragment's;
@@ -102,6 +124,11 @@ Versions SHALL be compared numerically by major, then minor, then patch. A `v<N>
 - **WHEN** a target holds two opening markers of the record's name
 - **THEN** its line reports the markers malformed, and the target is byte-for-byte unchanged
 
+#### Scenario: A marker in neither form is malformed
+
+- **WHEN** a target's opening marker reads `<!-- ai-toolkit:backlog 1.0 sha256:` followed by 64 lowercase hexadecimal digits and ` -->`, or `<!-- ai-toolkit:backlog 1.0.0 -->` with no hash
+- **THEN** its line reports the markers malformed, not absent, and the target is byte-for-byte unchanged
+
 #### Scenario: An opening marker without a closing one is malformed
 
 - **WHEN** a target holds a record's opening marker and no closing marker of that name after it
@@ -126,12 +153,22 @@ For a `stale` record, the tool SHALL replace the lines from the opening marker t
 #### Scenario: The replacement is project-init's block
 
 - **WHEN** the tool replaces a stale block from a fragment
-- **THEN** the lines from its opening marker to its closing marker equal those `scripts/project-init` writes from the same fragment into a new project
+- **THEN** the lines from its opening marker to its closing marker equal those `scripts/project-init` writes from the same fragment into a new project, for every fragment the manifest lists and for a fragment whose body contains a `---` line and ends without a newline, both with `sha256sum` available and with only `shasum`
+
+#### Scenario: Both tools agree on whether a block is present
+
+- **WHEN** a target holds a line beginning `<!-- ai-toolkit:<name> ` in any of the forms *Each block the manifest lists is classified from the project alone* names, well-formed or not
+- **THEN** `scripts/project-init` reports the block present exactly where `scripts/project-update` reports a state other than `absent`
 
 #### Scenario: A second run changes nothing
 
 - **WHEN** the tool runs twice in a row in a project holding stale blocks
 - **THEN** the second run reports every block it replaced as current, and leaves every file byte-for-byte as the first run left it
+
+#### Scenario: The file's mode is kept
+
+- **WHEN** a stale block's target has permission bits `0640`
+- **THEN** after the replacement its permission bits are `0640`
 
 #### Scenario: A root AGENTS.md link is written through
 
@@ -151,6 +188,11 @@ The tool SHALL likewise leave the target byte-for-byte unchanged for an `ahead`,
 - **WHEN** a block carries an older version and one line inside its markers was changed after it was written
 - **THEN** the target is byte-for-byte unchanged, the record's line reports it edited with the version it carries and the version the toolkit carries, and the report holds a diff in which the changed line appears
 
+#### Scenario: A target that is a link is left
+
+- **WHEN** `docs/backlog/AGENTS.md` is a symbolic link to a file holding a stale backlog block
+- **THEN** the link and the file it points to are unchanged, and the `backlog` line states the path is not one the tool writes into
+
 #### Scenario: Other blocks proceed past an edited one
 
 - **WHEN** the workflow block is edited and the backlog block is stale and untouched
@@ -158,16 +200,20 @@ The tool SHALL likewise leave the target byte-for-byte unchanged for an `ahead`,
 
 ### Requirement: The shapes before 1.0.0 are converted only where git holds the original
 
-A `legacy block` and a `legacy README` carry no hash, so an edit in them cannot be detected. The tool SHALL convert them, and SHALL do so only where git holds what the conversion replaces: where any record is `legacy block` or `legacy README`, the tool SHALL report `BLOCKED` and write nothing — naming the first file that fails — unless the target is the top level of a git working tree with at least one commit, and every file the conversions would write or remove is tracked and identical, in the working tree and in the index, to its content at `HEAD`. Those files are: the target of a `legacy block`; and, for a `legacy README`, the `README.md`, and that directory's `AGENTS.md` and `CLAUDE.md` where either is present.
+A `legacy block` and a `legacy README` carry no hash, so an edit in them cannot be detected. The tool SHALL convert them, and SHALL do so only where git holds what the conversion replaces: where any record is `legacy block` or `legacy README`, the tool SHALL report `BLOCKED` and write nothing unless the target is the top level of a git working tree with at least one commit, and every file the conversions would write or remove is tracked and identical, in the working tree and in the index, to its content at `HEAD`. Those files are, in manifest order and within a record in this order: the target of a `legacy block`; and, for a `legacy README`, the `README.md`, then the directory's `AGENTS.md` where it is present. A directory's `CLAUDE.md` is not among them, since the conversion never writes one that is present. Where the root's `AGENTS.md` holding a `legacy block` is a symbolic link, the file checked SHALL be the one it resolves to, which SHALL lie inside the working tree; a link resolving outside it SHALL block. The report SHALL name the first file, in that order, that fails, and for a link both the link and what it resolves to.
+
+Where any record is `legacy block` or `legacy README`, the tool SHALL also report `BLOCKED` and write nothing where a `not writable` record's directory holds `README.md`: that directory's rules could not be converted in the same run.
 
 Where no record is `legacy block` or `legacy README`, the tool SHALL require no git repository.
 
 The tool SHALL convert:
 
 - a `legacy block`, by replacing it as *A stale block nobody edited is replaced, and nothing outside its markers changes* replaces a stale block;
-- a `legacy README`, by removing `README.md` from that directory and writing the block into the directory's `AGENTS.md`, appended after a blank line to a file that exists and the file created otherwise, and by treating the directory's `CLAUDE.md` as `project-bootstrap`'s *A directory's rules block is imported by a CLAUDE.md beside it* states, with the report's `directory import:` lines.
+- a `legacy README`, by first writing the block into the directory's `AGENTS.md`, appended after a blank line to a file that exists and the file created otherwise, then treating the directory's `CLAUDE.md` as `project-bootstrap`'s *A directory's rules block is imported by a CLAUDE.md beside it* states, with the report's `directory import:` lines, and only then removing `README.md`, so that a failed write never leaves the directory without its rules.
 
 Each converted record's line SHALL state the shape it was converted from, the version written, and that it was not checked for edits and `git diff` shows the conversion. Every legacy record in a run SHALL be converted in that run, so that a project never holds a root block at `1.0.0` or later beside a directory's rules in a README.
+
+On `ERROR` during a conversion, the report SHALL name every file the run wrote, created or removed. `git restore` of the tracked ones and removal of the ones it created return the project to its state before the run, from which a re-run converts again.
 
 **Brought to `1.0.0` without reconciling by hand, recoverably** (`keep-projects-on-the-current-workflow`'s decisions 3 and 5). Refusing to convert without a hash would strand every adopting project before `1.0.0`; carrying every past text would be the history the workstream decided against. Requiring the original to be committed and unmodified keeps an edit the tool could not see one `git restore` away, and the conversion one `git diff` to review. The README is the toolkit's own earlier shape of the directory's rules, which the root block at `1.0.0` no longer sends any session to.
 
@@ -205,6 +251,41 @@ Each converted record's line SHALL state the shape it was converted from, the ve
 
 - **WHEN** the root `AGENTS.md` holds a `v12` block and has a change staged in the index but not committed
 - **THEN** the tool reports `BLOCKED` and writes nothing
+
+#### Scenario: A repository with no commit blocks a conversion
+
+- **WHEN** the target holds a `v12` block and is the top level of a git working tree with no commit
+- **THEN** the tool reports `BLOCKED` and writes nothing
+
+#### Scenario: A root link resolving outside the working tree blocks
+
+- **WHEN** the root `AGENTS.md` is a tracked symbolic link to a file outside the working tree, and that file holds a `v12` block
+- **THEN** the tool reports `BLOCKED`, names the link and the file it resolves to, and neither is changed
+
+#### Scenario: A root link resolving to a modified file blocks
+
+- **WHEN** the root `AGENTS.md` is a symbolic link to a tracked file inside the working tree that holds a `v12` block and has an uncommitted change
+- **THEN** the tool reports `BLOCKED`, names the file it resolves to, and writes nothing
+
+#### Scenario: A README is converted into an existing AGENTS.md
+
+- **WHEN** `docs/workstreams/` holds a committed, unmodified `README.md` and a committed, unmodified `AGENTS.md` of project text with no block
+- **THEN** `AGENTS.md` holds its project text unchanged, followed by a blank line and the workstreams block, and `README.md` is gone
+
+#### Scenario: A README beside a CLAUDE.md of the project's own
+
+- **WHEN** `docs/backlog/` holds a committed, unmodified `README.md` and a `CLAUDE.md` holding other text, with an uncommitted change
+- **THEN** the conversion proceeds, `CLAUDE.md` is byte-for-byte unchanged, and the report states the line `@AGENTS.md` to add to it
+
+#### Scenario: A README the run cannot reach blocks a conversion
+
+- **WHEN** the root `AGENTS.md` holds a `v12` block, and `docs/workstreams/` is a symbolic link to a directory holding `README.md`
+- **THEN** the tool reports `BLOCKED` and writes nothing, the root block included
+
+#### Scenario: A failed write during a conversion keeps the README
+
+- **WHEN** writing `docs/backlog/AGENTS.md` fails during a README conversion
+- **THEN** the tool reports `ERROR`, `docs/backlog/README.md` is still present, and the report names every file the run wrote, created or removed
 
 ### Requirement: A block the project lacks is named, not written
 

@@ -26,7 +26,7 @@ Reporting `SUCCESS` and stamping a version while the rules are inert would be th
 
 The tool SHALL write the workflow rule fragment into that file between delimiters that name the fragment and the version inlined, in the form *A block's opening marker records its version and a hash of what was written* states, and SHALL include a notice inside the block stating that its contents are generated and that project-specific rules belong outside it.
 
-Where a managed block for the same fragment is already present, whether its marker is in that form or the earlier `v<N>` one, the concern is satisfied and the block SHALL NOT be rewritten. The report SHALL then state both the version recorded in the existing block and the version the tool carries, and, where they differ, SHALL name the `scripts/project-update` in its own copy of the library as what brings the block current. This tool SHALL NOT rewrite the block itself: the update tool does, under the rules `project-update` states, so that this tool keeps the contract that it never overwrites what it finds. Reporting a version as "inlined" when nothing was inlined would make the report untrue in the one case where version skew is visible.
+Where a managed block for the same fragment is already present, whether its marker is in that form or the earlier `v<N>` one, the concern is satisfied and the block SHALL NOT be rewritten. The report SHALL then state both the version recorded in the existing block and the version the tool carries, and, where the existing version is lower — compared as `project-update` compares versions, a `v<N>` below every semantic version — SHALL name the `scripts/project-update` in its own copy of the library as what brings the block current; where it is higher, SHALL state that the block is ahead of this copy of the toolkit, naming no tool. This tool SHALL NOT rewrite the block itself: the update tool does, under the rules `project-update` states, so that this tool keeps the contract that it never overwrites what it finds. Reporting a version as "inlined" when nothing was inlined would make the report untrue in the one case where version skew is visible.
 
 Content between the delimiters SHALL be defined as generated and replaceable. Content outside them SHALL belong to the project and SHALL never be modified by this tool or any future update to it.
 
@@ -71,6 +71,11 @@ The delimiters SHALL be greppable and SHALL carry the version, so that a later u
 
 - **WHEN** the tool runs where a managed block for the same fragment already exists at an earlier version
 - **THEN** the block is left unchanged, and the report states both versions and names `scripts/project-update` as what brings it current
+
+#### Scenario: A block ahead of the toolkit names no remedy
+
+- **WHEN** the tool runs where a managed block for the same fragment already exists at a higher version than the fragment's
+- **THEN** the block is left unchanged, and the report states both versions, that the block is ahead of this copy of the toolkit, and does not name `scripts/project-update`
 
 
 ### Requirement: A directory holding its rules in a README is reported, not converted
