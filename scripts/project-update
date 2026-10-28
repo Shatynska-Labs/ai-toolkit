@@ -33,8 +33,10 @@ as one of:
                  file it touches is committed and unmodified, so git diff
                  shows the conversion and git restore undoes it
   absent         no block: scripts/project-init writes it
-Records left edited, ahead, malformed, absent or unwritable are named on a
-final Attention: line.
+  single file    the backlog as docs/backlog.md: scripts/backlog-migrate
+                 converts it
+Records left edited, ahead, malformed, unwritable, absent or single file are
+named on a final Attention: line.
 
 Arguments:
   TARGET_DIR   The project's root. Defaults to the current working directory.
@@ -218,6 +220,7 @@ rec_file=()    # the file the block is in, or would be written into
 rec_have=()    # the version the project's marker carries
 rec_open=()
 rec_close=()
+rec_restore=() # the path git restores for a converted block, where not its target
 any_legacy=0
 for i in "${!rec_name[@]}"; do
   name="${rec_name[$i]}"
@@ -307,13 +310,15 @@ resolve_link() {
   printf '%s/%s\n' "$d" "$(basename "$p")"
 }
 # Blocks unless the path $1, relative to the target, is tracked and identical
-# in the working tree and the index to HEAD.
+# in the working tree and the index to HEAD; $2, where given, is how the
+# report names it, such as a link resolving to it.
 require_committed() {
+  local shown="${2:-$1}"
   git -C "$target" ls-files --error-unmatch -- "$1" >/dev/null 2>&1 \
-    || finish_blocked "$1 is not tracked by git; commit it before converting the shape before 1.0.0"
+    || finish_blocked "$shown is not tracked by git; commit it before converting the shape before 1.0.0"
   if ! git -C "$target" diff --quiet -- "$1" 2>/dev/null \
     || ! git -C "$target" diff --cached --quiet -- "$1" 2>/dev/null; then
-    finish_blocked "$1 differs from its committed content; commit or restore it before converting the shape before 1.0.0"
+    finish_blocked "$shown differs from its committed content; commit or restore it before converting the shape before 1.0.0"
   fi
 }
 
@@ -340,7 +345,10 @@ if [ "$any_legacy" -eq 1 ]; then
           resolved="$(resolve_link "$target/$tgt")" \
             || finish_blocked "$tgt is a link that does not resolve to a file within eight links"
           case "$resolved" in
-            "$target_physical"/*) require_committed "${resolved#"$target_physical"/}" ;;
+            "$target_physical"/*)
+              rec_restore[i]="${resolved#"$target_physical"/}"
+              require_committed "${rec_restore[i]}" "$tgt (a link resolving to ${rec_restore[i]})"
+              ;;
             *) finish_blocked "$tgt is a link resolving to $resolved, outside the working tree, where git cannot restore it" ;;
           esac
         else
@@ -388,11 +396,20 @@ replace_block() {
     build_block "$i"
     tail -n "+$((to + 1))" "$f"
   } > "$tmp" 2>/dev/null || { rm -f "$tmp" 2>/dev/null; return 1; }
+  # Past this point the target may be truncated, so a failure keeps the
+  # temporary file: it is then the only full copy of the project's text.
   if ! cat "$tmp" > "$f" 2>/dev/null; then
-    rm -f "$tmp"
+    kept_copy="$tmp"
     return 1
   fi
   rm -f "$tmp"
+}
+kept_copy=""
+replace_failed() {
+  if [ -n "$kept_copy" ]; then
+    finish_error "$1 could not be written; its full intended content is kept at $kept_copy"
+  fi
+  finish_error "$1 could not be written"
 }
 
 for i in "${!rec_name[@]}"; do
@@ -407,14 +424,14 @@ for i in "${!rec_name[@]}"; do
       ;;
     stale)
       replace_block "$tf" "${rec_open[$i]}" "${rec_close[$i]}" "$i" \
-        || finish_error "$name: $tgt could not be written"
+        || replace_failed "$name: $tgt"
       note_touched "$tgt (a hashed block replaced: leave it; a re-run reports it current)"
       echo "$name: replaced (version $have → $version)"
       ;;
     "legacy block")
       replace_block "$tf" "${rec_open[$i]}" "${rec_close[$i]}" "$i" \
-        || finish_error "$name: $tgt could not be written"
-      note_touched "$tgt (converted: git restore returns it)"
+        || replace_failed "$name: $tgt"
+      note_touched "${rec_restore[i]:-$tgt} (converted: git restore returns it)"
       echo "$name: converted from version $have to $version; not checked for edits, review with git diff"
       ;;
     "legacy README")

@@ -225,3 +225,4 @@ before="$(tree_sum "$work")"
 assert_outcome "$TESTDIR/report.txt" 2 "$?" BLOCKED
 assert_contains "$TESTDIR/report.txt" "shared/rules.md" "the report names the file the link resolves to"
 assert_tree "$work" "$before" "a link to a modified file"
+grep "^Reason:" "$TESTDIR/report.txt" | grep -q -F "AGENTS.md" || { echo "FAIL: the reason does not name the link AGENTS.md beside the file it resolves to" >&2; cat "$TESTDIR/report.txt" >&2; exit 1; }

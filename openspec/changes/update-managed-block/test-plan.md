@@ -199,3 +199,9 @@ All 50 cases declare the same preamble right after `source "$TESTLIB"`. A helper
 - **`compare`**, declared in `project-update-replacement-equals-project-init`. Stands in for: one comparison: project-init run into an empty directory, and project-update run over stale blocks, both under the same PATH and the same toolkit copy. Near-miss: none. Found in: not found. Proposed home: none; it is specific to this scenario.
 - **`check`**, declared in `project-update-presence-agrees-with-project-init`. Stands in for: one presence comparison: both tools run over copies of one committed fixture. Near-miss: none. Found in: not found. Proposed home: none; it is specific to this scenario.
 - **`run_blocked`**, declared in `project-update-fragment-invalid-blocks`. Stands in for: one blocked run against an altered copy of the toolkit. Near-miss: none. Found in: `manifest-fragment-invalid-blocks.sh`, under the same name. That version targets `project-init` and an empty directory. Proposed home: none; it is specific to this scenario.
+
+## Arrangement dispositions
+
+Recorded at `build`, before code review, against each entry in *Missing shared arrangement*.
+
+- **Every entry**, the preamble every case declares and `PROJECT_UPDATE` included: **kept** local. This repository's `AGENTS.md` records no shared test arrangement's location, so the workflow keeps every entry: recording where one lives is a testing-strategy decision, not a step of this change. The backlog entry `record-this-repositorys-shared-test-arrangement` holds that decision. A promotion to `tests/cases/lib/managed-block.sh` was made and then reverted (c675d7f) when code review found it unconfirmable against the conventions. The preamble is byte-identical across all 50 cases, so it is one move once that entry lands.
