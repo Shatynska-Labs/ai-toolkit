@@ -32,7 +32,8 @@ Managed blocks (rules/manifest lists them, each read from rules/<name>.md):
   Each opening marker carries the fragment's version and the SHA-256 of what
   was written. A directory's CLAUDE.md is created holding @AGENTS.md where
   absent; a directory holding its rules in README.md is reported, not
-  converted.
+  converted. A block already present is never rewritten: scripts/project-update
+  brings an older one current and converts a README.
 
 Arguments:
   TARGET_DIR   Directory to initialize. Defaults to the current working
@@ -198,6 +199,40 @@ fi
 block_version() {
   grep -m1 "^<!-- ai-toolkit:$2 " "$1" 2>/dev/null | sed -n "s/^<!-- ai-toolkit:$2 \([^ ]*\) .*/\1/p"
 }
+# Whether the file holds an opening marker for $2 at all, in any form: the
+# prefix scripts/project-update reads presence by, so the two tools agree.
+block_present() {
+  grep -q "^<!-- ai-toolkit:$2 " "$1" 2>/dev/null
+}
+# Compares two versions, each MAJOR.MINOR.PATCH or the earlier v<N>, which is
+# below every semantic version: prints -1, 0 or 1, or nothing where either is
+# in neither form.
+version_cmp() {
+  local a="$1" b="$2" a1 a2 a3 b1 b2 b3
+  case "$a" in v[0-9]*) a="-1.$(printf '%s' "${a#v}" | sed 's/^0*\([0-9]\)/\1/').0" ;; esac
+  case "$b" in v[0-9]*) b="-1.$(printf '%s' "${b#v}" | sed 's/^0*\([0-9]\)/\1/').0" ;; esac
+  printf '%s\n%s\n' "$a" "$b" | grep -qvE '^-?[0-9]+[.][0-9]+[.][0-9]+$' && return 0
+  IFS=. read -r a1 a2 a3 <<EOF_A
+$a
+EOF_A
+  IFS=. read -r b1 b2 b3 <<EOF_B
+$b
+EOF_B
+  awk -v a1="$a1" -v a2="$a2" -v a3="$a3" -v b1="$b1" -v b2="$b2" -v b3="$b3" 'BEGIN {
+    if (a1 + 0 != b1 + 0) { print (a1 + 0 < b1 + 0) ? -1 : 1; exit }
+    if (a2 + 0 != b2 + 0) { print (a2 + 0 < b2 + 0) ? -1 : 1; exit }
+    if (a3 + 0 != b3 + 0) { print (a3 + 0 < b3 + 0) ? -1 : 1; exit }
+    print 0 }'
+}
+# The parenthesis a report line gives a block already present.
+present_detail() {
+  case "$(version_cmp "$1" "$2")" in
+    0) echo "version $1, matches" ;;
+    -1) echo "existing version $1, tool carries version $2; bring it current with $SCRIPT_DIR/project-update" ;;
+    1) echo "existing version $1, tool carries version $2; the block is ahead of this toolkit" ;;
+    *) echo "existing version '$1', tool carries version $2; the marker is malformed, see $SCRIPT_DIR/project-update" ;;
+  esac
+}
 # --- Determine which concerns are outstanding (filesystem reads only). ------
 repo_root="$(git -C "$target" rev-parse --show-toplevel 2>/dev/null || true)"
 if [ "$repo_root" = "$target_physical" ]; then
@@ -246,7 +281,7 @@ for i in "${!rec_name[@]}"; do
   if [ "$tgt" = "AGENTS.md" ]; then
     if [ -f "$target/AGENTS.md" ]; then
       existing="$(block_version "$target/AGENTS.md" "${rec_name[$i]}")"
-      if [ -n "$existing" ]; then state="present"; else state="append"; fi
+      if block_present "$target/AGENTS.md" "${rec_name[$i]}"; then state="present"; else state="append"; fi
     else
       state="create"
     fi
@@ -273,7 +308,7 @@ for i in "${!rec_name[@]}"; do
         state="bad-target"
       else
         [ -f "$tf" ] && existing="$(block_version "$tf" "${rec_name[$i]}")"
-        if [ -n "$existing" ]; then
+        if [ -f "$tf" ] && block_present "$tf" "${rec_name[$i]}"; then
           state="present"
         elif [ -e "$target/$dir/README.md" ] || [ -L "$target/$dir/README.md" ]; then
           state="legacy"
@@ -446,11 +481,7 @@ for i in "${!rec_name[@]}"; do
   if [ "$tgt" = "AGENTS.md" ]; then
     case "${rec_state[$i]}" in
       present)
-        if [ "$existing" = "$version" ]; then
-          report_line root_line "conventions file: block already present (version $existing, matches)"
-        else
-          report_line root_line "conventions file: block already present (existing version $existing, tool carries version $version; reconciling this is out of scope for this tool)"
-        fi
+        report_line root_line "conventions file: block already present ($(present_detail "$existing" "$version"))"
         ;;
       append)
         { echo ""; build_block "$i"; } >> "$agents_path" || fail_record "conventions file: could not append the managed block"
@@ -480,15 +511,11 @@ for i in "${!rec_name[@]}"; do
       continue
       ;;
     legacy)
-      report_line dir_lines "$name: rules present as $dir/README.md, the shape before 1.0.0; converting it is out of scope for this tool, nothing written"
+      report_line dir_lines "$name: rules present as $dir/README.md, the shape before 1.0.0 (tool carries version $version); convert it with $SCRIPT_DIR/project-update, nothing written"
       continue
       ;;
     present)
-      if [ "$existing" = "$version" ]; then
-        report_line dir_lines "$name: already present (version $existing, matches)"
-      else
-        report_line dir_lines "$name: already present (existing version $existing, tool carries version $version; reconciling this is out of scope for this tool)"
-      fi
+      report_line dir_lines "$name: already present ($(present_detail "$existing" "$version"))"
       ;;
     append)
       { echo ""; build_block "$i"; } >> "$target/$tgt" 2>/dev/null || fail_record "$name: could not append the managed block to $tgt"

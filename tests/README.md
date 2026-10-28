@@ -1,6 +1,6 @@
 # tests/
 
-Exercises `scripts/project-init` and `scripts/backlog-migrate`, the library's shipped tools — the first things in this library verified by running code rather than by review.
+Exercises `scripts/project-init`, `scripts/project-update` and `scripts/backlog-migrate`, the library's shipped tools — the first things in this library verified by running code rather than by review.
 
 ## Why these cases are written directly, not dispatched
 
@@ -39,8 +39,10 @@ specification tooling: created via `openspec init --tools <value>` | already pre
 ignore file: created | already present
 backlog: created | created beside existing entries | block appended to docs/backlog/AGENTS.md (version N)
        | already present (version N, matches)
-       | already present (existing version N, tool carries version M; reconciling this is out of scope for this tool)
-       | rules present as docs/backlog/README.md, the shape before 1.0.0; converting it is out of scope for this tool, nothing written
+       | already present (existing version N, tool carries version M; bring it current with <toolkit>/scripts/project-update)   [N lower]
+       | already present (existing version N, tool carries version M; the block is ahead of this toolkit)   [N higher]
+       | already present (existing version 'N', tool carries version M; the marker is malformed, see <toolkit>/scripts/project-update)   [N in neither form]
+       | rules present as docs/backlog/README.md, the shape before 1.0.0 (tool carries version M); convert it with <toolkit>/scripts/project-update, nothing written
        | present as the single file docs/backlog.md; convert it with scripts/backlog-migrate
        | docs/backlog is not a directory the tool writes into; nothing written
        | docs/backlog/AGENTS.md is not a file the tool writes into; nothing written
@@ -48,7 +50,7 @@ workstreams: [the backlog's forms, for docs/workstreams/, with "created beside e
 conventions file: created with block (version N)
            | block appended (version N)
            | block already present (version N, matches)
-           | block already present (existing version N, tool carries version M; reconciling this is out of scope for this tool)
+           | block already present (existing version N, tool carries version M; …)   [the three forms above]
 directory import: docs/<dir>/CLAUDE.md created holding @AGENTS.md   [one per seeded directory where it was absent]
 directory import: add the line @AGENTS.md to docs/<dir>/CLAUDE.md for docs/<dir>/AGENTS.md to load   [where that file exists without it]
 Import needed: add `@AGENTS.md` to this project's own CLAUDE.md (create it if absent) for the rules to take effect   [only when the target's CLAUDE.md does not import AGENTS.md and a shadowing file exists]
@@ -74,6 +76,31 @@ project-init [--tools <value>] [--help|-h] [TARGET_DIR]
 - `--tools <value>`: passthrough to `openspec init --tools <value>`.
 - `--help` / `-h`: prints usage covering modes, arguments, flags, outcomes, and exit codes; makes no filesystem change; exits 0.
 - Exit codes: `0` SUCCESS, `1` ERROR, `2` BLOCKED.
+
+## project-update's report
+
+`scripts/project-update [--help|-h] [TARGET_DIR]` takes `project-init`'s outcomes and exit codes: `0` SUCCESS, `1` ERROR, `2` BLOCKED. One line per manifest record, in manifest order, then the directory-import lines, then:
+
+```
+Target: <absolute path>
+<name>: current (version X)
+<name>: replaced (version X → Y)
+<name>: converted from version vN to Y; not checked for edits, review with git diff
+<name>: converted from <dir>/README.md to <dir>/AGENTS.md (version Y), README.md removed; not checked for edits, review with git diff
+<name>: edited inside the markers (version X, toolkit carries Y); not replaced
+    [unified diff, labelled project and toolkit, each line indented]
+<name>: ahead of this toolkit (version X, toolkit carries Y); not replaced
+<name>: markers malformed in <target>; not replaced
+<name>: <target> is not a path the tool writes into; nothing written
+<name>: absent; run <toolkit>/scripts/project-init to write it
+backlog: present as the single file docs/backlog.md; convert it with <toolkit>/scripts/backlog-migrate
+directory import: <dir>/CLAUDE.md created holding @AGENTS.md
+directory import: add the line @AGENTS.md to <dir>/CLAUDE.md for <dir>/AGENTS.md to load
+Attention: <name>, <name>   [only where a record was left edited, ahead, malformed, unwritable, absent or single-file]
+Written before the failure:   [ERROR only, one indented line per file, saying whether to restore, remove or leave it]
+Outcome: SUCCESS | BLOCKED | ERROR
+Reason: <text>   [BLOCKED or ERROR only]
+```
 
 ## backlog-migrate's report
 

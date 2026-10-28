@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Scenario: An existing block at a different version is reported, not rewritten.
+# Revised by update-managed-block: the report names scripts/project-update, not "out of scope".
 # shellcheck disable=SC1090 # $TESTLIB is set by tests/run.sh at runtime, not statically resolvable
 source "$TESTLIB"
 
@@ -25,7 +26,7 @@ assert_contains "$work/AGENTS.md" "this is the stale v0 text" "stale content sur
 assert_contains "$report" "existing version v0" "report states the existing version"
 version="$(fragment_version)" || exit 1
 assert_contains "$report" "tool carries version $version" "report states the tool's own version"
-assert_contains "$report" "out of scope" "reconciliation stated as out of scope"
+assert_contains "$report" "scripts/project-update" "the report names project-update as what brings it current"
 
 count="$(grep -c '<!-- ai-toolkit:development-workflow' "$work/AGENTS.md")"
 if [ "$count" != "1" ]; then
