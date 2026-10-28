@@ -5,34 +5,9 @@ Defines `scripts/backlog-migrate`, the shipped tool that converts a project's si
 
 ## Requirements
 
-### Requirement: The tool converts a single-file backlog into the directory
-
-The library SHALL ship an executable at `scripts/backlog-migrate`, run as `scripts/backlog-migrate [<target>]`, the target defaulting to the current directory. It SHALL read `<target>/docs/backlog.md` and write `<target>/docs/backlog/`: a `README.md`, and one file `<name>.md` for each entry, named for the entry's heading. It SHALL then delete `docs/backlog.md`. It SHALL write nothing else, and SHALL NOT commit, stage or push.
-
-An **entry heading** is a level-2 heading — a line starting `## ` — outside any fenced code block, consisting of exactly one kebab-case name in backticks. The **preamble** is everything before the first entry heading; an entry is its heading and everything up to the next level-2 heading outside a fenced code block, or the end of the file. Headings inside fenced code blocks are text: the seeded preamble shows an example entry, `` ## `change-name` ``, inside a fence, and it is not an entry. A fenced code block opens on a line starting ```` ``` ```` or `~~~` and closes only on a line starting with the same marker. A carriage return at a line's end is ignored, so a file with Windows line endings reads as any other.
-
-The README it writes SHALL be byte-for-byte the README `scripts/project-init` seeds. The preamble is not carried into it; the report says so.
-
-A conversion each session performed by its own reading would produce a different result in each of the eight projects that carry a backlog, which is the drift the directory shape exists to end. The tool is deterministic, so the same backlog converts the same way wherever it is run.
-
-The tool SHALL NOT commit because the operator reads the conversion in the diff before it reaches a pull request, and the deleted file stays recoverable from the commit that last held it.
-
-#### Scenario: A backlog is converted
-
-- **WHEN** the tool runs in a target whose `docs/backlog.md` holds three entries
-- **THEN** `docs/backlog/` holds the seeded README and three entry files, each named for its entry's heading, and `docs/backlog.md` no longer exists
-
-#### Scenario: The README is the seeded one
-
-- **WHEN** the tool converts a backlog whose preamble differs from the seeded one
-- **THEN** the README it writes is byte-for-byte the one `scripts/project-init` seeds, and the report states that the old preamble was not carried over
-
-#### Scenario: The tool commits nothing
-
-- **WHEN** the tool converts a backlog in a repository with a clean index
-- **THEN** the index and the commit history are unchanged after the run
-
 ### Requirement: Every run ends in one of three outcomes, and the exit code agrees
+
+*Modified by `list-what-a-project-receives`: the seeded README is no longer a precondition, and an entry named `agents` or `claude` blocks as `readme` does. *An entry named agents or claude blocks* is added; every other scenario keeps its title.*
 
 Each run SHALL end in exactly one of `SUCCESS`, exit code zero; `BLOCKED`, a precondition unmet and nothing written, exit code non-zero; or `ERROR`, a write attempted and failed, exit code non-zero and distinct from `BLOCKED`'s. The outcome SHALL be stated in the report. These are `scripts/project-init`'s outcomes and codes, so a caller reads both tools the same way.
 
@@ -41,8 +16,7 @@ The tool SHALL report `BLOCKED` and write nothing where:
 - `git` is unavailable, or the target is not inside a git repository;
 - `docs/backlog/` exists, of any type, including a symbolic link — the backlog is converted already, or a conversion is in progress by hand;
 - `docs/backlog.md` does not exist, is not a regular file, is not tracked by git, or differs from its committed content in the working tree or the index;
-- after the first entry heading, a level-2 heading outside a fenced code block is not an entry heading; or, before it, a level-2 heading outside a fenced code block begins with a backtick, as an entry's does, but is not an entry heading, which would otherwise be read as preamble and left out; two entries carry one name; or an entry's name is `readme` in any case, which would collide with `README.md` on a filesystem that ignores case;
-- the seeded README is absent from the tool's own copy.
+- after the first entry heading, a level-2 heading outside a fenced code block is not an entry heading; or, before it, a level-2 heading outside a fenced code block begins with a backtick, as an entry's does, but is not an entry heading, which would otherwise be read as preamble and left out; two entries carry one name; or an entry's name is `readme`, `agents` or `claude` in any case, which would collide with `README.md`, or with the `AGENTS.md` and `CLAUDE.md` that `scripts/project-init` writes beside the entries, on a filesystem that ignores case.
 
 Every precondition SHALL be checked before any write. The tool SHALL write the new directory under a temporary name in `docs/` and move it into place, then delete `docs/backlog.md`; where a write fails, it SHALL remove what it wrote, leave `docs/backlog.md` in place, and report `ERROR`.
 
@@ -66,7 +40,7 @@ Every precondition SHALL be checked before any write. The tool SHALL write the n
 #### Scenario: The seeded preamble's example is not an entry
 
 - **WHEN** the tool converts a backlog whose preamble is the one `scripts/project-init` seeded before this change, with its fenced example `` ## `change-name` ``, followed by two entries
-- **THEN** `docs/backlog/` holds the README and exactly two entry files, and no `change-name.md`
+- **THEN** `docs/backlog/` holds exactly two entry files, and no `change-name.md`
 
 #### Scenario: A preamble with sections of its own
 
@@ -76,6 +50,11 @@ Every precondition SHALL be checked before any write. The tool SHALL write the n
 #### Scenario: An entry named readme blocks
 
 - **WHEN** a backlog holds an entry headed `` ## `readme` ``
+- **THEN** the tool reports `BLOCKED`, names the entry, and writes nothing
+
+#### Scenario: An entry named agents or claude blocks
+
+- **WHEN** a backlog holds an entry headed `` ## `agents` `` or `` ## `Claude` ``
 - **THEN** the tool reports `BLOCKED`, names the entry, and writes nothing
 
 #### Scenario: A malformed first entry blocks
@@ -95,7 +74,9 @@ Every precondition SHALL be checked before any write. The tool SHALL write the n
 
 ### Requirement: Each entry's fields are mapped into frontmatter, and nothing is dropped
 
-For each entry the tool SHALL write frontmatter in the form and key order the seeded README states, and a body holding the entry's prose followed by one list of the reasons and of whatever it could not map.
+*Modified by `list-what-a-project-receives`: the form and key order are those the backlog's rules state, in `rules/backlog.md`. Every scenario keeps its title.*
+
+For each entry the tool SHALL write frontmatter in the form and key order the backlog's rules state, in the fragment `rules/backlog.md`, and a body holding the entry's prose followed by one list of the reasons and of whatever it could not map.
 
 It SHALL recognise a field by its label in bold followed by a colon — `**Label**:` — at the start of a line, whether the line is a list item or a paragraph, since both layouts are in use. It SHALL map the fields as follows, ignoring the case of a leading value word and any backticks, trailing full stop or trailing comma around it:
 
@@ -111,7 +92,7 @@ A **known name** is the name of an entry in the same file, or of a change direct
 
 **Nothing is dropped.** Where a field's value, or any part of it the rules above do not consume, cannot be mapped, the tool SHALL omit the key or keep the mapped part, and keep the unmapped text in the body's list under the field's own label. A field the rules do not name — **Must not undo**, say — SHALL be kept in that list as written. Text in the entry that is neither prose before the first field nor a field SHALL follow the prose. Free text written into the frontmatter SHALL be double-quoted, with `"` and `\` escaped.
 
-**An absent field leaves its key absent.** Where an entry has no Kind, no Priority or no Workstream, the tool SHALL write no such key and invent no value; the README's defaults and the `backlog` skill's handling of entries in an older shape apply to it.
+**An absent field leaves its key absent.** Where an entry has no Kind, no Priority or no Workstream, the tool SHALL write no such key and invent no value; the rules' defaults and the `backlog` skill's handling of entries in an older shape apply to it.
 
 #### Scenario: A listed and a paragraph entry convert alike
 
@@ -184,14 +165,52 @@ The report is what the operator reads before committing the conversion, so it na
 - **WHEN** an entry's Waits on carries a note after `nothing`
 - **THEN** the report names that entry and the Waits on field among those kept in the body
 
-### Requirement: The tool locates its resources itself and runs where project-init runs
+### Requirement: The tool converts a single-file backlog's entries into the directory
 
-The tool SHALL derive its own directory from its invocation path and read the seeded README from its own copy of the library, not from an environment variable, as `scripts/project-init` does. It SHALL declare `bash` via `#!/usr/bin/env bash`, use no construct unavailable in bash 3.2, rely on no command beyond `git` and the POSIX utilities, and pass ShellCheck. Using the library requires nothing installed, and the tool is part of the library.
+*Replaces `The tool converts a single-file backlog into the directory`, removed by `list-what-a-project-receives`: the tool writes the entries only, and `scripts/project-init` writes the backlog's rules.*
 
-#### Scenario: The README comes from the tool's own copy
+The library SHALL ship an executable at `scripts/backlog-migrate`, run as `scripts/backlog-migrate [<target>]`, the target defaulting to the current directory. It SHALL read `<target>/docs/backlog.md` and write `<target>/docs/backlog/`: one file `<name>.md` for each entry, named for the entry's heading, and nothing else. It SHALL then delete `docs/backlog.md`. It SHALL write nothing else, and SHALL NOT commit, stage or push.
+
+An **entry heading** is a level-2 heading — a line starting `## ` — outside any fenced code block, consisting of exactly one kebab-case name in backticks. The **preamble** is everything before the first entry heading; an entry is its heading and everything up to the next level-2 heading outside a fenced code block, or the end of the file. Headings inside fenced code blocks are text: the seeded preamble shows an example entry, `` ## `change-name` ``, inside a fence, and it is not an entry. A fenced code block opens on a line starting ```` ``` ```` or `~~~` and closes only on a line starting with the same marker. A carriage return at a line's end is ignored, so a file with Windows line endings reads as any other.
+
+The tool SHALL NOT write the backlog's rules. Its report SHALL state that `scripts/project-init`, run in the target, writes them into `docs/backlog/AGENTS.md`, and that the old preamble was not carried over. The preamble is not carried anywhere.
+
+**One tool writes the backlog's rules**, so that one implementation produces the managed block, its marker and its hash, and a converted backlog receives the block a seeded one does. A converted directory holds entries and no rules, which is the state `scripts/project-init` writes the rules beside.
+
+A conversion each session performed by its own reading would produce a different result in each of the eight projects that carry a backlog, which is the drift the directory shape exists to end. The tool is deterministic, so the same backlog converts the same way wherever it is run.
+
+The tool SHALL NOT commit because the operator reads the conversion in the diff before it reaches a pull request, and the deleted file stays recoverable from the commit that last held it.
+
+#### Scenario: A backlog is converted
+
+- **WHEN** the tool runs in a target whose `docs/backlog.md` holds three entries
+- **THEN** `docs/backlog/` holds exactly three entry files, each named for its entry's heading, and `docs/backlog.md` no longer exists
+
+#### Scenario: The rules are left to project-init
+
+- **WHEN** the tool converts a backlog with a preamble
+- **THEN** it writes no `README.md`, `AGENTS.md` or `CLAUDE.md`, and the report states that the old preamble was not carried over and that `scripts/project-init` writes the backlog's rules
+
+#### Scenario: A converted backlog receives the seeded rules
+
+- **WHEN** `scripts/project-init` runs in a target the tool has just converted
+- **THEN** it writes the backlog's block into `docs/backlog/AGENTS.md` beside the entries and reports the rules written beside existing entries
+
+#### Scenario: The tool commits nothing
+
+- **WHEN** the tool converts a backlog in a repository with a clean index
+- **THEN** the index and the commit history are unchanged after the run
+
+### Requirement: The tool runs from its own copy where project-init runs
+
+*Replaces `The tool locates its resources itself and runs where project-init runs`, removed by `list-what-a-project-receives`: the tool reads no text from the library, and names the `project-init` of its own copy.*
+
+The tool SHALL derive its own directory from its invocation path, not from an environment variable, as `scripts/project-init` does, and the `project-init` its report names SHALL be the one beside it in that copy. It SHALL declare `bash` via `#!/usr/bin/env bash`, use no construct unavailable in bash 3.2, rely on no command beyond `git` and the POSIX utilities, and pass ShellCheck. Using the library requires nothing installed, and the tool is part of the library.
+
+#### Scenario: The named project-init is the tool's own copy's
 
 - **WHEN** the tool runs from one copy of the library while an environment variable names another
-- **THEN** the README it writes is the one in the copy it was invoked from
+- **THEN** the `project-init` its report names is the one in the copy it was invoked from
 
 #### Scenario: An older bash
 
