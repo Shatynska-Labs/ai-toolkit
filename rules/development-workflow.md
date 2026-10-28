@@ -1,6 +1,6 @@
 ---
 kind: standing-constraint
-version: 12
+version: 13
 ---
 
 ## Development workflow
@@ -98,6 +98,8 @@ Nothing ships from a local machine. Never run the deploy command against product
 Every change reaches the trunk through pull requests, and takes at least two. A repository's first commit reaches the trunk directly, because there is no commit before it for a pull request to merge into, and no other commit does. Begin once verification passes on the branch head and `build`'s review has cleared.
 
 **open pr → merge → deploy** — open the pull request, let continuous integration run, and wait for the operator's confirmation that it merged and that the deploy is healthy. Do not infer a merge, a deploy or a confirmed effect from a green pull request, an approval, or silence.
+
+_Claude Code binding:_ write the pull request's title and description with `ai-toolkit:commits-and-pull-requests`.
 
 **confirm** — a healthy deploy is not the change working. Propose how the effect can be observed — what to look at, what provokes it, what result would mean it worked — and wait for the operator's confirmation.
 
