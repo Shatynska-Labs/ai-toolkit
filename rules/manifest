@@ -1,0 +1,8 @@
+name: development-workflow
+target: AGENTS.md
+---
+name: backlog
+target: docs/backlog/AGENTS.md
+---
+name: workstreams
+target: docs/workstreams/AGENTS.md

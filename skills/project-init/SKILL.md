@@ -10,8 +10,8 @@ description: >
   report verbatim, offers a new project's first commit, connects a remote
   from a URL the user supplies, and names foundation discovery as the next
   step without starting it. The tool performs only deterministic
-  setup — Git, OpenSpec, a seeded `docs/backlog/` README, a managed workflow
-  block in `AGENTS.md` — and the skill never creates a hosted repository
+  setup — Git, OpenSpec, and the managed blocks `rules/manifest` lists —
+  and the skill never creates a hosted repository
   or makes any judgment about the project's identity, scope, or
   architecture;
   for those, see `project-foundation`, which it never invokes itself. Not

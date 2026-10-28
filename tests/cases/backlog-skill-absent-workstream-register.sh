@@ -24,8 +24,8 @@ source "$(dirname "${BASH_SOURCE[0]}")/lib/static-scan.sh"
 
 S=skills/backlog/SKILL.md
 # shellcheck disable=SC2016 # backticks are literal markdown in the pattern
-scan require "$S" "" register-absent 'docs/workstreams/readme[.]md[^.]*(absent|missing|not exist)|(absent|missing|not exist)[^.]*docs/workstreams/readme[.]md|no `?docs/workstreams/readme[.]md'
-scan require "$S" "" register-seeder 'docs/workstreams/readme[.]md.*project-init|project-init.*docs/workstreams/readme[.]md'
+scan require "$S" "" register-absent 'docs/workstreams/agents[.]md[^.]*(absent|missing|not exist)|(absent|missing|not exist)[^.]*docs/workstreams/agents[.]md|no `?docs/workstreams/agents[.]md'
+scan require "$S" "" register-seeder 'docs/workstreams/agents[.]md.*project-init|project-init.*docs/workstreams/agents[.]md'
 scan require "$S" "" register-steps-skipped 'workstream[^.]*skip|skip[^.]*workstream'
 
 fixture="$TESTDIR/fixture"
@@ -35,7 +35,7 @@ cat > "$fixture/$S" <<'FIXTURE'
 
 ## Before any operation
 
-Where the project has no `docs/workstreams/README.md`, say so: `project-init` seeds it.
+Where the project has no `docs/workstreams/AGENTS.md`, say so: `project-init` seeds it.
 Then skip every step that reads a workstream.
 FIXTURE
 

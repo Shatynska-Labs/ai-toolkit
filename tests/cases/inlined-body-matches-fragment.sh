@@ -19,7 +19,8 @@ assert_exit 0 "$status"
 assert_file "$work/AGENTS.md"
 
 version="$(fragment_version)" || exit 1
-assert_contains "$work/AGENTS.md" "<!-- ai-toolkit:development-workflow v$version -->" "opening marker carries the fragment's own version"
+grep -q -E "^<!-- ai-toolkit:development-workflow $version sha256:[0-9a-f]{64} -->\$" "$work/AGENTS.md" \
+  || { echo "FAIL: the opening marker does not carry the fragment's own version $version and a hash" >&2; exit 1; }
 assert_contains "$work/AGENTS.md" "<!-- /ai-toolkit:development-workflow -->" "closing marker present"
 
 # The fragment's body is everything after the frontmatter's closing ---.
@@ -31,7 +32,7 @@ tail -n "+$((closing + 1))" "$fragment" > "$TESTDIR/expected-body.txt"
 awk '
   /^<!-- \/ai-toolkit:development-workflow -->$/ { exit }
   started { print }
-  /Project-specific conventions belong below the closing marker\. -->$/ { started = 1 }
+  /Project-specific conventions belong outside the markers\. -->$/ { started = 1 }
 ' "$work/AGENTS.md" > "$TESTDIR/actual-body.txt"
 
 if ! diff -u "$TESTDIR/expected-body.txt" "$TESTDIR/actual-body.txt" > "$TESTDIR/body.diff"; then

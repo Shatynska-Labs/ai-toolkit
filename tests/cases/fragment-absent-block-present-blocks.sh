@@ -8,8 +8,12 @@
 source "$TESTLIB"
 
 decoy="$TESTDIR/decoy-toolkit"
-mkdir -p "$decoy/scripts" "$decoy/rules"
+mkdir -p "$decoy/scripts"
 cp "$TOOLKIT_ROOT/scripts/project-init" "$decoy/scripts/project-init" || exit 1
+# The copy holds the manifest and every other fragment, so only the workflow
+# fragment's absence can block it.
+cp -R "$TOOLKIT_ROOT/rules" "$decoy/rules" || exit 1
+rm -f "$decoy/rules/development-workflow.md"
 # Deliberately do not copy rules/development-workflow.md.
 
 work="$TESTDIR/work"

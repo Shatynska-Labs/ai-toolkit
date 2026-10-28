@@ -1,6 +1,6 @@
 ---
 kind: standing-constraint
-version: 1
+version: 1.0.0
 ---
 
 # The session's database

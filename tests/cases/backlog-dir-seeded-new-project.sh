@@ -4,7 +4,7 @@
 # Change: one-file-per-backlog-entry (project-bootstrap, MODIFIED).
 #
 # SPECIFIED: in a target with neither docs/backlog/ nor docs/backlog.md,
-# docs/backlog/README.md is created (docs/ and docs/backlog/ with it), no
+# docs/backlog/AGENTS.md is created (docs/ and docs/backlog/ with it), no
 # entry file is created, no docs/backlog.md, and the report states the
 # backlog was created.
 # SPECIFIED: the README states the listed statements; this case reads those
@@ -29,7 +29,7 @@ source "$TESTLIB"
 # shellcheck disable=SC1091 # resolved beside this case at runtime; the helper is checked on its own
 source "$(dirname "${BASH_SOURCE[0]}")/lib/static-scan.sh"
 
-R=docs/backlog/README.md
+R=docs/backlog/AGENTS.md
 
 # Local arrangement (test-plan.md, Missing shared arrangement: seeded-output
 # scan wrappers). static-scan.sh's scan_run checks $TOOLKIT_ROOT only; these
@@ -50,7 +50,7 @@ seed_and_check() {
   scan_check "$work"
   st=$?
   if [ "$st" -eq 2 ]; then
-    echo "FAIL: target absent — project-init seeded no docs/backlog/README.md" >&2
+    echo "FAIL: target absent — project-init seeded no docs/backlog/AGENTS.md" >&2
   fi
   [ "$st" -eq 0 ] || exit 1
 }
@@ -106,9 +106,10 @@ seed_and_check
 work="$TESTDIR/work"
 assert_contains "$TESTDIR/report.txt" "backlog: created" "the report states the backlog was created"
 assert_file_absent "$work/docs/backlog.md" "no single file is seeded"
-listing="$(ls -A "$work/docs/backlog")"
-if [ "$listing" != "README.md" ]; then
-  echo "FAIL: docs/backlog/ should hold the README alone, holds:" >&2
+# shellcheck disable=SC2012 # names are the tool's own fixed file names
+listing="$(ls -A "$work/docs/backlog" | sort | tr '\n' ' ')"
+if [ "$listing" != "AGENTS.md CLAUDE.md " ]; then
+  echo "FAIL: docs/backlog/ should hold its AGENTS.md and CLAUDE.md alone, holds:" >&2
   printf '%s\n' "$listing" >&2
   exit 1
 fi

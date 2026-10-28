@@ -3,7 +3,7 @@
 # Requirement: A workstream register is seeded where none exists.
 # Change: one-file-per-backlog-entry (project-bootstrap, MODIFIED).
 #
-# SPECIFIED: the seeded docs/workstreams/README.md states that a step is
+# SPECIFIED: the seeded docs/workstreams/AGENTS.md states that a step is
 # recorded where docs/backlog/ holds an entry of the step's name, and does
 # not name docs/backlog.md.
 # DERIVED (operationalisation): a sentence carries `recorded` and
@@ -16,7 +16,7 @@ source "$TESTLIB"
 # shellcheck disable=SC1091 # resolved beside this case at runtime; the helper is checked on its own
 source "$(dirname "${BASH_SOURCE[0]}")/lib/static-scan.sh"
 
-W=docs/workstreams/README.md
+W=docs/workstreams/AGENTS.md
 scan require "$W" "" recorded-in-directory 'recorded[^.]*docs/backlog/'
 # shellcheck disable=SC2016 # backticks are literal markdown in the specimen
 scan forbid "$W" "" no-single-file 'docs/backlog[.]md' 'Recorded where its `docs/backlog.md` has an entry of that name.'

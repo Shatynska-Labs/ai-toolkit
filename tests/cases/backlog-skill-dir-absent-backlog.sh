@@ -3,7 +3,7 @@
 # Requirement: The skill operates on the project it is invoked in.
 # Change: one-file-per-backlog-entry (backlog-maintenance, MODIFIED).
 #
-# SPECIFIED: where the project has neither `docs/backlog/README.md` nor
+# SPECIFIED: where the project has neither `docs/backlog/AGENTS.md` nor
 # `docs/backlog.md`, the skill says so and names `project-init` as what seeds
 # the backlog.
 # DERIVED (operationalisation): a paragraph naming `project-init` and an
@@ -22,13 +22,13 @@ source "$(dirname "${BASH_SOURCE[0]}")/lib/line-scan.sh"
 
 line_select 'project-init'
 line_select 'neither|absent|missing|not exist|(^|[^a-z])no '
-line_scan require names-readme 'docs/backlog/readme[.]md'
+line_scan require names-readme 'docs/backlog/agents[.]md'
 
 fixture="$TESTDIR/SKILL.md"
 cat > "$fixture" <<'FIXTURE'
 # backlog
 
-Where the project has neither `docs/backlog/README.md` nor `docs/backlog.md`, say so: `project-init` seeds the backlog.
+Where the project has neither `docs/backlog/AGENTS.md` nor `docs/backlog.md`, say so: `project-init` seeds the backlog.
 FIXTURE
 
 line_run "$fixture" skills/backlog/SKILL.md

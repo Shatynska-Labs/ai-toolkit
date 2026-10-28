@@ -54,7 +54,7 @@ line_scan require before-proposal "before any step's proposal existed"
 line_scan require who-when-why 'who took it'
 line_scan require pointed-to 'pointed to rather than copied'
 
-R=docs/workstreams/README.md
+R=docs/workstreams/AGENTS.md
 scan forbid "$R" "" short 'keep a workstream short' "Keep a workstream short: its goal, what finishes it and its steps."
 scan forbid "$R" "" separate-document 'belong in a document' "Lasting decisions belong in a document or a change's design that the file points to."
 

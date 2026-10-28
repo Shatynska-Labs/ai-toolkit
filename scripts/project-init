@@ -23,7 +23,16 @@ Modes (derived automatically, never flagged):
   new project  — TARGET_DIR's repository has no commit yet. Ends by naming
                  foundation discovery as the next step.
   adoption     — TARGET_DIR's repository has at least one commit. Ends at
-                 the managed workflow block; no foundation change is created.
+                 the managed blocks; no foundation change is created.
+
+Managed blocks (rules/manifest lists them, each read from rules/<name>.md):
+  development-workflow   into AGENTS.md
+  backlog                into docs/backlog/AGENTS.md
+  workstreams            into docs/workstreams/AGENTS.md
+  Each opening marker carries the fragment's version and the SHA-256 of what
+  was written. A directory's CLAUDE.md is created holding @AGENTS.md where
+  absent; a directory holding its rules in README.md is reported, not
+  converted.
 
 Arguments:
   TARGET_DIR   Directory to initialize. Defaults to the current working
@@ -39,8 +48,8 @@ Outcomes and exit codes:
   1   ERROR     a step was attempted and failed
   2   BLOCKED   a precondition was unmet; no filesystem change was attempted
 
-Never overwrites a file it did not create, except appending the managed
-workflow block into AGENTS.md. Never commits. Never starts foundation
+Never overwrites a file it did not create, except appending a managed
+block into an AGENTS.md the manifest names. Never commits. Never starts foundation
 discovery — only names it as the next step.
 HELP
 }
@@ -48,8 +57,7 @@ HELP
 # --- Self-location: never resolved from the environment. -------------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TOOLKIT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-FRAGMENT="$TOOLKIT_ROOT/rules/development-workflow.md"
-BACKLOG_SEED="$SCRIPT_DIR/seed/backlog-README.md"
+MANIFEST="$TOOLKIT_ROOT/rules/manifest"
 
 # --- Argument parsing --------------------------------------------------------
 target=""
@@ -122,22 +130,74 @@ if [ ! -w "$target" ]; then
   finish_blocked "target directory is not writable: $target"
 fi
 
-# --- The fragment is read unconditionally, before any other precondition. ---
-if [ ! -f "$FRAGMENT" ]; then
-  finish_blocked "workflow rule fragment not found at $FRAGMENT"
+# --- The manifest and every fragment it lists are read unconditionally, ----
+# --- before any other precondition. ----------------------------------------
+if [ ! -f "$MANIFEST" ]; then
+  finish_blocked "manifest not found at $MANIFEST"
 fi
 
-fragment_frontmatter="$(sed -n '2,/^---$/p' "$FRAGMENT" | sed '$d')"
-fragment_kind="$(printf '%s\n' "$fragment_frontmatter" | sed -n 's/^kind:[[:space:]]*//p' | head -n1)"
-fragment_version="$(printf '%s\n' "$fragment_frontmatter" | sed -n 's/^version:[[:space:]]*//p' | head -n1)"
+# One record per block, records separated by `---`: its name (the fragment
+# rules/<name>.md and the marker's name) and its target, an AGENTS.md
+# relative to the project root.
+manifest_records="$(awk '
+  function out() { if (n != "" || t != "") print n "\t" t; n = ""; t = "" }
+  /^---[[:space:]]*$/ { out(); next }
+  /^name:/ { sub(/^name:[[:space:]]*/, ""); n = $0; next }
+  /^target:/ { sub(/^target:[[:space:]]*/, ""); t = $0; next }
+  END { out() }
+' "$MANIFEST")"
 
-if [ -z "$fragment_kind" ] || [ -z "$fragment_version" ]; then
-  finish_blocked "workflow rule fragment at $FRAGMENT is missing kind or version frontmatter"
+rec_name=()
+rec_target=()
+rec_version=()
+rec_body=()
+while IFS="$(printf '\t')" read -r name tgt; do
+  [ -n "$name$tgt" ] || continue
+  if ! printf '%s\n' "$name" | grep -qE '^[a-z0-9][a-z0-9-]*$'; then
+    finish_blocked "manifest at $MANIFEST has a record without a kebab-case name: '$name'"
+  fi
+  case "$tgt" in
+    AGENTS.md|*/AGENTS.md) ;;
+    *) finish_blocked "manifest record $name targets '$tgt', not an AGENTS.md" ;;
+  esac
+  case "/$tgt/" in
+    //*|*/../*|*/./*) finish_blocked "manifest record $name targets '$tgt', not a path inside the project" ;;
+  esac
+  frag="$TOOLKIT_ROOT/rules/$name.md"
+  if [ ! -f "$frag" ]; then
+    finish_blocked "rule fragment $name, listed in the manifest, not found at $frag"
+  fi
+  if [ "$(head -n 1 "$frag")" != "---" ]; then
+    finish_blocked "rule fragment at $frag has no frontmatter"
+  fi
+  frontmatter="$(sed -n '2,/^---$/p' "$frag" | sed '$d')"
+  kind="$(printf '%s\n' "$frontmatter" | sed -n 's/^kind:[[:space:]]*//p' | head -n1)"
+  version="$(printf '%s\n' "$frontmatter" | sed -n 's/^version:[[:space:]]*//p' | head -n1)"
+  if [ -z "$kind" ] || ! printf '%s\n' "$version" | grep -qE '^[0-9]+[.][0-9]+[.][0-9]+$'; then
+    finish_blocked "rule fragment at $frag is missing kind, or a version of the form MAJOR.MINOR.PATCH"
+  fi
+  closing_line="$(grep -n '^---$' "$frag" | sed -n '2p' | cut -d: -f1)"
+  if [ -z "$closing_line" ]; then
+    finish_blocked "rule fragment at $frag has no closing frontmatter delimiter"
+  fi
+  rec_name+=("$name")
+  rec_target+=("$tgt")
+  rec_version+=("$version")
+  rec_body+=("$(tail -n "+$((closing_line + 1))" "$frag")")
+done <<EOF_RECORDS
+$manifest_records
+EOF_RECORDS
+
+if [ "${#rec_name[@]}" -eq 0 ]; then
+  finish_blocked "manifest at $MANIFEST lists no block"
 fi
 
-closing_line="$(grep -n '^---$' "$FRAGMENT" | sed -n '2p' | cut -d: -f1)"
-fragment_body="$(tail -n "+$((closing_line + 1))" "$FRAGMENT")"
-
+# The version an opening marker records, in either form:
+# `<!-- ai-toolkit:<name> <version> sha256:<hash> -->` or the earlier
+# `<!-- ai-toolkit:<name> v<N> -->`. Empty where the file holds no block.
+block_version() {
+  grep -m1 "^<!-- ai-toolkit:$2 " "$1" 2>/dev/null | sed -n "s/^<!-- ai-toolkit:$2 \([^ ]*\) .*/\1/p"
+}
 # --- Determine which concerns are outstanding (filesystem reads only). ------
 repo_root="$(git -C "$target" rev-parse --show-toplevel 2>/dev/null || true)"
 if [ "$repo_root" = "$target_physical" ]; then
@@ -166,48 +226,74 @@ else
   gitignore_outstanding=1
 fi
 
-# The backlog is a directory. A link at its path, or a path that is not a
-# directory, is never written through. A dangling link at the README counts
-# as present: writing to it would follow it.
-backlog_dir="$target/docs/backlog"
-backlog_readme="$backlog_dir/README.md"
-backlog_single="$target/docs/backlog.md"
-if [ -L "$backlog_dir" ] || { [ -e "$backlog_dir" ] && [ ! -d "$backlog_dir" ]; }; then
-  backlog_state="not-a-directory"
-elif [ -d "$backlog_dir" ]; then
-  if [ -e "$backlog_readme" ] || [ -L "$backlog_readme" ]; then
-    backlog_state="present"
-  else
-    backlog_state="beside-entries"
-  fi
-elif [ -e "$backlog_single" ] || [ -L "$backlog_single" ]; then
-  backlog_state="single-file"
-else
-  backlog_state="absent"
-fi
-case "$backlog_state" in
-  absent|beside-entries) backlog_outstanding=1 ;;
-  *) backlog_outstanding=0 ;;
-esac
-
-workstreams_path="$target/docs/workstreams/README.md"
-if [ -e "$workstreams_path" ] || [ -L "$workstreams_path" ]; then
-  workstreams_outstanding=0
-else
-  workstreams_outstanding=1
-fi
-
 agents_path="$target/AGENTS.md"
 claude_path="$target/CLAUDE.md"
 
-existing_version=""
-if [ -f "$agents_path" ]; then
-  marker_line="$(grep -n '^<!-- ai-toolkit:development-workflow v' "$agents_path" 2>/dev/null | head -n1)"
-  if [ -n "$marker_line" ]; then
-    existing_version="$(printf '%s\n' "$marker_line" | sed -n 's/.*ai-toolkit:development-workflow v\([0-9][0-9]*\).*/\1/p')"
+# Each manifest record's state. The root's AGENTS.md is the project's own
+# file: a link there is written through, as it always was. A seeded
+# directory's target is never written through a link or into a path that is
+# not what the tool would write there, and a directory still holding its
+# rules in README.md is reported rather than written beside.
+rec_state=()
+rec_existing=()
+rec_detail=()
+block_outstanding=0
+for i in "${!rec_name[@]}"; do
+  tgt="${rec_target[$i]}"
+  state=""
+  existing=""
+  detail=""
+  if [ "$tgt" = "AGENTS.md" ]; then
+    if [ -f "$target/AGENTS.md" ]; then
+      existing="$(block_version "$target/AGENTS.md" "${rec_name[$i]}")"
+      if [ -n "$existing" ]; then state="present"; else state="append"; fi
+    else
+      state="create"
+    fi
+  else
+    dir="${tgt%/*}"
+    if [ "${rec_name[$i]}" = "backlog" ] && [ "$dir" = "docs/backlog" ] \
+      && [ ! -e "$target/docs/backlog" ] && [ ! -L "$target/docs/backlog" ] \
+      && { [ -e "$target/docs/backlog.md" ] || [ -L "$target/docs/backlog.md" ]; }; then
+      state="single-file"
+    fi
+    dir_existed=0
+    if [ -z "$state" ]; then
+      p="$target/$dir"
+      if [ -L "$p" ] || { [ -e "$p" ] && [ ! -d "$p" ]; }; then
+        state="bad-dir"
+        detail="$dir"
+      elif [ -d "$p" ]; then
+        dir_existed=1
+      fi
+    fi
+    if [ -z "$state" ]; then
+      tf="$target/$tgt"
+      if [ -L "$tf" ] || { [ -e "$tf" ] && [ ! -f "$tf" ]; }; then
+        state="bad-target"
+      else
+        [ -f "$tf" ] && existing="$(block_version "$tf" "${rec_name[$i]}")"
+        if [ -n "$existing" ]; then
+          state="present"
+        elif [ -e "$target/$dir/README.md" ] || [ -L "$target/$dir/README.md" ]; then
+          state="legacy"
+        elif [ -f "$tf" ]; then
+          state="append"
+        elif [ "$dir_existed" -eq 1 ]; then
+          state="create-beside"
+        else
+          state="create"
+        fi
+      fi
+    fi
   fi
-fi
-
+  case "$state" in
+    create|create-beside|append) block_outstanding=1 ;;
+  esac
+  rec_state+=("$state")
+  rec_existing+=("$existing")
+  rec_detail+=("$detail")
+done
 # --- External-command preconditions, scoped to outstanding concerns only. ---
 if [ "$repo_outstanding" -eq 1 ] && ! command -v git >/dev/null 2>&1; then
   finish_blocked "git not found, required to initialize the repository"
@@ -215,8 +301,14 @@ fi
 if [ "$spec_outstanding" -eq 1 ] && ! command -v openspec >/dev/null 2>&1; then
   finish_blocked "openspec not found, required to initialize specification tooling"
 fi
-if [ "$backlog_outstanding" -eq 1 ] && [ ! -f "$BACKLOG_SEED" ]; then
-  finish_blocked "backlog seed not found at $BACKLOG_SEED"
+hash_cmd=""
+if command -v sha256sum >/dev/null 2>&1; then
+  hash_cmd="sha256sum"
+elif command -v shasum >/dev/null 2>&1; then
+  hash_cmd="shasum"
+fi
+if [ "$block_outstanding" -eq 1 ] && [ -z "$hash_cmd" ]; then
+  finish_blocked "neither sha256sum nor shasum found, required to hash a managed block"
 fi
 
 # --- Attempt each outstanding concern, in order. No rollback on failure. ----
@@ -284,98 +376,39 @@ else
   echo "ignore file: already present"
 fi
 
-case "$backlog_state" in
-  absent|beside-entries)
-    if ! mkdir -p "$backlog_dir" 2>/dev/null || ! cat "$BACKLOG_SEED" > "$backlog_readme" 2>/dev/null; then
-      finish_error "backlog: docs/backlog/README.md could not be written"
-    fi
-    if [ "$backlog_state" = "absent" ]; then
-      echo "backlog: created"
-    else
-      echo "backlog: created beside existing entries"
-    fi
-    ;;
-  present)
-    echo "backlog: already present"
-    ;;
-  single-file)
-    echo "backlog: present as the single file docs/backlog.md; convert it with scripts/backlog-migrate"
-    ;;
-  not-a-directory)
-    echo "backlog: docs/backlog is not a directory the tool writes into; nothing written"
-    ;;
-esac
-
-if [ "$workstreams_outstanding" -eq 1 ]; then
-  if ! mkdir -p "$target/docs/workstreams" 2>/dev/null || ! { cat > "$workstreams_path"; } 2>/dev/null <<'WORKSTREAMS'
-# Workstreams
-
-A workstream is a goal that takes more than one change. Each open workstream is one file in this directory, named for the workstream in kebab-case: `<name>.md`. A name is unique among workstreams, open and archived, and is not also a change's name. Refer to a workstream only by that name.
-
-A workstream file holds the plan and never its progress. It does not say which steps are done or in flight. That is read from the repository by a step's name, and the first of these that holds wins: a step is done when the freshly fetched trunk holds an archived change of that name; in flight when it holds an open change of that name, or a local or remote branch or an open pull request of that name exists; recorded when its `docs/backlog/` holds an entry of that name; and planned otherwise. Edit the file only when the plan or what it holds changes: a step added, removed, reordered or renamed, the Done when or what is out of scope revised, an open question added or answered, context or a decision added or revised, or the workstream archived.
-
-The order of the steps is the intended order of work, and it gates nothing. A step that cannot start before another says so in its backlog entry's `waits_on`.
-
-Open a workstream when the operator decides a goal needs more than one change. Commit it with the plan of the first change that advances it, or as work too small to be a change.
-
-A change or a backlog entry may name the workstream it serves before any step names it. Place each such change or entry among the steps, or detach it, at the next edit of the workstream, and at the latest at the archive of a change in it.
-
-What finishes a workstream is an effect of its Goal that someone can observe: what to look at in the repository, the forge or production, what provokes it where something must, and what result means the Goal holds. "Every step is archived" shows only that the step list was worked through, and a list missing a step meets it all the same. It may stand beside the effect where every step is wanted whatever the effect shows, never in its place.
-
-When a workstream's Done when holds, move its file to `archive/<YYYY-MM-DD>-<name>.md`, dated the day it is archived, in the commit that carries the record of the change that completed it. Before moving it, remove from the steps each step not done, other than the change whose record that commit carries. Where a removed step is still wanted, it is first recorded as a backlog entry naming no workstream if it is not yet in flight, and it continues as its own change if it is. Then re-point or clear every backlog entry still naming it.
-
-The operator may abandon a workstream whose goal will not be met. Add an `- **Abandoned**: <date>, <reason>` item after Opened, deal with its steps and entries as above, and move it to `archive/` the same way, as work too small to be a change.
-
-Besides its plan, a workstream holds what its steps share. Under `## Context` go the research, findings and options considered that the goal was planned from, with why one option was chosen. Under `## Decisions` go the decisions that shape more than one step, or were taken before any step's proposal existed, each with who took it, when and why; a decision already recorded in a change's design may be pointed to rather than copied. A decision that shapes one step only belongs in that step's design, which points to the workstream for what it shares rather than copying it.
-
-Context and Decisions say what is known and decided about the goal, never how far the work has come. A finding states what is true of the problem, not that a step found or did it, and neither section names a step as done, in flight or merged.
-
-Context and Decisions state what is held now. Where a change in the workstream overturns something they hold, revise it in place and name that change, in its plan commit or at the latest at its archive. The file's history keeps what was held before.
-
-Keep this file when there is no workstream.
-
-A workstream takes this shape:
-
-```
-# `workstream-name`
-
-**Goal**: what is true when the workstream is finished, and why it is wanted.
-
-**Done when**: an effect of the Goal that can be observed in the repository, the forge or production, and what result means it holds; add "every step is archived" beside it where that is wanted.
-
-**Steps**:
-
-1. `change-name` — what the step does.
-
-- **Not in scope**: what the workstream deliberately leaves out, or leaves to another workstream by name, or `none`.
-- **Open questions**: questions whose answers shape the steps, each deleted once answered, the answer recorded under Decisions, or `none`.
-- **Opened**: the date, and the change or the operator that opened it.
-
-## Context
-
-Research, findings and the options considered that the steps share; omit the section where there are none.
-
-## Decisions
-
-**1. A decision.** Who took it and when, what was decided and why, or the change's design that records it; omit the section where there are none.
-```
-WORKSTREAMS
-  then
-    finish_error "workstreams: docs/workstreams/README.md could not be written"
-  fi
-  echo "workstreams: created"
-else
-  echo "workstreams: already present"
-fi
-
+# A block for record $1: the opening marker carries the fragment's version and
+# the SHA-256 of every line between the markers, the notice and the body.
 build_block() {
-  echo "<!-- ai-toolkit:development-workflow v$1 -->"
-  echo "<!-- Generated. Do not edit inside this block — it is replaced on update."
-  echo "     Project-specific conventions belong below the closing marker. -->"
-  printf '%s\n' "$fragment_body"
-  echo "<!-- /ai-toolkit:development-workflow -->"
+  local inner hash
+  inner="$(printf '%s\n' \
+    "<!-- Generated. Do not edit inside this block — it is replaced on update." \
+    "     Project-specific conventions belong outside the markers. -->" \
+    "${rec_body[$1]}")"
+  if [ "$hash_cmd" = "sha256sum" ]; then
+    hash="$(printf '%s\n' "$inner" | sha256sum | cut -d' ' -f1)"
+  else
+    hash="$(printf '%s\n' "$inner" | shasum -a 256 | cut -d' ' -f1)"
+  fi
+  echo "<!-- ai-toolkit:${rec_name[$1]} ${rec_version[$1]} sha256:$hash -->"
+  printf '%s\n' "$inner"
+  echo "<!-- /ai-toolkit:${rec_name[$1]} -->"
 }
 
+# The report keeps one order whatever order the blocks are written in: each
+# seeded directory's line, then the conventions file's, then the directories'
+# imports. A failed write prints what was gathered before its own outcome.
+dir_lines=""
+root_line=""
+import_lines=""
+report_line() { eval "$1=\"\${$1}\$2
+\""; }
+flush_report() {
+  printf '%s' "$dir_lines$root_line$import_lines"
+}
+fail_record() {
+  flush_report
+  finish_error "$1"
+}
 claude_has_import=0
 if [ -f "$claude_path" ] && grep -qF '@AGENTS.md' "$claude_path" 2>/dev/null; then
   claude_has_import=1
@@ -405,32 +438,88 @@ done
 
 import_needed=0
 
-if [ -f "$agents_path" ]; then
-  if [ -n "$existing_version" ]; then
-    if [ "$existing_version" = "$fragment_version" ]; then
-      echo "conventions file: block already present (version $existing_version, matches)"
-    else
-      echo "conventions file: block already present (existing version $existing_version, tool carries version $fragment_version; reconciling this is out of scope for this tool)"
-    fi
-  else
-    if ! { echo ""; build_block "$fragment_version"; } >> "$agents_path"; then
-      finish_error "conventions file: could not append the managed block"
-    fi
-    echo "conventions file: block appended (version $fragment_version)"
+for i in "${!rec_name[@]}"; do
+  name="${rec_name[$i]}"
+  tgt="${rec_target[$i]}"
+  version="${rec_version[$i]}"
+  existing="${rec_existing[$i]}"
+  if [ "$tgt" = "AGENTS.md" ]; then
+    case "${rec_state[$i]}" in
+      present)
+        if [ "$existing" = "$version" ]; then
+          report_line root_line "conventions file: block already present (version $existing, matches)"
+        else
+          report_line root_line "conventions file: block already present (existing version $existing, tool carries version $version; reconciling this is out of scope for this tool)"
+        fi
+        ;;
+      append)
+        { echo ""; build_block "$i"; } >> "$agents_path" || fail_record "conventions file: could not append the managed block"
+        report_line root_line "conventions file: block appended (version $version)"
+        ;;
+      create)
+        build_block "$i" > "$agents_path" || fail_record "conventions file: could not be created"
+        report_line root_line "conventions file: created with block (version $version)"
+        ;;
+    esac
+    [ "$claude_has_import" -eq 0 ] && import_needed=1
+    continue
   fi
-  if [ "$claude_has_import" -eq 0 ]; then
-    import_needed=1
-  fi
-else
-  if ! build_block "$fragment_version" > "$agents_path"; then
-    finish_error "conventions file: could not be created"
-  fi
-  echo "conventions file: created with block (version $fragment_version)"
-  if [ "$claude_has_import" -eq 0 ]; then
-    import_needed=1
-  fi
-fi
 
+  dir="${tgt%/*}"
+  case "${rec_state[$i]}" in
+    single-file)
+      report_line dir_lines "$name: present as the single file docs/backlog.md; convert it with scripts/backlog-migrate"
+      continue
+      ;;
+    bad-dir)
+      report_line dir_lines "$name: ${rec_detail[$i]} is not a directory the tool writes into; nothing written"
+      continue
+      ;;
+    bad-target)
+      report_line dir_lines "$name: $tgt is not a file the tool writes into; nothing written"
+      continue
+      ;;
+    legacy)
+      report_line dir_lines "$name: rules present as $dir/README.md, the shape before 1.0.0; converting it is out of scope for this tool, nothing written"
+      continue
+      ;;
+    present)
+      if [ "$existing" = "$version" ]; then
+        report_line dir_lines "$name: already present (version $existing, matches)"
+      else
+        report_line dir_lines "$name: already present (existing version $existing, tool carries version $version; reconciling this is out of scope for this tool)"
+      fi
+      ;;
+    append)
+      { echo ""; build_block "$i"; } >> "$target/$tgt" 2>/dev/null || fail_record "$name: could not append the managed block to $tgt"
+      report_line dir_lines "$name: block appended to $tgt (version $version)"
+      ;;
+    create|create-beside)
+      if ! mkdir -p "$target/$dir" 2>/dev/null || ! build_block "$i" > "$target/$tgt" 2>/dev/null; then
+        fail_record "$name: $tgt could not be written"
+      fi
+      if [ "${rec_state[$i]}" = "create" ]; then
+        report_line dir_lines "$name: created"
+      elif [ "$name" = "backlog" ]; then
+        report_line dir_lines "$name: created beside existing entries"
+      else
+        report_line dir_lines "$name: created beside existing files"
+      fi
+      ;;
+  esac
+
+  # The directory's CLAUDE.md imports its AGENTS.md, which a root CLAUDE.md
+  # otherwise keeps from loading. A path of any type there is the project's.
+  dir_claude="$target/$dir/CLAUDE.md"
+  if [ ! -e "$dir_claude" ] && [ ! -L "$dir_claude" ]; then
+    printf '%s\n' '@AGENTS.md' > "$dir_claude" 2>/dev/null || fail_record "$name: $dir/CLAUDE.md could not be written"
+    report_line import_lines "directory import: $dir/CLAUDE.md created holding @AGENTS.md"
+  elif ! { [ -f "$dir_claude" ] && grep -qxF '@AGENTS.md' "$dir_claude" 2>/dev/null; }; then
+    report_line import_lines "directory import: add the line @AGENTS.md to $dir/CLAUDE.md for $tgt to load"
+  fi
+done
+
+flush_report
 if [ "$import_needed" -eq 1 ]; then
   # shellcheck disable=SC2016 # single-quoted deliberately: the backticks are
   # literal formatting, not command substitution, and no variable expansion

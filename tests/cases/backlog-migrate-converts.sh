@@ -139,7 +139,7 @@ status=$?
 assert_exit 0 "$status" "a conversion with every precondition met succeeds"
 grep -q -w SUCCESS "$report" || { echo "FAIL: the report does not state SUCCESS" >&2; cat "$report" >&2; exit 1; }
 assert_file_absent "$work/docs/backlog.md" "the single file is deleted"
-assert_file "$work/docs/backlog/README.md" "the README is written"
+assert_file_absent "$work/docs/backlog/README.md" "the tool writes no README"
 for name in alpha beta gamma; do
   case "$name" in beta) f="$work/docs/backlog/beta-fix.md" ;; *) f="$work/docs/backlog/$name-change.md" ;; esac
   assert_file "$f" "one file per entry, named for its heading"
@@ -147,8 +147,8 @@ for name in alpha beta gamma; do
 done
 # shellcheck disable=SC2012 # names are the test's own fixture names, plain ASCII
 listing="$(ls -A "$work/docs/backlog" | sort | tr '\n' ' ')"
-if [ "$listing" != "README.md alpha-change.md beta-fix.md gamma-change.md " ]; then
-  echo "FAIL: docs/backlog/ holds other than the README and the three entry files: $listing" >&2
+if [ "$listing" != "alpha-change.md beta-fix.md gamma-change.md " ]; then
+  echo "FAIL: docs/backlog/ holds other than the three entry files: $listing" >&2
   exit 1
 fi
 assert_file_absent "$elsewhere/docs" "nothing is written in the working directory the tool ran from"

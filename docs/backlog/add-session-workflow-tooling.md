@@ -2,6 +2,7 @@
 kind: change
 waits_on: []
 design_with: []
+workstream: keep-projects-on-the-current-workflow
 recorded_by: consolidate-development-workflow
 re_checked: 2026-10-18
 ---

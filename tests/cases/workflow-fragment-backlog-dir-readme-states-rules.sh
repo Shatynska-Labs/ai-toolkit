@@ -22,13 +22,13 @@ source "$(dirname "${BASH_SOURCE[0]}")/lib/line-scan.sh"
 
 line_select 'docs/backlog/'
 line_select 'identified changes'
-line_scan require readme-states-rules 'readme[^.]*(states|carries)[^.]*entr'
+line_scan require readme-states-rules 'agents[.]md[^.]*(states|carries)[^.]*entr'
 line_scan require outside-any-change 'outside any change|archived with it'
 
 fixture="$TESTDIR/fragment.md"
 cat > "$fixture" <<'FIXTURE'
 
-`docs/backlog/` holds identified changes, each the separate proposed change the scope rule calls for, recorded rather than opened. It sits outside any change, because a note kept inside one is archived with it. Its README states how an entry is written and when it is deleted.
+`docs/backlog/` holds identified changes, each the separate proposed change the scope rule calls for, recorded rather than opened. It sits outside any change, because a note kept inside one is archived with it. Its `AGENTS.md` states how an entry is written and when it is deleted.
 FIXTURE
 
 line_run "$fixture" rules/development-workflow.md

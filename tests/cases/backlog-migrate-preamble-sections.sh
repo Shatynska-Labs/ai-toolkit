@@ -107,8 +107,8 @@ BACKLOG
 assert_exit 0 "$?" "a preamble heading does not block"
 # shellcheck disable=SC2012 # names are the test's own fixture names, plain ASCII
 listing="$(ls -A "$work/docs/backlog" | sort | tr '\n' ' ')"
-if [ "$listing" != "README.md first-entry.md second-entry.md " ]; then
-  echo "FAIL: docs/backlog/ should hold the README and the two entries, holds: $listing" >&2
+if [ "$listing" != "first-entry.md second-entry.md " ]; then
+  echo "FAIL: docs/backlog/ should hold the two entries alone, holds: $listing" >&2
   exit 1
 fi
 assert_contains "$work/docs/backlog/first-entry.md" "What the first is and why." "the first entry converts"

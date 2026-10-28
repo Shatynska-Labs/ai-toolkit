@@ -25,7 +25,7 @@ fixture="$TESTDIR/fixture"
 mkdir -p "$fixture/skills/backlog/references"
 
 scan require "$S" "" names-directory 'docs/backlog/'
-scan require "$S" "" names-readme 'docs/backlog/readme[.]md'
+scan require "$S" "" names-readme 'docs/backlog/agents[.]md'
 scan require "$S" @description names-migrate 'backlog-migrate'
 
 cat > "$fixture/$S" <<'FIXTURE'
@@ -39,7 +39,7 @@ description: >
 
 # backlog
 
-Operates on `docs/backlog/` of the project it is invoked in, reading its rules from `docs/backlog/README.md`.
+Operates on `docs/backlog/` of the project it is invoked in, reading its rules from `docs/backlog/AGENTS.md`.
 FIXTURE
 
 scan_run "$fixture"

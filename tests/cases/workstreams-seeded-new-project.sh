@@ -3,7 +3,7 @@
 # (new-project mode). Requirement: A workstream register is seeded where none
 # exists. Change: add-workstreams (project-bootstrap, ADDED).
 #
-# SPECIFIED: in a target with no `docs/workstreams/README.md` the file is
+# SPECIFIED: in a target with no `docs/workstreams/AGENTS.md` the file is
 # created, `docs/workstreams/` with it; no `archive/` directory is created;
 # the report states the register was created; the file contains no
 # workstream.
@@ -31,14 +31,14 @@ bash "$PROJECT_INIT" >"$report" 2>&1
 status=$?
 
 assert_exit 0 "$status"
-readme="$work/docs/workstreams/README.md"
+readme="$work/docs/workstreams/AGENTS.md"
 assert_file "$readme" "the register is created, with docs/workstreams/ created for it"
 assert_contains "$report" "workstreams: created" "the report states the register was created"
 assert_file_absent "$work/docs/workstreams/archive" "no archive/ directory is created"
 
-others="$(find "$work/docs/workstreams" -mindepth 1 ! -name README.md)"
+others="$(find "$work/docs/workstreams" -mindepth 1 ! -name AGENTS.md ! -name CLAUDE.md)"
 if [ -n "$others" ]; then
-  echo "FAIL: docs/workstreams/ holds more than its README" >&2
+  echo "FAIL: docs/workstreams/ holds more than its AGENTS.md and CLAUDE.md" >&2
   echo "$others" >&2
   exit 1
 fi

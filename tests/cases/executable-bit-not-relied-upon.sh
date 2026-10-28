@@ -6,10 +6,9 @@
 source "$TESTLIB"
 
 copy_toolkit="$TESTDIR/copy-toolkit"
-mkdir -p "$copy_toolkit/scripts" "$copy_toolkit/rules"
+mkdir -p "$copy_toolkit/scripts"
 cp "$TOOLKIT_ROOT/scripts/project-init" "$copy_toolkit/scripts/project-init" || exit 1
-cp -R "$TOOLKIT_ROOT/scripts/seed" "$copy_toolkit/scripts/seed" || exit 1
-cp "$TOOLKIT_ROOT/rules/development-workflow.md" "$copy_toolkit/rules/development-workflow.md" || exit 1
+cp -R "$TOOLKIT_ROOT/rules" "$copy_toolkit/rules" || exit 1
 chmod -x "$copy_toolkit/scripts/project-init"
 script_copy="$copy_toolkit/scripts/project-init"
 

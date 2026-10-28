@@ -20,12 +20,12 @@ cd "$work" || exit 1
 
 bash "$PROJECT_INIT" >/dev/null 2>&1
 assert_exit 0 "$?" "first run should succeed"
-assert_file "$work/docs/workstreams/README.md" "the first run created the register"
-sum_1="$(md5sum docs/workstreams/README.md | awk '{print $1}')"
+assert_file "$work/docs/workstreams/AGENTS.md" "the first run created the register"
+sum_1="$(md5sum docs/workstreams/AGENTS.md | awk '{print $1}')"
 
 report2="$TESTDIR/report2.txt"
 bash "$PROJECT_INIT" >"$report2" 2>&1
 assert_exit 0 "$?" "second run should also succeed"
-assert_unchanged "$work/docs/workstreams/README.md" "$sum_1" "register not modified, truncated or duplicated"
+assert_unchanged "$work/docs/workstreams/AGENTS.md" "$sum_1" "register not modified, truncated or duplicated"
 assert_contains "$report2" "workstreams: already present" "register reported as already satisfied"
 assert_file_absent "$work/docs/workstreams/archive" "the second run creates no archive/ either"
