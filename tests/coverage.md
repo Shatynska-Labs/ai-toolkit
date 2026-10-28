@@ -371,4 +371,4 @@ From the requirement's definition of a shadowing file rather than a scenario: `s
 - **The shapes before 1.0.0**: the `project-update-legacy-*.sh` cases and `project-update-no-legacy-no-repository.sh`.
 - **project-init**: `project-init-older-block-names-project-update.sh`, `-malformed-marker-names-project-update.sh`, `-ahead-block-names-no-remedy.sh`, `-legacy-readme-names-project-update.sh`; the nine unchanged scenarios keep their existing cases. `managed-block-older-version.sh` drops its "out of scope" assertion for the revised THEN.
 - **Uncovered**: the run half of `project-update-older-bash.sh` where no bash 3.2 is installed; that no option overwrites an edited block (an absent flag shows in no finite run).
-- **Arrangement**: the update fixture helpers are declared locally in each case; `test-plan.md` lists them as candidates for a shared home.
+- **Arrangement**: the helpers every case shared are promoted to `tests/cases/lib/managed-block.sh`, and `run.sh` exports `PROJECT_UPDATE`; seven single-case helpers stay local, as `test-plan.md` records.

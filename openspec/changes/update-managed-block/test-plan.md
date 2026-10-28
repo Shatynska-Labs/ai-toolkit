@@ -199,3 +199,10 @@ All 50 cases declare the same preamble right after `source "$TESTLIB"`. A helper
 - **`compare`**, declared in `project-update-replacement-equals-project-init`. Stands in for: one comparison: project-init run into an empty directory, and project-update run over stale blocks, both under the same PATH and the same toolkit copy. Near-miss: none. Found in: not found. Proposed home: none; it is specific to this scenario.
 - **`check`**, declared in `project-update-presence-agrees-with-project-init`. Stands in for: one presence comparison: both tools run over copies of one committed fixture. Near-miss: none. Found in: not found. Proposed home: none; it is specific to this scenario.
 - **`run_blocked`**, declared in `project-update-fragment-invalid-blocks`. Stands in for: one blocked run against an altered copy of the toolkit. Near-miss: none. Found in: `manifest-fragment-invalid-blocks.sh`, under the same name. That version targets `project-init` and an empty directory. Proposed home: none; it is specific to this scenario.
+
+## Arrangement dispositions
+
+Recorded at `build`, before code review, against each entry in *Missing shared arrangement*.
+
+- **Every helper declared in every case, and `PROJECT_UPDATE`**: **promoted**. The preamble was byte-identical in all 50 cases. It now lives in `tests/cases/lib/managed-block.sh`, which each of those cases sources after `$TESTLIB`, as the prose cases source `lib/line-scan.sh` and `lib/static-scan.sh`. `run.sh` exports `PROJECT_UPDATE`, and the module defaults it from `TOOLKIT_ROOT` where unset. Only where each case takes its arrangement from changed, never what it asserts.
+- **`PATTERNS`, `SPECIMENS`, `bash4_hits`; the reduced-`PATH` `bin/`; `mode_of`; `outside`; `compare`; `check`; `run_blocked`**: **kept** local. Each serves one case, or two in the case of the reduced `PATH`, and is shaped by that case's scenario. A shared copy would have no second user to keep it honest. The near-miss `run_blocked` names in `manifest-fragment-invalid-*` runs `project-init`, not this tool.

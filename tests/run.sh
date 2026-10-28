@@ -13,6 +13,7 @@ TOOLKIT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 export TOOLKIT_ROOT
 export TESTLIB="$SCRIPT_DIR/lib.sh"
 export PROJECT_INIT="$TOOLKIT_ROOT/scripts/project-init"
+export PROJECT_UPDATE="$TOOLKIT_ROOT/scripts/project-update"
 
 pass=0
 fail=0
