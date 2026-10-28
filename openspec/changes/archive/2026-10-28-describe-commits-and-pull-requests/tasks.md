@@ -24,3 +24,7 @@
 - [x] 4.2 ShellCheck over any new or changed test case is clean
 - [x] 4.3 `openspec validate describe-commits-and-pull-requests --strict` passes
 - [x] 4.4 `tests/coverage.md` accounts for every added and modified scenario
+
+## 5. Confirmation
+
+- [x] 5.1 Confirmation waived by the operator on 2026-10-28, after PR #74 merged (no observation can actually be made): the proposed observation — a fresh session loading `commits-and-pull-requests` to write a pull request — was not performable when waived, since library skills reached sessions on this machine through per-skill links into a checkout not yet pulled past the merge, with no link for the new skill, and the installed plugin predated the change.

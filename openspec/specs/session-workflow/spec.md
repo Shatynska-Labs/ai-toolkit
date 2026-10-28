@@ -21,6 +21,8 @@ Where such reasoning is additionally published so a session can seek it out — 
 
 **A skill that performs an operation is not such a publication.** A skill MAY carry the procedure for carrying out an obligation the fragment states — how to search, what to compare, what to report — and procedures of its own for work no obligation requires, where they are operations a session invokes on demand. It SHALL NOT carry an obligation on a session that the fragment does not state, nor an edge case of a fragment obligation whose answer differs; each of those stays in the fragment, so that a session that never loads the skill still meets every obligation. `backlog-maintenance`'s `backlog` skill is one such skill.
 
+**A skill describing the form of a commit message or a pull request is not such a publication either.** Form — what a title says, which sections a description carries, how each kind of pull request a change produces is described — is a default the skill supplies, not an obligation on the session: a session that never loads the skill still meets every obligation the fragment states, including naming folded-in work in the pull request's description, and only the default form is lost. The skill SHALL NOT carry an obligation beyond form, nor restate when a commit is made or a pull request opened. `commit-and-pull-request-practice`'s `commits-and-pull-requests` skill is one such skill.
+
 The distinction is stated because the clause above reads, unscoped, as forbidding any skill that touches what the fragment governs — and an operation is exactly what a session wants to find by description at the moment it needs it, which is the case a publication of the fragment's reasoning is not.
 
 Each session-derived rule in the workflow fragment, and each rule in the database binding fragment, SHALL be phrased as an action to take. A defect, incident, or current shortcoming MAY appear only as the reason a stated action matters, never as a standing entry of its own.
@@ -48,6 +50,11 @@ A rule SHALL NOT be omitted on the grounds that the defect motivating it is bein
 
 - **WHEN** a skill offers a procedure for an obligation the fragment states
 - **THEN** the fragment states the obligation and every edge case whose answer differs, and a session that never loads the skill meets the obligation from the fragment alone
+
+#### Scenario: A form skill carries defaults, not obligations
+
+- **WHEN** a session writes a pull request without having loaded `commits-and-pull-requests`
+- **THEN** it has met every obligation the fragment states for that pull request, and what it lacks is only the skill's default form
 
 ### Requirement: A session reports where its change stands before acting
 
@@ -904,3 +911,19 @@ The direction SHALL be stated as an imperative, and SHALL NOT enumerate the stru
 
 - **WHEN** a session following the fragment writes a list, a heading, a table or a fenced block
 - **THEN** it breaks lines where that structure requires, and the prose rule does not forbid it
+
+### Requirement: Writing a pull request is bound to a skill, not stated in the fragment
+
+The workflow fragment SHALL carry, under `ship`'s `open pr` step, a Claude Code binding naming `ai-toolkit:commits-and-pull-requests` as what a session uses to write a pull request's title and description.
+
+The fragment SHALL NOT itself state a pull request's title or description format. The fragment is inlined into every adopting project's conventions file and carried in every session there, while a pull request is written a few times per change; guidance about its form is loaded where it is used. The fragment's existing obligation to name folded-in work in the pull request's description is a constraint, not a format, and stays.
+
+#### Scenario: The binding names a shipped skill
+
+- **WHEN** the workflow fragment's `open pr` step is read
+- **THEN** it carries a Claude Code binding naming `ai-toolkit:commits-and-pull-requests`, and the library ships `skills/commits-and-pull-requests/SKILL.md`
+
+#### Scenario: The fragment carries no pull request format
+
+- **WHEN** the workflow fragment is read for what a pull request's title or description contains
+- **THEN** it finds the binding and the obligation to name folded-in work, and no list of title rules or description sections

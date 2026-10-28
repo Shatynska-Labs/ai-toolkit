@@ -28,7 +28,7 @@ Foundation discovery SHALL cover, at minimum: what the project is, what problem 
 
 Non-goals SHALL be a first-class decision rather than an aspect of scope. A scope statement records what is intended; only an explicit non-goal records what was considered and rejected, which is what prevents the same question being reopened repeatedly and what constrains later scope growth.
 
-The development tooling decision SHALL cover the project's quality layer by concern, not by tool: linting, formatting, type checking, build tooling, local hooks, the commit-message convention, secret handling, dependency updates and audit, the continuous-integration gate, toolchain pinning, branch protection, and the provisioning a new working tree needs before verification can be trusted. Provisioning SHALL include keeping every tool that recurses the tree without reading the ignore file — test collection, a linter, a container build context — out of the roots the workflow places working trees under (`.worktrees/`, and `.claude/worktrees/` by its Claude Code binding), whether or not the project's ignore file names them, so that one working tree's verification never runs, checks or ships another's copy of the code. The checklist SHALL name each concern without naming a tool, framework or service — those are the project's choices, and naming one would make a stack-agnostic checklist assume a stack.
+The development tooling decision SHALL cover the project's quality layer by concern, not by tool: linting, formatting, type checking, build tooling, local hooks, the commit-message convention, what a pull request's title and description carry, secret handling, dependency updates and audit, the continuous-integration gate, toolchain pinning, branch protection, and the provisioning a new working tree needs before verification can be trusted. Provisioning SHALL include keeping every tool that recurses the tree without reading the ignore file — test collection, a linter, a container build context — out of the roots the workflow places working trees under (`.worktrees/`, and `.claude/worktrees/` by its Claude Code binding), whether or not the project's ignore file names them, so that one working tree's verification never runs, checks or ships another's copy of the code. The pull request concern SHALL be separate from the commit-message convention and SHALL NOT be framed as whether pull request titles follow it: a pull request spans several commits, often on different concerns, so the two are decided independently. The checklist SHALL name each concern without naming a tool, framework or service — those are the project's choices, and naming one would make a stack-agnostic checklist assume a stack.
 
 The development tooling decision SHALL carry one deliverable that foundation itself builds, beyond a statement of intent: extending the project's ignore file with the exclusions its chosen stack requires. The rest of what the decision settles is built by a named owner, not by foundation — see *Development-tooling decisions have a named owner before foundation archives*. Initialization deliberately creates an ignore file carrying no stack assumption, because it cannot know the language. Foundation is the first point at which the language is known, so this is where that gap closes — and naming it here is what makes it closed rather than merely handed off.
 
@@ -51,6 +51,11 @@ The development tooling decision SHALL carry one deliverable that foundation its
 
 - **WHEN** the development tooling checklist is read
 - **THEN** it names each concern it requires without naming a particular linter, formatter, hook manager, build system or forge
+
+#### Scenario: The pull request concern is decided on its own
+
+- **WHEN** the development tooling checklist is read
+- **THEN** it names a pull request concern — what a title and description carry, whether the forge supplies a template, and whether anything checks it — as an item separate from commit messages, and does not ask whether pull request titles follow the commit convention
 
 #### Scenario: Recursive tools are kept out of the working-tree roots
 
@@ -99,6 +104,7 @@ The foundation change's design artifact SHALL carry this fixed set of named sect
    - Build tooling
    - Local hooks
    - Commit messages
+   - Pull requests
    - Secrets
    - Dependency updates and audit
    - Continuous integration
