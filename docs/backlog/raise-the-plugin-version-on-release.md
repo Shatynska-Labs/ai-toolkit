@@ -3,7 +3,7 @@ priority: normal
 kind: change
 waits_on: []
 design_with: []
-workstream: none
+workstream: keep-projects-on-the-current-workflow
 recorded_by: one-file-per-backlog-entry
 re_checked: 2026-10-25
 ---
