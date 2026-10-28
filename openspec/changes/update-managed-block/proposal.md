@@ -12,7 +12,7 @@ This change was proposed in September and stopped at three open questions. The w
 - **A stale block nobody edited is replaced**: the lines from its opening marker to its closing marker become the block the toolkit writes today, and every byte outside the markers is unchanged.
 - **An edited block is never overwritten.** Its hash no longer matches its marker; the tool reports it, with a unified diff between what the block holds and what the toolkit would write, and leaves the file as it is.
 - **The shapes before `1.0.0` are converted once.** A `v<N>` block, which carries no hash, is replaced; a directory's `README.md` holding its rules is removed and its rules written as the block into that directory's `AGENTS.md`, beside a `CLAUDE.md` importing it. Neither can be checked for edits, so the tool converts them only where git can show and undo the conversion: every file a conversion touches is tracked and unmodified, or the run blocks before writing anything. Every legacy item in a project is converted in one run, so a project never holds the `1.0.0` root block beside an old README.
-- **`project-init` names the remedy instead of calling it out of scope.** Its report of a block at another version, and of a directory holding its rules in a README, names `scripts/project-update`.
+- **`project-init` names the remedy instead of calling it out of scope.** Its report of a block at a lower version, and of a directory holding its rules in a README, names `scripts/project-update`; a block at a higher version is reported ahead of the toolkit, naming no tool.
 
 ## Capabilities
 
@@ -22,7 +22,7 @@ This change was proposed in September and stopped at three open questions. The w
 
 ### Modified Capabilities
 
-- `project-bootstrap`: a block already present at another version, and a directory holding its rules in a README, are reported with `scripts/project-update` as the remedy, not as out of scope. `project-init` itself still never rewrites a block.
+- `project-bootstrap`: a block already present at a lower version, and a directory holding its rules in a README, are reported with `scripts/project-update` as the remedy, not as out of scope; a higher version is reported ahead. `project-init` itself still never rewrites a block.
 
 ## Impact
 

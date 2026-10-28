@@ -200,7 +200,7 @@ The tool SHALL likewise leave the target byte-for-byte unchanged for an `ahead`,
 
 ### Requirement: The shapes before 1.0.0 are converted only where git holds the original
 
-A `legacy block` and a `legacy README` carry no hash, so an edit in them cannot be detected. The tool SHALL convert them, and SHALL do so only where git holds what the conversion replaces: where any record is `legacy block` or `legacy README`, the tool SHALL report `BLOCKED` and write nothing unless the target is the top level of a git working tree with at least one commit, and every file the conversions would write or remove is tracked and identical, in the working tree and in the index, to its content at `HEAD`. Those files are, in manifest order and within a record in this order: the target of a `legacy block`; and, for a `legacy README`, the `README.md`, then the directory's `AGENTS.md` where it is present. A directory's `CLAUDE.md` is not among them, since the conversion never writes one that is present. Where the root's `AGENTS.md` holding a `legacy block` is a symbolic link, the file checked SHALL be the one it resolves to, which SHALL lie inside the working tree; a link resolving outside it SHALL block. The report SHALL name the first file, in that order, that fails, and for a link both the link and what it resolves to.
+A `legacy block` and a `legacy README` carry no hash, so an edit in them cannot be detected. The tool SHALL convert them, and SHALL do so only where git holds what the conversion replaces: where any record is `legacy block` or `legacy README`, the tool SHALL report `BLOCKED` and write nothing unless the target is the top level of a git working tree with at least one commit, and every file the conversions would write or remove is tracked and identical, in the working tree and in the index, to its content at `HEAD`. Those files are, in manifest order and within a record in this order: the target of a `legacy block`; and, for a `legacy README`, the `README.md`, then the directory's `AGENTS.md` where it is present. A directory's `CLAUDE.md` is not among them, since the conversion never writes one that is present. Where the root's `AGENTS.md` holding a `legacy block` is a symbolic link, the file checked SHALL be the one it finally resolves to, following every link in a chain, which SHALL lie inside the working tree; a link resolving outside it, or a chain of more than eight links, SHALL block. The report SHALL name the first file, in that order, that fails, and for a link both the link and what it resolves to.
 
 Where any record is `legacy block` or `legacy README`, the tool SHALL also report `BLOCKED` and write nothing where a `not writable` record's directory holds `README.md`: that directory's rules could not be converted in the same run.
 
@@ -213,7 +213,7 @@ The tool SHALL convert:
 
 Each converted record's line SHALL state the shape it was converted from, the version written, and that it was not checked for edits and `git diff` shows the conversion. Every legacy record in a run SHALL be converted in that run, so that a project never holds a root block at `1.0.0` or later beside a directory's rules in a README.
 
-On `ERROR` during a conversion, the report SHALL name every file the run wrote, created or removed. `git restore` of the tracked ones and removal of the ones it created return the project to its state before the run, from which a re-run converts again.
+On `ERROR` during a conversion, the report SHALL name every file the run wrote, created or removed, marking each as one of: checked by the precondition above, which `git restore` returns to its state before the run; created by the run, which removing returns; or holding a hashed block already replaced, which needs nothing, since a re-run reports it `current` and `git restore` would discard uncommitted text outside its markers. From there a re-run converts again.
 
 **Brought to `1.0.0` without reconciling by hand, recoverably** (`keep-projects-on-the-current-workflow`'s decisions 3 and 5). Refusing to convert without a hash would strand every adopting project before `1.0.0`; carrying every past text would be the history the workstream decided against. Requiring the original to be committed and unmodified keeps an edit the tool could not see one `git restore` away, and the conversion one `git diff` to review. The README is the toolkit's own earlier shape of the directory's rules, which the root block at `1.0.0` no longer sends any session to.
 
@@ -261,6 +261,11 @@ On `ERROR` during a conversion, the report SHALL name every file the run wrote, 
 
 - **WHEN** the root `AGENTS.md` is a tracked symbolic link to a file outside the working tree, and that file holds a `v12` block
 - **THEN** the tool reports `BLOCKED`, names the link and the file it resolves to, and neither is changed
+
+#### Scenario: A chain of links resolving outside the working tree blocks
+
+- **WHEN** the root `AGENTS.md` is a link to `conf/AGENTS.md` inside the working tree, itself a tracked link to a file outside it holding a `v12` block
+- **THEN** the tool reports `BLOCKED`, names the file outside the working tree, and nothing is changed
 
 #### Scenario: A root link resolving to a modified file blocks
 

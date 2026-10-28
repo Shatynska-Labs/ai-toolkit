@@ -4,7 +4,7 @@
 
 *Modified by `list-what-a-project-receives`: the delimiters carry a semantic version and the hash of what was written, as *A block's opening marker records its version and a hash of what was written* states for every block, and the notice places project rules outside the markers. Every scenario keeps its title.*
 
-*Modified by `update-managed-block`: a block present at another version is reported with `scripts/project-update` as what brings it current, not as out of scope; this tool still never rewrites it. *An existing block at a different version is reported, not rewritten* keeps its title.*
+*Modified by `update-managed-block`: a block present at a lower version is reported with `scripts/project-update` as what brings it current, not as out of scope, a higher one as ahead of the toolkit naming no tool, and an unreadable one as malformed; this tool still never rewrites it. *An existing block at a different version is reported, not rewritten* keeps its title.*
 
 The project's conventions file SHALL be `AGENTS.md` at the project root. It is named here rather than left to the implementer because it is the file every targeted harness reads, and because a project may hold more than one candidate.
 
@@ -26,7 +26,7 @@ Reporting `SUCCESS` and stamping a version while the rules are inert would be th
 
 The tool SHALL write the workflow rule fragment into that file between delimiters that name the fragment and the version inlined, in the form *A block's opening marker records its version and a hash of what was written* states, and SHALL include a notice inside the block stating that its contents are generated and that project-specific rules belong outside it.
 
-Where a managed block for the same fragment is already present, whether its marker is in that form or the earlier `v<N>` one, the concern is satisfied and the block SHALL NOT be rewritten. The report SHALL then state both the version recorded in the existing block and the version the tool carries, and, where the existing version is lower — compared as `project-update` compares versions, a `v<N>` below every semantic version — SHALL name the `scripts/project-update` in its own copy of the library as what brings the block current; where it is higher, SHALL state that the block is ahead of this copy of the toolkit, naming no tool. This tool SHALL NOT rewrite the block itself: the update tool does, under the rules `project-update` states, so that this tool keeps the contract that it never overwrites what it finds. Reporting a version as "inlined" when nothing was inlined would make the report untrue in the one case where version skew is visible.
+Where a managed block for the same fragment is already present, whether its marker is in that form or the earlier `v<N>` one, the concern is satisfied and the block SHALL NOT be rewritten. The report SHALL then state both the version recorded in the existing block and the version the tool carries, and, where the existing version is lower — compared as `project-update` compares versions, a `v<N>` below every semantic version — SHALL name the `scripts/project-update` in its own copy of the library as what brings the block current; where it is higher, SHALL state that the block is ahead of this copy of the toolkit, naming no tool; and where it is neither `v<N>` nor `MAJOR.MINOR.PATCH`, SHALL state that the marker is malformed and name `scripts/project-update`, which reports it the same way. This tool SHALL NOT rewrite the block itself: the update tool does, under the rules `project-update` states, so that this tool keeps the contract that it never overwrites what it finds. Reporting a version as "inlined" when nothing was inlined would make the report untrue in the one case where version skew is visible.
 
 Content between the delimiters SHALL be defined as generated and replaceable. Content outside them SHALL belong to the project and SHALL never be modified by this tool or any future update to it.
 
@@ -71,6 +71,11 @@ The delimiters SHALL be greppable and SHALL carry the version, so that a later u
 
 - **WHEN** the tool runs where a managed block for the same fragment already exists at an earlier version
 - **THEN** the block is left unchanged, and the report states both versions and names `scripts/project-update` as what brings it current
+
+#### Scenario: An unreadable version is reported as malformed
+
+- **WHEN** the tool runs where `AGENTS.md` holds `<!-- ai-toolkit:development-workflow 1.0 sha256:` followed by a hash and ` -->`
+- **THEN** the block is left unchanged, the run does not fail on the comparison, and the report states the marker is malformed and names `scripts/project-update`
 
 #### Scenario: A block ahead of the toolkit names no remedy
 
