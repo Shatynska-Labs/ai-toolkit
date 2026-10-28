@@ -56,6 +56,7 @@ Create the `project-foundation` change early — dispatch or use `openspec-propo
    - Build tooling
    - Local hooks
    - Commit messages
+   - Pull requests
    - Secrets
    - Dependency updates and audit
    - Continuous integration
