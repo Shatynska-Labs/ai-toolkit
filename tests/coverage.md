@@ -38,7 +38,7 @@ Most scenarios this suite cannot cover are of one kind, and it is worth naming o
 | Project content below the block survives | Covered — `existing-agents-md-appended.sh` |
 | A project with only a CLAUDE.md | Covered — `claude-md-only.sh` |
 | Rules written but not yet loadable are reported as such | Covered — `empty-directory-new-project.sh`, `import-line-reported.sh` |
-| An existing block at a different version is reported, not rewritten | Covered — `managed-block-older-version.sh` |
+| An existing block at a different version is reported, not rewritten | Covered — `managed-block-older-version.sh`, `project-init-older-block-names-project-update.sh` |
 | Rules remain meaningful without the toolkit installed | Covered — `fragment-role-before-tool.sh`, which asserts mechanically that no harness-specific name appears outside a binding paragraph. Was review-only until `revise-development-workflow` made it checkable |
 | A non-default harness is selected | Covered — `tools-passthrough.sh` |
 | Completion is verifiable rather than asserted | Covered — implicitly, every `SUCCESS` case asserts against the report's enumerated form |
@@ -359,3 +359,16 @@ From the requirement's definition of a shadowing file rather than a scenario: `s
 - **backlog-migrate**: `backlog-migrate-entries-only-converts.sh`, `-writes-no-rules.sh`, `-then-project-init-writes-block.sh`, `-names-own-project-init.sh`, `-fenced-example-entries-only.sh`, `-blocks-agents-claude-entry.sh`.
 - **The skill and the fragment**: `backlog-skill-rules-file-agents-md.sh`, `backlog-skill-record-refuses-agents-claude.sh`, `workflow-fragment-defers-to-directory-agents-md.sh`, and the README scans revised to `AGENTS.md`.
 - **Retired** with their removed or superseded scenarios: `backlog-dir-readme-beside-entries`, `backlog-dir-seed-is-the-shared-file`, `backlog-dir-missing-seed-blocks-outstanding`, `backlog-dir-existing-preserved`, `workstreams-existing-preserved`, `backlog-migrate-readme-is-seeded`, `backlog-migrate-readme-from-own-copy`, `toolkit-structure-seed-has-one-home`, `workflow-fragment-version-after-backlog-dir`, and `workflow-fragment-version-after-pr-binding` from `describe-commits-and-pull-requests`, merged meanwhile: each required a whole-number version past an earlier body, which the reset to `1.0.0` supersedes. `workstreams-write-failure-errors` became `workstreams-dir-not-a-directory-not-written-through.sh`: a seeded directory that is not a directory is refused and reported, not an `ERROR`.
+
+## update-managed-block (59 delta scenarios)
+
+`update-managed-block` adds the `project-update` capability (46 scenarios) — `scripts/project-update`, which brings a project's blocks to the toolkit's current text — and modifies two `project-bootstrap` requirements (13 scenarios) so that `project-init` names it rather than calling reconciliation out of scope. `openspec/changes/archive/*-update-managed-block/test-plan.md` maps each scenario to its case.
+
+- **The tool's interface and outcomes**: `project-update-help.sh`, `-target-line.sh`, `-unusable-target-blocks.sh`, `-self-location.sh`, `-older-bash.sh`, `-fragment-missing-blocks.sh`, `-fragment-invalid-blocks.sh`, `-hash-command-absent-blocks.sh`, `-write-failure-reports-written.sh`, `-attention-edited.sh`, `-attention-order.sh`, `-no-attention.sh`.
+- **Classification**: `project-update-current-untouched.sh`, `-edited-at-current.sh`, `-version-numeric.sh`, `-ahead.sh`, `-malformed-two-markers.sh`, `-malformed-marker-form.sh`, `-malformed-no-closing.sh`.
+- **Replacement**: `project-update-stale-replaced.sh`, `-stale-surrounding-text.sh`, `-replacement-equals-project-init.sh`, `-presence-agrees-with-project-init.sh`, `-second-run.sh`, `-mode-kept.sh`, `-root-link-written-through.sh`.
+- **What is never written**: `project-update-edited-diff.sh`, `-target-link-left.sh`, `-edited-others-proceed.sh`, `-absent-workstreams-named.sh`, `-single-file-backlog-named.sh`.
+- **The shapes before 1.0.0**: the `project-update-legacy-*.sh` cases and `project-update-no-legacy-no-repository.sh`.
+- **project-init**: `project-init-older-block-names-project-update.sh`, `-malformed-marker-names-project-update.sh`, `-ahead-block-names-no-remedy.sh`, `-legacy-readme-names-project-update.sh`; the nine unchanged scenarios keep their existing cases. `managed-block-older-version.sh` drops its "out of scope" assertion for the revised THEN.
+- **Uncovered**: the run half of `project-update-older-bash.sh` where no bash 3.2 is installed; that no option overwrites an edited block (an absent flag shows in no finite run).
+- **Arrangement**: the update fixture helpers are declared locally in each case; `test-plan.md` lists them as candidates for a shared home.
