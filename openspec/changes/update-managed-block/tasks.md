@@ -15,7 +15,7 @@
 
 ## 3. Tests and records
 
-- [ ] 3.1 Revise the existing cases the change's `test-plan.md` (written when tests are derived) lists as obsolete — `managed-block-older-version.sh` and the legacy-README cases asserting "out of scope" — changing only what the delta replaced
+- [ ] 3.1 Revise the existing cases the change's `test-plan.md` (written when tests are derived) lists as obsolete — `managed-block-older-version.sh`, its "out of scope" assertion — changing only what the delta replaced
 - [ ] 3.2 Account for the added and modified requirements and scenarios in `tests/coverage.md`
 
 ## 4. Verify
