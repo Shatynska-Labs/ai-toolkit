@@ -11,5 +11,8 @@
 
 - **Not in scope**: a tracker outside the repository (ClickUp, Linear, GitHub Projects), two-way or not; storing status in an entry; migrating each consuming project, which each does in a pull request of its own.
 - **Open questions**: in what language the board is written, given `AGENTS.md`'s rule that using the library requires nothing installed; whether a checker refusing malformed frontmatter ships, and whether on its own or inside the board.
-- **Decisions**: `one-file-per-backlog-entry`'s `design.md`.
 - **Opened**: 2026-10-25, by the operator, with the plan of `one-file-per-backlog-entry`.
+
+## Decisions
+
+**1. The entry model the board reads** is recorded in `one-file-per-backlog-entry`'s `design.md`.
