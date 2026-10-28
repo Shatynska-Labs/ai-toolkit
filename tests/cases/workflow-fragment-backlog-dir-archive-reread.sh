@@ -16,7 +16,7 @@
 # DERIVED (carried from the superseded workflow-fragment-archive-backlog-
 # reread.sh and -archive-reread-names-no-field.sh, path and deferral
 # revised): the archive line naming `docs/backlog/` and a re-read carries
-# each term below; "as its `AGENTS.md` directs" is read as `readme ... directs`;
+# each term below; "as its `AGENTS.md` directs" is read as `agents.md ... directs`;
 # no field label or frontmatter key anywhere in the fragment; no `date` or
 # `delet` on that line; no backlog skill named on it.
 #

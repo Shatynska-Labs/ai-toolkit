@@ -6,8 +6,8 @@
 # SPECIFIED: in an existing repository with history and neither docs/backlog/
 # nor docs/backlog.md, docs/backlog/AGENTS.md is created "in both the
 # new-project and the adoption mode", the report states it was created, and
-# no entry file is created. The README is the same text the new-project run
-# seeds (one seed, scripts/seed/backlog-README.md), so the statements
+# no entry file is created. The block is the same text the new-project run
+# writes (one fragment, rules/backlog.md), so the statements
 # backlog-dir-seeded-new-project.sh reads hold here too.
 # DERIVED (token): `backlog: created` (tests/README.md report contract).
 #
@@ -27,7 +27,7 @@ git add . && git commit -q -m "initial history"
 report="$TESTDIR/report.txt"
 bash "$PROJECT_INIT" >"$report" 2>&1
 assert_exit 0 "$?"
-assert_file "$work/docs/backlog/AGENTS.md" "adoption creates the README, with docs/ and docs/backlog/ created for it"
+assert_file "$work/docs/backlog/AGENTS.md" "adoption creates the rules block, with docs/ and docs/backlog/ created for it"
 assert_file_absent "$work/docs/backlog.md" "no single file is seeded"
 assert_contains "$report" "backlog: created" "the report states the backlog was created"
 # shellcheck disable=SC2012 # names are the tool's own fixed file names
@@ -38,7 +38,7 @@ mkdir -p "$fresh"
 (cd "$fresh" && bash "$PROJECT_INIT") >/dev/null 2>&1
 assert_file "$fresh/docs/backlog/AGENTS.md" "the new-project run this case compares against"
 if ! cmp -s "$fresh/docs/backlog/AGENTS.md" "$work/docs/backlog/AGENTS.md"; then
-  echo "FAIL: the adoption-mode README differs from the new-project one" >&2
+  echo "FAIL: the adoption-mode rules block differs from the new-project one" >&2
   diff "$fresh/docs/backlog/AGENTS.md" "$work/docs/backlog/AGENTS.md" >&2
   exit 1
 fi

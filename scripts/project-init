@@ -177,6 +177,9 @@ while IFS="$(printf '\t')" read -r name tgt; do
     finish_blocked "rule fragment at $frag is missing kind, or a version of the form MAJOR.MINOR.PATCH"
   fi
   closing_line="$(grep -n '^---$' "$frag" | sed -n '2p' | cut -d: -f1)"
+  if [ -z "$closing_line" ]; then
+    finish_blocked "rule fragment at $frag has no closing frontmatter delimiter"
+  fi
   rec_name+=("$name")
   rec_target+=("$tgt")
   rec_version+=("$version")
