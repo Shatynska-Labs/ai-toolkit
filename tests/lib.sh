@@ -83,3 +83,18 @@ fenced_line() {
   ' "$1"
 }
 
+# prose_line <markdown-file> <phrase>
+# Prints the line number of the first line outside fenced code containing
+# <phrase>, or nothing where none does.
+prose_line() {
+  awk -v want="$2" '
+    /^[[:space:]]*(```|~~~)/ { infence = !infence; next }
+    !infence && index($0, want) > 0 { print NR; exit }
+  ' "$1"
+}
+
+# offset_in <line> <phrase>
+# Prints the 1-based offset of <phrase> in <line>, or 0 where it is absent.
+offset_in() {
+  awk -v l="$1" -v p="$2" 'BEGIN { print index(l, p) }'
+}

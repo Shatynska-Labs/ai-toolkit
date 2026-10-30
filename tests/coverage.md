@@ -372,3 +372,14 @@ From the requirement's definition of a shadowing file rather than a scenario: `s
 - **project-init**: `project-init-older-block-names-project-update.sh`, `-malformed-marker-names-project-update.sh`, `-ahead-block-names-no-remedy.sh`, `-legacy-readme-names-project-update.sh`; the nine unchanged scenarios keep their existing cases. `managed-block-older-version.sh` drops its "out of scope" assertion for the revised THEN.
 - **Uncovered**: the run half of `project-update-older-bash.sh` where no bash 3.2 is installed; that no option overwrites an edited block (an absent flag shows in no finite run).
 - **Arrangement**: the update fixture helpers are declared locally in each case; `test-plan.md` lists them as candidates for a shared home.
+
+## define-what-a-step-is (18 delta scenarios)
+
+`define-what-a-step-is` modifies *A workstream register is seeded where none exists* in `project-bootstrap`: a step taken as a fix is done once its pull request has merged, an unreachable forge is said, a change is a step of one workstream only, and every step being done replaces every step being archived beside the Done when's effect. Its cases were derived by `ai-toolkit:change-test-writer`; the per-scenario accounting, the retired assertions and the dispositions of the arrangement it declared locally are in the change's `test-plan.md`. The four added scenarios, the revised *Done when asks for an observable effect of the Goal*, and the revised parts of *A project without a workstream register receives the seeded file* are covered; the other 12 scenarios are carried over verbatim and keep their accounting above.
+
+- **A step taken as a fix reads as done** — `workstreams-seeded-fix-step-done.sh`.
+- **A change whose work has merged is still in flight** — `workstreams-seeded-merged-change-in-flight.sh`.
+- **A fix step without the forge** — `workstreams-seeded-forge-unreachable.sh`.
+- **A change needed by two workstreams is listed in one** — `workstreams-seeded-one-workstream-per-change.sh`.
+- **Done when asks for an observable effect of the Goal** — `workstreams-seeded-done-when-step-done-shape.sh` and `workstreams-seeded-done-when-step-done-statement.sh`; the "every step is archived" assertions of `workstreams-seeded-done-when-shape.sh` and `workstreams-seeded-done-when-statement.sh` are retired.
+
