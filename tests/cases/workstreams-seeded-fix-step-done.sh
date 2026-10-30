@@ -21,8 +21,8 @@
 # Executes the tool and reads its output (second situation, as this suite
 # classifies its seeded-text cases). Red at authoring on the property "the
 # done clause names a fix's merged pull request" (state 1: the tool runs and
-# writes the 1.0.0 text); goes green as task 1.1 lands. The local helper is
-# checked first against specimens it must accept and reject.
+# writes the 1.0.0 text); goes green as task 1.1 lands. The helper,
+# offset_in from tests/lib.sh, is checked first against specimens it must accept and reject.
 # shellcheck disable=SC1090 # $TESTLIB is set by tests/run.sh at runtime, not statically resolvable
 source "$TESTLIB"
 

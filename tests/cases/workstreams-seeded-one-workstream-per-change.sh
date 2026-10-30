@@ -35,7 +35,7 @@ prev_nonblank() {
   awk -v n="$2" 'NR >= n { exit } $0 !~ /^[[:space:]]*$/ { last = NR } END { if (last) print last }' "$1"
 }
 
-# Discriminator for the local locators.
+# Discriminator for prose_line (tests/lib.sh) and the local prev_nonblank.
 spec="$TESTDIR/specimen"
 mkdir -p "$spec"
 printf '%s\n' 'intro' '```' 'one workstream only (fenced)' '```' 'Order gates nothing.' '' '' \

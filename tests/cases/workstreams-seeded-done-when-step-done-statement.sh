@@ -21,12 +21,12 @@
 # Executes the tool and reads its output (second situation, as this suite
 # classifies its seeded-text cases). Red at authoring on the property "the
 # paragraph reads done, not archived" (state 1: the tool runs and writes the
-# 1.0.0 text); goes green as task 1.1 lands. The local line locator is
-# checked first against specimens it must accept and reject.
+# 1.0.0 text); goes green as task 1.1 lands. The line locator,
+# prose_line from tests/lib.sh, is checked first against specimens it must accept and reject.
 # shellcheck disable=SC1090 # $TESTLIB is set by tests/run.sh at runtime, not statically resolvable
 source "$TESTLIB"
 
-# Discriminator for the local locator.
+# Discriminator for prose_line (tests/lib.sh).
 spec="$TESTDIR/specimen"
 mkdir -p "$spec"
 printf '%s\n' 'intro' '```' 'never in its place (fenced)' '```' '' 'Prose: never in its place.' > "$spec/ok.md"

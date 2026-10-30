@@ -83,7 +83,6 @@ fenced_line() {
   ' "$1"
 }
 
-
 # prose_line <markdown-file> <phrase>
 # Prints the line number of the first line outside fenced code containing
 # <phrase>, or nothing where none does.
