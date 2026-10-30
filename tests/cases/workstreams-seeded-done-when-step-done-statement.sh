@@ -26,17 +26,6 @@
 # shellcheck disable=SC1090 # $TESTLIB is set by tests/run.sh at runtime, not statically resolvable
 source "$TESTLIB"
 
-# Local arrangement (test-plan.md, Missing shared arrangement): line number of
-# the first line outside fenced code containing PHRASE, or nothing.
-# tests/lib.sh's fenced_line is the near-miss: it reads only inside fences and
-# matches a label at the start of a line.
-prose_line() {
-  awk -v want="$2" '
-    /^[[:space:]]*(```|~~~)/ { infence = !infence; next }
-    !infence && index($0, want) > 0 { print NR; exit }
-  ' "$1"
-}
-
 # Discriminator for the local locator.
 spec="$TESTDIR/specimen"
 mkdir -p "$spec"

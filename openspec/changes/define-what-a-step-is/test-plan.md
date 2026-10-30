@@ -129,3 +129,13 @@ Shared arrangement dispatched: `tests/lib.sh`. Three local declarations:
    - Used by: `workstreams-seeded-one-workstream-per-change`.
    - Near-miss: none in `tests/lib.sh`; `next_nonblank` in test module `workstreams-seeded-done-when-statement.sh` goes the other direction.
    - Proposed home: `tests/lib.sh`.
+
+### Dispositions
+
+- `offset_in` — **promoted** to `tests/lib.sh`; its three declaring cases now take it from there.
+- `prose_line` — **promoted** to `tests/lib.sh`, beside `fenced_line`; its two declaring cases and `workstreams-seeded-done-when-statement.sh`, which held an identical copy, now take it from there.
+- `prev_nonblank` — **kept** local: one case uses it, and its one near-miss, `next_nonblank`, is likewise local to one case.
+
+### Obsolete tests confirmed
+
+Both candidates were retired by design.md decision 4, approved with the plan: the "every step is archived" assertion was removed from `workstreams-seeded-done-when-statement.sh` and `workstreams-seeded-done-when-shape.sh`, each noting the retirement in its header; their other assertions stand.

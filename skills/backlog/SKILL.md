@@ -75,7 +75,7 @@ Given paths, narrow every list to entries that name one of them.
 
 ## close
 
-Delete the file of the entry you are given. In the same edit, remove its name from the `waits_on` and `design_with` of every other entry naming it; where it was an entry's only `waits_on`, that entry's `waits_on` is now `[]`. No entry may be left pointing at a name the backlog no longer carries. Where an open workstream's steps name the closed entry, name that workstream and step so its plan can be revised; close edits only the backlog's entry files, never the workstream file.
+Delete the file of the entry you are given. In the same edit, remove its name from the `waits_on` and `design_with` of every other entry naming it; where it was an entry's only `waits_on`, that entry's `waits_on` is now `[]`. No entry may be left pointing at a name the backlog no longer carries. Where an open workstream's steps name the closed entry, name that workstream and step: where the entry was taken as a fix, the step stays and reads as done once its pull request merges, and otherwise its plan can be revised; close edits only the backlog's entry files, never the workstream file.
 
 ## sweep
 

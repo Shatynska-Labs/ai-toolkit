@@ -21,6 +21,9 @@
 # forge or production"; "provokes it"; "means the Goal holds"; "every step is
 # archived" (case-insensitive: the design opens a sentence with it); "worked
 # through"; "a list missing a step"; "never in its place".
+# RETIRED (define-what-a-step-is, design.md decision 4): the "every step is
+# archived" assertion; workstreams-seeded-done-when-step-done-statement.sh
+# asserts "every step is done" in its place.
 # DERIVED (order, design.md decision 2, not the requirement): the paragraph
 # stands immediately before the archive paragraph, the next non-blank line
 # being the one naming `archive/<YYYY-MM-DD>-<name>.md`.
@@ -32,17 +35,6 @@
 # green as task 1.1 lands.
 # shellcheck disable=SC1090 # $TESTLIB is set by tests/run.sh at runtime, not statically resolvable
 source "$TESTLIB"
-
-# Local arrangement (test-plan.md, Missing shared arrangement): line number of
-# the first line outside fenced code containing PHRASE, or nothing.
-# tests/lib.sh's fenced_line is the near-miss: it reads only inside fences and
-# matches a label at the start of a line.
-prose_line() {
-  awk -v want="$2" '
-    /^[[:space:]]*(```|~~~)/ { infence = !infence; next }
-    !infence && index($0, want) > 0 { print NR; exit }
-  ' "$1"
-}
 
 # Local arrangement: line number of the first non-blank line after line N,
 # or nothing.
@@ -86,10 +78,6 @@ assert_contains "$p" "what to look at" "what to look at"
 assert_contains "$p" "the forge or production" "in the repository, the forge or production"
 assert_contains "$p" "provokes it" "what provokes it where something must"
 assert_contains "$p" "means the Goal holds" "the result that means the Goal holds"
-if ! grep -q -i -F -- "every step is archived" "$p"; then
-  echo "FAIL: the paragraph does not name every step being archived" >&2
-  exit 1
-fi
 assert_contains "$p" "worked through" "it shows only that the step list was worked through"
 assert_contains "$p" "a list missing a step" "which a list missing a step satisfies as well"
 

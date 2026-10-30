@@ -22,7 +22,7 @@ bash tests/run.sh [CASE...]
 
 With no argument every case runs; naming one or more cases, by file name with or without `.sh`, runs only those, and a name matching no case counts as a failure.
 
-Each file in `tests/cases/*.sh` runs as its own subprocess in a fresh `mktemp -d` temporary directory (`$TESTDIR`), so no case can observe another's filesystem state. `tests/lib.sh` supplies `assert_exit`, `assert_file`, `assert_file_absent`, `assert_unchanged`, `assert_contains`, and `fenced_line` (the line number of a fenced `**<label>**` field, written as a paragraph or a list item) — sourced via `$TESTLIB`, which `run.sh` exports. A failed assertion prints to stderr and exits the case non-zero immediately. `run.sh` itself exits non-zero if any case failed.
+Each file in `tests/cases/*.sh` runs as its own subprocess in a fresh `mktemp -d` temporary directory (`$TESTDIR`), so no case can observe another's filesystem state. `tests/lib.sh` supplies `assert_exit`, `assert_file`, `assert_file_absent`, `assert_unchanged`, `assert_contains`, `fenced_line` (the line number of a fenced `**<label>**` field, written as a paragraph or a list item), `prose_line` (the line number of the first line outside fenced code containing a phrase), and `offset_in` (a phrase's 1-based offset in a line) — sourced via `$TESTLIB`, which `run.sh` exports. A failed assertion prints to stderr and exits the case non-zero immediately. `run.sh` itself exits non-zero if any case failed.
 
 ## The report contract
 

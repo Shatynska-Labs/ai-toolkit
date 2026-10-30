@@ -26,13 +26,7 @@
 # shellcheck disable=SC1090 # $TESTLIB is set by tests/run.sh at runtime, not statically resolvable
 source "$TESTLIB"
 
-# Local arrangement (test-plan.md, Missing shared arrangement): 1-based offset
-# of PHRASE in LINE, or 0.
-offset_in() {
-  awk -v l="$1" -v p="$2" 'BEGIN { print index(l, p) }'
-}
-
-# Discriminator for the local helper.
+# Discriminator for offset_in (tests/lib.sh).
 [ "$(offset_in "ab done when cd" "done when")" = 4 ] \
   || { echo "FAIL: discriminator — offset_in misreports a present phrase" >&2; exit 1; }
 [ "$(offset_in "ab cd" "done when")" = 0 ] \

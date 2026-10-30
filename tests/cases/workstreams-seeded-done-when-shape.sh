@@ -18,6 +18,9 @@
 # and design.md decision 1: "effect of the Goal"; "observ" (the requirement's
 # "observable", the design's "can be observed"); "the forge or production";
 # "every step is archived" and "beside it" (the design's quoted clause).
+# RETIRED (define-what-a-step-is, design.md decision 4): the "every step is
+# archived" assertion; workstreams-seeded-done-when-step-done-shape.sh
+# asserts "every step is done" in its place.
 #
 # Executes the tool and reads its output (second situation); no fixture owed.
 # Red at authoring on the property "the shape's Done when names an effect of
@@ -46,5 +49,4 @@ printf '%s\n' "$line" > "$TESTDIR/done-when.txt"
 assert_contains "$TESTDIR/done-when.txt" "effect of the Goal" "the shape's Done when names an effect of the Goal"
 assert_contains "$TESTDIR/done-when.txt" "observ" "the effect is observable"
 assert_contains "$TESTDIR/done-when.txt" "the forge or production" "observed in the repository, the forge or production"
-assert_contains "$TESTDIR/done-when.txt" "every step is archived" "every step being archived offered in the shape"
 assert_contains "$TESTDIR/done-when.txt" "beside it" "every step being archived stands beside the effect"
