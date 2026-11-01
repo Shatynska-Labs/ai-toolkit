@@ -1,6 +1,6 @@
 # tests/
 
-Exercises `scripts/project-init`, `scripts/project-update` and `scripts/backlog-migrate`, the library's shipped tools — the first things in this library verified by running code rather than by review.
+Exercises `scripts/project-init`, `scripts/project-update`, `scripts/backlog-migrate` and `scripts/task-board`, the library's shipped tools — the first things in this library verified by running code rather than by review.
 
 ## Why these cases are written directly, not dispatched
 
@@ -126,3 +126,20 @@ kept or written for review:   [SUCCESS, where any line follows]
 Each review line names its entry and its field or key on one line, so a case reads it with one `grep` for the entry and one for the field.
 
 See `coverage.md` for which specification scenario each case (or its absence) accounts for.
+
+## The `task-board` report contract
+
+`scripts/task-board` prints these lines to stdout, and the page's path on `Board:`. Its cases source `tests/task-board-lib.sh` after `tests/lib.sh`, for a fixture project with a bare `origin`, a stub `gh` and a reader of the page.
+
+```
+Target: <absolute path>
+Board: <path of the page>
+Trunk: <trunk> <sha>, fetched | <trunk> <sha>, the fetch failed and it may be stale | <branch> <sha>, the current branch: no remote named origin
+Remote branches: read | not read
+Forge: read in full | partly read, the first <limit> pull requests | not reached
+Warnings: <count>
+Outcome: SUCCESS | BLOCKED | ERROR
+Reason: <text>   [BLOCKED or ERROR only]
+```
+
+On `BLOCKED` or `ERROR` only `Target:`, `Outcome:` and `Reason:` are printed.
