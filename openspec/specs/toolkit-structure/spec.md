@@ -46,6 +46,8 @@ Component directories SHALL reside at the plugin root — the directory containi
 
 ### Requirement: One directory level for every asset type
 
+*Modified by `record-what-each-version-asks`: `rules/changelog` joins `rules/manifest` as a file that is not a fragment. Every scenario keeps its title, so *The manifest is the one file in rules/ that is not a fragment* now also names the changelog, as its body states.*
+
 *Modified by `list-what-a-project-receives`: a fragment's `version` is `MAJOR.MINOR.PATCH`, and `rules/` holds one file that is not a fragment, the manifest. *The manifest is the one file in rules/ that is not a fragment* is added; every other scenario keeps its title.*
 
 Assets SHALL be placed at exactly one directory level, with no grouping directories:
@@ -74,7 +76,7 @@ The two kinds are:
 
 The distinction is behavioral rather than cosmetic: inlining a one-time procedure into a project's conventions file would leave permanent instructions for work already finished, while leaving a standing constraint unimported would mean it never takes effect.
 
-`rules/` SHALL also hold `rules/manifest`, which lists the fragments a shipped tool writes into a project as managed blocks and where, as `project-bootstrap` states. Besides `rules/README.md`, which describes the directory, it is the one file in `rules/` that is not a fragment: it carries no frontmatter and no `.md` extension, and it is read by tools, never imported or inlined. It is a delivery list, not the asset index *Repository is browsable without an index* forbids: no asset loads or is found through it, and browsing the library never reads it; it says only which fragments `scripts/project-init` writes into a project.
+`rules/` SHALL also hold `rules/manifest`, which lists the fragments a shipped tool writes into a project as managed blocks and where, as `project-bootstrap` states. `rules/` SHALL also hold `rules/changelog`, which records what each fragment version above `1.0.0` changed and asks of a project, as `project-update` states. Besides `rules/README.md`, which describes the directory, these two are the files in `rules/` that are not fragments: they carry no frontmatter and no `.md` extension, and they are read by tools, never imported or inlined. The manifest is a delivery list, and the changelog a record of versions, neither of them the asset index *Repository is browsable without an index* forbids: no asset loads or is found through either, and browsing the library reads neither; the manifest says only which fragments `scripts/project-init` writes into a project.
 
 A placeholder document standing in for an unpopulated directory MUST NOT be discoverable as an asset. Since every `.md` file directly inside `agents/` is read as an agent definition — including one whose name begins with a dot — a placeholder there SHALL take a non-`.md` extension, which is the form discovery ignores.
 
@@ -121,7 +123,7 @@ A placeholder document standing in for an unpopulated directory MUST NOT be disc
 #### Scenario: The manifest is the one file in rules/ that is not a fragment
 
 - **WHEN** a reader lists `rules/`
-- **THEN** every `.md` file in it other than `README.md` is a fragment declaring its `kind`, and `manifest` is the one file that is neither
+- **THEN** every `.md` file in it other than `README.md` is a fragment declaring its `kind`, and `manifest` and `changelog` are the only files that are neither
 
 #### Scenario: The increment rule has exactly one owner
 

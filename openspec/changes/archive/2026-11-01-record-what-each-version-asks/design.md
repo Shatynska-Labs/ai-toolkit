@@ -75,3 +75,7 @@ ask: Where an open workstream's Done when still says "every step is archived", c
 Nothing changes in a project until the tool runs there. Every run after this change needs `rules/changelog`, which any copy of the tool carries. Rollback is reverting the change's commits.
 
 Confirm by running the tool in a project holding a `workstreams` block below `2.0.0`, or a throwaway copy of one, and reading the printed steps.
+
+## Confirmation
+
+The operator confirmed on 2026-11-01, from a run of the merged tool at `211391d` on scratch clones. `fuperia/infrastructure`, with its workflow block at `1.0.0` and `--workflow full`, reported the block replaced with the `2.0.0` line and both `by hand` lines beneath it. `shatynska/basis`, at `v12` with READMEs, reported the same beneath `development-workflow` and `workstreams`. A second run reported every block `current` with no changelog line, and `--workflow direct` crossed with none. `commerce-ops`, which the workstream's Done when names, already holds both blocks at `2.0.0`, so a run there replaces nothing.
