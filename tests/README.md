@@ -143,3 +143,19 @@ Reason: <text>   [BLOCKED or ERROR only]
 ```
 
 On `BLOCKED` or `ERROR` only `Target:`, `Outcome:` and `Reason:` are printed.
+
+With `--json` the report goes to standard error without its `Board:` line, and standard output holds only one document, printed once complete:
+
+```json
+{"schema_version":1,"project":"example","written_at":"2026-11-01T12:00:00Z",
+ "trunk":{"ref":"origin/main","branch":"main","commit":"abc1234","state":"fetched"},
+ "remote_branches_read":true,"forge":"full","forge_limit":5000,"warnings":0,
+ "workstreams":[{"name":"a-goal","summary":null,"goal":"...","done_when":"...","active":true,
+   "steps":[{"name":"a-step","description":"..."}],"warnings":[]}],
+ "tasks":[{"name":"a-step","status":"in_flight","stage":"plan:drafting","workstreams":["a-goal"],
+   "unplaced":false,"closed_workstream":null,"parts":["step","change","branch"],"last_commit":1793500000,
+   "summary":null,"priority":null,"waits_on":[],"body":null,"merge_unchecked":false,"warnings":[]}]}
+```
+
+`specs/task-board/spec.md`, *The tool reports the board as JSON*, states every key. Its parsing cases use `python3`, else `jq`, and fail with that reason where neither is present.
+

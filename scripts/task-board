@@ -21,7 +21,7 @@ print_help() {
 task-board — write one HTML page of a project's tasks
 
 Usage:
-  task-board [--help|-h] [--output FILE] [TARGET_DIR]
+  task-board [--help|-h] [--output FILE | --json] [TARGET_DIR]
 
 Shows what is in flight and at what stage, each open workstream with its steps,
 and every task no workstream holds. Everything is read from the trunk as
@@ -34,6 +34,9 @@ Arguments:
 Flags:
   --output FILE   Where to write the page. Defaults to
                   task-board-<project>.html in the temporary directory.
+  --json          Print the board as one JSON document on standard output
+                  instead of writing a page, and this report on standard error.
+                  Its schema_version rises when a field goes or changes meaning.
   --help, -h      Show this help and exit. Writes nothing.
 
 Outcomes and exit codes:
@@ -47,11 +50,21 @@ HELP
 }
 
 # --- Arguments. -------------------------------------------------------------
+# Fixed before anything is reported, so the stream does not depend on where
+# --json comes among the arguments: fd 3 is the caller's standard output.
+JSON=no
+for arg in "$@"; do
+  if [ "$arg" = --json ]; then JSON=yes; fi
+done
+exec 3>&1
+if [ "$JSON" = yes ]; then exec 1>&2; fi
+
 TARGET=""
 OUTPUT=""
 while [ $# -gt 0 ]; do
   case "$1" in
-    --help|-h) print_help; exit 0 ;;
+    --help|-h) print_help >&3; exit 0 ;;
+    --json) ;;
     --output)
       if [ $# -lt 2 ]; then echo "Outcome: BLOCKED"; echo "Reason: --output needs a file"; exit 2; fi
       OUTPUT="$2"; shift ;;
@@ -64,6 +77,11 @@ while [ $# -gt 0 ]; do
   shift
 done
 [ -n "$TARGET" ] || TARGET="."
+if [ "$JSON" = yes ] && [ -n "$OUTPUT" ]; then
+  echo "Outcome: BLOCKED"
+  echo "Reason: --json prints to standard output, so --output has no meaning with it"
+  exit 2
+fi
 
 block() {
   echo "Outcome: BLOCKED"
@@ -127,7 +145,7 @@ fi
 COMMON="$(g rev-parse --git-common-dir)"
 case "$COMMON" in /*) ;; *) COMMON="$ROOT/$COMMON" ;; esac
 PROJECT="$(basename "$(cd "$COMMON/.." && pwd -P)")"
-[ -n "$OUTPUT" ] || OUTPUT="${TMPDIR:-/tmp}/task-board-$PROJECT.html"
+if [ "$JSON" = no ] && [ -z "$OUTPUT" ]; then OUTPUT="${TMPDIR:-/tmp}/task-board-$PROJECT.html"; fi
 
 if ! WORK="$(mktemp -d "${TMPDIR:-/tmp}/task-board.XXXXXX")"; then
   echo "Outcome: ERROR"
@@ -403,7 +421,7 @@ function tsv(file, kind,   l, f) {
   }
   close(file)
 }
-function read_entry(n,   f, l, st, b, k, v) {
+function read_entry(n,   f, l, st, b, k, v, raw) {
   f = ENVIRON["TB_TREE"] "/docs/backlog/" n ".md"
   st = 0; b = ""; EWS[n] = ""; EPRI[n] = "normal"
   while ((getline l < f) > 0) {
@@ -419,15 +437,18 @@ function read_entry(n,   f, l, st, b, k, v) {
       continue
     }
     if (l != "") b = b "<p class=\"full\">" inline((l ~ /^- /) ? substr(l, 3) : l) "</p>\n"
+    if (l != "" || raw != "") raw = raw l "\n"
   }
   close(f)
   if (st != 3) { ENOFM[n] = 1; W_N++ }
   if (EWS[n] == "none" || EWS[n] == "nothing") EWS[n] = ""
   EBODY[n] = b
+  sub(/\n+$/, "", raw)
+  ERAW[n] = raw
 }
-function read_ws(i, n,   f, l, v, in_steps, s, q, name, desc) {
+function read_ws(i, n,   f, l, v, in_steps, s, name, desc) {
   f = ENVIRON["TB_TREE"] "/docs/workstreams/" n ".md"
-  in_steps = 0; s = 0; q = ""
+  in_steps = 0; s = 0; NWW[i] = 0
   while ((getline l < f) > 0) {
     sub(/\r$/, "", l)
     v = l; sub(/^- /, "", v)
@@ -441,14 +462,14 @@ function read_ws(i, n,   f, l, v, in_steps, s, q, name, desc) {
       name = l; sub(/^[0-9]+\. `/, "", name); desc = name
       sub(/`.*/, "", name); sub(/^[^`]*`/, "", desc); sub(/^ *(—|-|:) */, "", desc)
       s++; SN[i, s] = name; SD[i, s] = desc
-      TOWS[name] = (name in TOWS) ? TOWS[name] " " n : n
+      if (!(name in TOWS)) TOWS[name] = n
+      else if (index(" " TOWS[name] " ", " " n " ") == 0) TOWS[name] = TOWS[name] " " n
       STEP[name]++
-    } else { q = q warn("a step line could not be read: " l); W_N++ }
+    } else { WW[i, ++NWW[i]] = "a step line could not be read: " l; W_N++ }
   }
   close(f)
   NS[i] = s
-  if (!s) { q = q warn("Its steps could not be read."); W_N++ }
-  WWARN[i] = q
+  if (!s) { WW[i, ++NWW[i]] = "Its steps could not be read."; W_N++ }
 }
 function warn(t) { return "<p class=\"warning\">Warning: " esc(t) "</p>\n" }
 function ago(n,   d) {
@@ -475,7 +496,7 @@ function row(n, desc, unplaced,   s, x, m) {
   if (n in EWAIT && EWAIT[n] != "") x = x "<p class=\"desc\">Waits on " esc(EWAIT[n]) "</p>"
   if (n in NOTE) x = x "<p class=\"desc\">Names " esc(NOTE[n]) ", which is not open</p>"
   if (n in ENOFM) x = x warn("no frontmatter")
-  if ((n in STEP) && STEP[n] > 1) { x = x warn("also a step of another workstream"); W_N++ }
+  if ((n in STEP) && STEP[n] > 1) x = x warn("also a step of another workstream")
   m = "<span class=\"st " cls(s) "\">" label(s) "</span><div>" x "</div><span class=\"ago\">" ago(n) "</span>"
   if (n in EBODY)
     return "<li class=\"step\"><details class=\"task\"><summary>" m "<span class=\"more\"></span></summary>\n" EBODY[n] "</details></li>\n"
@@ -484,8 +505,9 @@ function row(n, desc, unplaced,   s, x, m) {
 function head() {
   return "<li class=\"rowgrid rowhead\"><span>Status</span><span>Task</span><span>Last commit</span><span>Details</span></li>\n"
 }
-function group(i,   n, j, o, bar, d, f, x, m) {
-  n = WN[i]; d = 0; f = 0; bar = ""; o = ""
+function group(i,   n, j, o, bar, d, f, x, m, q) {
+  n = WN[i]; d = 0; f = 0; bar = ""; o = ""; q = ""
+  for (j = 1; j <= NWW[i]; j++) q = q warn(WW[i, j])
   for (j = 1; j <= NS[i]; j++) {
     x = status(SN[i, j]); bar = bar "<u class=\"" cls(x) "\"></u>"
     if (x == "done") d++
@@ -502,7 +524,7 @@ function group(i,   n, j, o, bar, d, f, x, m) {
     ((i in WSUM) ? "<div class=\"sub\">" inline(WSUM[i]) "</div>" : "") \
     "</div><div class=\"progress\"><div class=\"bar\">" bar "</div><span>" m "</span></div></summary>\n<div class=\"body\">\n" \
     "<p class=\"def\"><strong>Goal:</strong> " inline(GOAL[i]) "</p>\n<p class=\"def\"><strong>Done when:</strong> " inline(DONEW[i]) "</p>\n" \
-    WWARN[i] "<ol class=\"steps\">\n" head() o "</ol>\n</div></details>\n"
+    q "<ol class=\"steps\">\n" head() o "</ol>\n</div></details>\n"
 }
 function links(n,   a, c, i, o) {
   o = ""
@@ -555,7 +577,7 @@ function isort(a, c, how,   i, j, v, after) {
   for (i = 2; i <= c; i++) {
     v = a[i]; j = i - 1
     while (j >= 1) {
-      after = (how == "new") ? later(a[j], v) : looser(a[j], v)
+      after = (how == "new") ? later(a[j], v) : (how == "name") ? (a[j] > v) : looser(a[j], v)
       if (!after) break
       a[j + 1] = a[j]; j--
     }
@@ -567,6 +589,82 @@ function loadlist(file, a,   l, c) {
   while ((getline l < file) > 0) a[++c] = l
   close(file)
   return c
+}
+function jstr(s,   o, i, c, n) {
+  if (s !~ /[\001-\037"\\]/) return "\"" s "\""
+  o = ""; n = length(s)
+  for (i = 1; i <= n; i++) {
+    c = substr(s, i, 1)
+    if (c == "\"" || c == "\\") o = o "\\" c
+    else if (c == "\n") o = o "\\n"
+    else if (c == "\t") o = o "\\t"
+    else if (c == "\r") o = o "\\r"
+    else if (c in CTRL) o = o CTRL[c]
+    else o = o c
+  }
+  return "\"" o "\""
+}
+function jnull(present, s) { return present ? jstr(s) : "null" }
+function jlist(a, c,   i, o) {
+  o = ""
+  for (i = 1; i <= c; i++) o = o (i > 1 ? "," : "") jstr(a[i])
+  return "[" o "]"
+}
+function jbool(v) { return v ? "true" : "false" }
+function jtask(n,   s, p, c, w, cw, g, cg, i, t) {
+  s = status(n)
+  c = 0
+  if (n in STEP) p[++c] = "step"
+  if (n in ENT) p[++c] = "entry"
+  if ((n in OPEN) || CHG[n] == "yes") p[++c] = "change"
+  if (n in ARCH) p[++c] = "archived_change"
+  if (n in BR) p[++c] = "branch"
+  if (n in PRO) p[++c] = "open_pr"
+  if (n in PRM) p[++c] = "merged_pr"
+  if (n in TOWS) cg = split(TOWS[n], g, " ")
+  else if (n in PLACED) { g[1] = PLACED[n]; cg = 1 }
+  else cg = 0
+  cw = 0
+  if (n in EWAIT) {
+    t = EWAIT[n]; gsub(/,/, " ", t); cw = split(t, w, " ")
+  }
+  return "{\"name\":" jstr(n) \
+    ",\"status\":" jstr((s == "flight") ? "in_flight" : s) \
+    ",\"stage\":" jnull(n in STAGE, STAGE[n]) \
+    ",\"workstreams\":" jlist(g, cg) \
+    ",\"unplaced\":" jbool((n in PLACED) && !(n in STEP)) \
+    ",\"closed_workstream\":" jnull(n in NOTE, NOTE[n]) \
+    ",\"parts\":" jlist(p, c) \
+    ",\"last_commit\":" ((n in LAST) ? LAST[n] + 0 : "null") \
+    ",\"summary\":" jnull(n in ESUM, ESUM[n]) \
+    ",\"priority\":" jnull((n in EPRI) && EPRI[n] != "normal", EPRI[n]) \
+    ",\"waits_on\":" jlist(w, cw) \
+    ",\"body\":" jnull(n in ERAW, ERAW[n]) \
+    ",\"merge_unchecked\":" jbool(unchecked(n) || ((n in STAGE) && FORGE != "full")) \
+    ",\"warnings\":" ((n in ENOFM) ? "[\"no frontmatter\"]" : "[]") "}"
+}
+function jws(i,   j, s, w, c, t) {
+  s = ""
+  for (j = 1; j <= NS[i]; j++) s = s (j > 1 ? "," : "") "{\"name\":" jstr(SN[i, j]) ",\"description\":" jstr(SD[i, j]) "}"
+  c = 0
+  for (j = 1; j <= NWW[i]; j++) w[++c] = WW[i, j]
+  for (j = 1; j <= NS[i]; j++) if (STEP[SN[i, j]] > 1) w[++c] = SN[i, j] " is also a step of another workstream"
+  return "{\"name\":" jstr(WN[i]) ",\"summary\":" jnull(i in WSUM, WSUM[i]) ",\"goal\":" jstr(GOAL[i]) \
+    ",\"done_when\":" jstr(DONEW[i]) ",\"active\":" jbool(ACTIVE[i]) ",\"steps\":[" s "],\"warnings\":" jlist(w, c) "}"
+}
+function document(   i, c, n, seen, list, o) {
+  for (i = 1; i < 32; i++) CTRL[sprintf("%c", i)] = sprintf("\\u%04x", i)
+  c = 0
+  for (n in STEP) if (!(n in seen)) { seen[n] = 1; list[++c] = n }
+  for (n in SEEN) if (!(n in seen)) { seen[n] = 1; list[++c] = n }
+  isort(list, c, "name")
+  printf "{\"schema_version\":1,\"project\":%s,\"written_at\":%s,", jstr(ENVIRON["TB_PROJECT"]), jstr(ENVIRON["TB_UTC"])
+  printf "\"trunk\":{\"ref\":%s,\"branch\":%s,\"commit\":%s,\"state\":%s},", jstr(ENVIRON["TB_TRUNK"]), jstr(ENVIRON["TB_TRUNK_NAME"]), jstr(ENVIRON["TB_SHA"]), jstr(ENVIRON["TB_STATE"])
+  printf "\"remote_branches_read\":%s,\"forge\":%s,\"forge_limit\":%d,\"warnings\":%d,\"workstreams\":[", ENVIRON["TB_REMOTE_READ"], jstr(FORGE), ENVIRON["TB_LIMIT"] + 0, W_N + 0
+  for (i = 1; i <= NW; i++) printf "%s%s", (i > 1 ? "," : ""), jws(i)
+  printf "],\"tasks\":["
+  for (i = 1; i <= c; i++) printf "%s%s", (i > 1 ? "," : ""), jtask(list[i])
+  print "]}"
 }
 function copy(file,   l) { while ((getline l < file) > 0) print l; close(file) }
 BEGIN {
@@ -591,6 +689,12 @@ BEGIN {
     for (j = 1; j <= NS[i]; j++) if (status(SN[i, j]) == "flight") act = 1
     for (j = 1; j <= NX[i]; j++) if (status(XN[i, j]) == "flight") act = 1
     ACTIVE[i] = act
+  }
+  for (i = 1; i <= NW; i++) for (j = 1; j <= NS[i]; j++) if (STEP[SN[i, j]] > 1) W_N++
+  if (ENVIRON["TB_FORMAT"] == "json") {
+    document()
+    print W_N + 0 > (W "/warnings")
+    exit
   }
   a = ""; o = ""; na = 0; no = 0
   for (i = 1; i <= NW; i++) {
@@ -664,23 +768,35 @@ esac
 
 TB_NOW="$(date +%s)"
 TB_WHEN="$(date '+%Y-%m-%d %H:%M')"
-export TB_NOTICES="$NOTICES" TB_SHA="$SHA" TB_NOW TB_WHEN
+TB_UTC="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+TB_STATE=fetched
+if [ "$HAS_ORIGIN" = no ]; then TB_STATE=no_origin; elif [ "$FETCHED" = no ]; then TB_STATE=fetch_failed; fi
+TB_REMOTE_READ=false
+if [ "$REMOTE_READ" = yes ]; then TB_REMOTE_READ=true; fi
+export TB_NOTICES="$NOTICES" TB_SHA="$SHA" TB_NOW TB_WHEN TB_UTC TB_STATE TB_REMOTE_READ
+export TB_TRUNK_NAME="$TRUNK_NAME" TB_LIMIT="$PR_LIMIT"
 
 write_failed() {
   echo "Outcome: ERROR"
-  echo "Reason: $OUTPUT could not be written"
+  echo "Reason: ${OUTPUT:-the document} could not be written"
   [ -s "$WORK/errors" ] && head -n 3 "$WORK/errors"
   exit 1
 }
 
-if [ -d "$OUTPUT" ]; then write_failed; fi
-PAGE_TMP="$OUTPUT.$$.tmp"
-{ : > "$PAGE_TMP"; } 2>/dev/null || write_failed
-awk -f "$WORK/common.awk" -f "$WORK/board.awk" > "$PAGE_TMP" 2>"$WORK/errors" </dev/null || write_failed
-mv -f "$PAGE_TMP" "$OUTPUT" 2>/dev/null || write_failed
-PAGE_TMP=""
+if [ "$JSON" = yes ]; then
+  # Written whole first, so a failed run leaves standard output empty.
+  TB_FORMAT=json awk -f "$WORK/common.awk" -f "$WORK/board.awk" > "$WORK/document" 2>"$WORK/errors" </dev/null || write_failed
+  cat "$WORK/document" >&3 || write_failed
+else
+  if [ -d "$OUTPUT" ]; then write_failed; fi
+  PAGE_TMP="$OUTPUT.$$.tmp"
+  { : > "$PAGE_TMP"; } 2>/dev/null || write_failed
+  awk -f "$WORK/common.awk" -f "$WORK/board.awk" > "$PAGE_TMP" 2>"$WORK/errors" </dev/null || write_failed
+  mv -f "$PAGE_TMP" "$OUTPUT" 2>/dev/null || write_failed
+  PAGE_TMP=""
+  echo "Board: $OUTPUT"
+fi
 
-echo "Board: $OUTPUT"
 echo "Trunk: $TRUNK_LINE"
 echo "Remote branches: $REMOTE_LINE"
 echo "Forge: $FORGE_LINE"

@@ -119,3 +119,11 @@ Every case but one is red because `--json` is an unknown flag today: the tool ex
 `task-board-json-without-flag-report-on-stdout` passes today, as it should: it runs existing behaviour, without `--json`, and holds that line. It is not a state-four alarm.
 
 Checked without the implementation: ShellCheck clean over the new cases; the `jv` reader on a canned document under both backends; the page half of `task-board-json-same-reading-as-the-page` against the real page, with the statuses written by hand. That the fixture of `task-board-json-failed-run` strikes after reading has begun was observed without `--json`: the tool reports `Target:`, then `Outcome: ERROR`, exit 1.
+
+## Dispositions at apply
+
+- **Local arrangement:** kept in each case, for the reason `task-board` records: this project's conventions record no shared arrangement's location.
+- **`merge_unchecked` beside a change on the trunk:** true where the forge is not read in full, since the requirement defines it as the page's mark, and the page marks every stage then.
+- **Stage:** the page's text, `build:applying 4/12` and `unknown` included.
+- **A parsing case with neither parser:** fails with that reason, as dispatched. The proposal's "the suite needs neither" holds for running the rest of the suite.
+
