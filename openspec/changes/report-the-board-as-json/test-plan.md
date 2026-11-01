@@ -120,6 +120,10 @@ Every case but one is red because `--json` is an unknown flag today: the tool ex
 
 Checked without the implementation: ShellCheck clean over the new cases; the `jv` reader on a canned document under both backends; the page half of `task-board-json-same-reading-as-the-page` against the real page, with the statuses written by hand. That the fixture of `task-board-json-failed-run` strikes after reading has begun was observed without `--json`: the tool reports `Target:`, then `Outcome: ERROR`, exit 1.
 
+## Cases added by code review
+
+`task-board-json-merge-unchecked-of-an-archived-task`, `task-board-json-nul-byte` and `task-board-format-not-inherited`, each written with its fix by the implementer. That fd 3 reaches no child stays uncovered: a case would have to time a stub leaving a background process.
+
 ## Dispositions at apply
 
 - **Local arrangement:** kept in each case, for the reason `task-board` records: this project's conventions record no shared arrangement's location.

@@ -45,4 +45,6 @@ The report lines stay as they are, and one function prints them to the stream `-
 - **A version number that nothing enforces.** → A case fixes the current value and the key set, so a change to either has to touch it.
 - **Awk building JSON by hand can emit an invalid document.** → Cases parse the output where `python3` or `jq` is present, with a fixture holding each hard character; where neither is, they say so.
 - **Text that is not UTF-8 would make the document invalid**, since `jstr` leaves bytes alone. → Assumed away: the repositories this reads hold UTF-8, and a reader that cannot parse a project says so for that project alone.
+- **A step listed twice in one workstream now shows one link in the in-flight section, not two.** `workstreams` must hold no name twice, and both outputs read the same list. Accepted as the one change to the page, for an input the rules forbid.
+- **A NUL in a repository file is dropped from the document**, since no JSON text can hold one and awk cannot be relied on to carry it.
 - **The two renderers can drift.** → A case compares status, stage and placement of the two outputs.

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Writes one self-contained HTML page of one project's tasks, read from its
-# trunk. See `--help` for usage; see tests/README.md for the report contract
+# Writes one self-contained HTML page of one project's tasks, or prints them as
+# JSON, read from its trunk. See `--help` for usage; see tests/README.md for the report contract
 # this script implements against. The status lookups in status() below are the
 # ones rules/workstreams.md states, in its order: change them together.
 set -u
@@ -11,14 +11,14 @@ if command -v git >/dev/null 2>&1; then
   # shellcheck disable=SC2046 # word splitting is intended: one name per word
   unset $(git rev-parse --local-env-vars 2>/dev/null)
 fi
-unset GIT_DIR GIT_WORK_TREE GIT_COMMON_DIR GIT_INDEX_FILE
+unset GIT_DIR GIT_WORK_TREE GIT_COMMON_DIR GIT_INDEX_FILE TB_FORMAT
 export GIT_TERMINAL_PROMPT=0 GIT_OPTIONAL_LOCKS=0
 
 PR_LIMIT=5000
 
 print_help() {
   cat <<'HELP'
-task-board — write one HTML page of a project's tasks
+task-board — write one HTML page of a project's tasks, or print them as JSON
 
 Usage:
   task-board [--help|-h] [--output FILE | --json] [TARGET_DIR]
@@ -40,9 +40,9 @@ Flags:
   --help, -h      Show this help and exit. Writes nothing.
 
 Outcomes and exit codes:
-  0   SUCCESS   the page was written
-  1   ERROR     the page could not be written
-  2   BLOCKED   a precondition was unmet; no page was written
+  0   SUCCESS   the page was written, or the document printed
+  1   ERROR     the page or the document could not be finished
+  2   BLOCKED   a precondition was unmet; nothing was written or printed
 
 Changes nothing in the project but what `git fetch` brings in. Uses `gh` where
 it can; without it the page says the forge was not reached.
@@ -56,14 +56,15 @@ JSON=no
 for arg in "$@"; do
   if [ "$arg" = --json ]; then JSON=yes; fi
 done
-exec 3>&1
-if [ "$JSON" = yes ]; then exec 1>&2; fi
+if [ "$JSON" = yes ]; then exec 3>&1 1>&2; fi
 
 TARGET=""
 OUTPUT=""
 while [ $# -gt 0 ]; do
   case "$1" in
-    --help|-h) print_help >&3; exit 0 ;;
+    --help|-h)
+      if [ "$JSON" = yes ]; then print_help >&3; else print_help; fi
+      exit 0 ;;
     --json) ;;
     --output)
       if [ $# -lt 2 ]; then echo "Outcome: BLOCKED"; echo "Reason: --output needs a file"; exit 2; fi
@@ -97,7 +98,7 @@ fi
 echo "Target: $TARGET"
 
 ROOT=""
-g() { git -C "${ROOT:-$TARGET}" "$@"; }
+g() { git -C "${ROOT:-$TARGET}" "$@" 3>&-; }
 
 command -v git >/dev/null 2>&1 || block "git is not installed"
 g rev-parse --git-dir >/dev/null 2>&1 || block "the target is not a Git repository"
@@ -199,7 +200,7 @@ FORGE=none
 if command -v gh >/dev/null 2>&1; then
   # shellcheck disable=SC2016 # the template is gh's, not the shell's
   if ( cd "${ROOT:-$TARGET}" && gh pr list --state all --limit "$PR_LIMIT" --json headRefName,state \
-      --template '{{range .}}{{.headRefName}}{{"\t"}}{{.state}}{{"\n"}}{{end}}' ) > "$WORK/prs" 2>/dev/null; then
+      --template '{{range .}}{{.headRefName}}{{"\t"}}{{.state}}{{"\n"}}{{end}}' ) > "$WORK/prs" 2>/dev/null 3>&-; then
     FORGE=full
     if [ "$(wc -l < "$WORK/prs")" -ge "$PR_LIMIT" ]; then FORGE=partly; fi
   else
@@ -604,7 +605,6 @@ function jstr(s,   o, i, c, n) {
   }
   return "\"" o "\""
 }
-function jnull(present, s) { return present ? jstr(s) : "null" }
 function jlist(a, c,   i, o) {
   o = ""
   for (i = 1; i <= c; i++) o = o (i > 1 ? "," : "") jstr(a[i])
@@ -630,16 +630,16 @@ function jtask(n,   s, p, c, w, cw, g, cg, i, t) {
   }
   return "{\"name\":" jstr(n) \
     ",\"status\":" jstr((s == "flight") ? "in_flight" : s) \
-    ",\"stage\":" jnull(n in STAGE, STAGE[n]) \
+    ",\"stage\":" ((n in STAGE) ? jstr(STAGE[n]) : "null") \
     ",\"workstreams\":" jlist(g, cg) \
     ",\"unplaced\":" jbool((n in PLACED) && !(n in STEP)) \
-    ",\"closed_workstream\":" jnull(n in NOTE, NOTE[n]) \
+    ",\"closed_workstream\":" ((n in NOTE) ? jstr(NOTE[n]) : "null") \
     ",\"parts\":" jlist(p, c) \
     ",\"last_commit\":" ((n in LAST) ? LAST[n] + 0 : "null") \
-    ",\"summary\":" jnull(n in ESUM, ESUM[n]) \
-    ",\"priority\":" jnull((n in EPRI) && EPRI[n] != "normal", EPRI[n]) \
+    ",\"summary\":" ((n in ESUM) ? jstr(ESUM[n]) : "null") \
+    ",\"priority\":" (((n in EPRI) && EPRI[n] != "normal") ? jstr(EPRI[n]) : "null") \
     ",\"waits_on\":" jlist(w, cw) \
-    ",\"body\":" jnull(n in ERAW, ERAW[n]) \
+    ",\"body\":" ((n in ERAW) ? jstr(ERAW[n]) : "null") \
     ",\"merge_unchecked\":" jbool(unchecked(n) || ((n in STAGE) && FORGE != "full")) \
     ",\"warnings\":" ((n in ENOFM) ? "[\"no frontmatter\"]" : "[]") "}"
 }
@@ -649,7 +649,7 @@ function jws(i,   j, s, w, c, t) {
   c = 0
   for (j = 1; j <= NWW[i]; j++) w[++c] = WW[i, j]
   for (j = 1; j <= NS[i]; j++) if (STEP[SN[i, j]] > 1) w[++c] = SN[i, j] " is also a step of another workstream"
-  return "{\"name\":" jstr(WN[i]) ",\"summary\":" jnull(i in WSUM, WSUM[i]) ",\"goal\":" jstr(GOAL[i]) \
+  return "{\"name\":" jstr(WN[i]) ",\"summary\":" ((i in WSUM) ? jstr(WSUM[i]) : "null") ",\"goal\":" jstr(GOAL[i]) \
     ",\"done_when\":" jstr(DONEW[i]) ",\"active\":" jbool(ACTIVE[i]) ",\"steps\":[" s "],\"warnings\":" jlist(w, c) "}"
 }
 function document(   i, c, n, seen, list, o) {
@@ -786,7 +786,8 @@ write_failed() {
 if [ "$JSON" = yes ]; then
   # Written whole first, so a failed run leaves standard output empty.
   TB_FORMAT=json awk -f "$WORK/common.awk" -f "$WORK/board.awk" > "$WORK/document" 2>"$WORK/errors" </dev/null || write_failed
-  cat "$WORK/document" >&3 || write_failed
+  # awk cannot be relied on to hold or escape a NUL, and no JSON text holds one.
+  tr -d '\000' < "$WORK/document" >&3 || write_failed
 else
   if [ -d "$OUTPUT" ]; then write_failed; fi
   PAGE_TMP="$OUTPUT.$$.tmp"
