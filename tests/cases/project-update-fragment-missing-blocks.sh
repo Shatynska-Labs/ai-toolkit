@@ -222,6 +222,6 @@ last="$(records "$copy" | awk 'NF { n = $1 } END { print n }')"
 rm -f "$copy/rules/$last.md"
 assert_file_absent "$copy/rules/$last.md" "fixture — the fragment is removed"
 before="$(tree_sum "$work")"
-(cd "$work" && bash "$copy/scripts/project-update") >"$TESTDIR/report.txt" 2>&1
+(cd "$work" && bash "$copy/scripts/project-update" --workflow full) >"$TESTDIR/report.txt" 2>&1
 assert_outcome "$TESTDIR/report.txt" 2 "$?" BLOCKED
 assert_tree "$work" "$before" "a missing fragment"

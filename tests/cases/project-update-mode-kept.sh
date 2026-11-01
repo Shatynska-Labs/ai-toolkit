@@ -219,6 +219,6 @@ seed_all "$work" stale
 f="$work/$(target_of backlog)"
 chmod 0640 "$f"
 [ "$(mode_of "$f")" = 640 ] || { echo "FAIL: fixture — the mode is not 640" >&2; exit 1; }
-(cd "$work" && bash "$PROJECT_UPDATE") >"$TESTDIR/report.txt" 2>&1
+(cd "$work" && bash "$PROJECT_UPDATE" --workflow full) >"$TESTDIR/report.txt" 2>&1
 [ "$(marker_version "$f" backlog)" = "$(fversion backlog)" ] || { echo "FAIL: the stale backlog block was not replaced" >&2; cat "$TESTDIR/report.txt" >&2; exit 1; }
 [ "$(mode_of "$f")" = 640 ] || { echo "FAIL: the mode is $(mode_of "$f"), not 640" >&2; exit 1; }

@@ -220,7 +220,7 @@ mkdir -p "$work" "$elsewhere"
 seed_all "$work" stale
 seed_all "$elsewhere" stale
 other_before="$(tree_sum "$elsewhere")"
-(cd "$elsewhere" && bash "$PROJECT_UPDATE" "$work") >"$TESTDIR/report.txt" 2>&1
+(cd "$elsewhere" && bash "$PROJECT_UPDATE" --workflow full "$work") >"$TESTDIR/report.txt" 2>&1
 first="$(head -n 1 "$TESTDIR/report.txt")"
 phys="$(cd "$work" && pwd -P)"
 case "$first" in

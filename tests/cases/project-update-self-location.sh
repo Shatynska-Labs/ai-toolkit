@@ -227,7 +227,7 @@ work="$TESTDIR/work"
 mkdir -p "$work"
 put_block "$work" development-workflow 0.0.1 "an old text" "$mine"
 f="$work/$(target_of development-workflow "$mine")"
-(cd "$work" && AI_TOOLKIT_ROOT="$decoy" TOOLKIT_ROOT="$decoy" bash "$mine/scripts/project-update") >"$TESTDIR/report.txt" 2>&1
+(cd "$work" && AI_TOOLKIT_ROOT="$decoy" TOOLKIT_ROOT="$decoy" bash "$mine/scripts/project-update" --workflow full) >"$TESTDIR/report.txt" 2>&1
 [ "$(marker_version "$f" development-workflow)" = 7.7.7 ] || { echo "FAIL: the block does not carry the invoked copy's version 7.7.7" >&2; cat "$f" >&2; cat "$TESTDIR/report.txt" >&2; exit 1; }
 assert_contains "$f" "A line only the invoked copy carries." "the invoked copy's body"
 if grep -q -F 'A line only the decoy carries.' "$f" || grep -q '9\.9\.9' "$TESTDIR/report.txt"; then

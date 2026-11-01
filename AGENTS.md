@@ -27,6 +27,8 @@ Assets reach a consuming project by installing this repository as a plugin (`/pl
 
 Both reach any fragment under `rules/`. What a binding fragment such as `rules/development-workflow-database.md` lacks until tooling catches up is a *tool* route, not a route: it is imported or copied by hand rather than written into a managed block.
 
+The workflow comes in two forms. `rules/development-workflow.md`, staging with production reached only by a promotion, is the default. `rules/development-workflow-direct.md`, one deploy by merging, is for a repository with no production or whose job is that every server runs, and is what this repository follows. `rules/manifest` names it as the first record's `alternative`, a project holds one of the two, and `--workflow full|direct` chooses, on `scripts/project-init` when a project starts and on `scripts/project-update` for a block older than the choice or to switch later. The two are complete files, identical outside what states `ship`, which `tests/cases/workflow-fragments-differ-only-in-ship.sh` holds.
+
 A `rules/` fragment is one of two kinds, declared in its own YAML frontmatter:
 
 ```yaml
@@ -35,6 +37,8 @@ kind: standing-constraint    # or: procedural-checklist
 version: 1.0.0               # only if the fragment is inlined, now or later: MAJOR.MINOR.PATCH
 ---
 ```
+
+A fragment `rules/manifest` names an `alternative` for also carries `alternative_since: MAJOR.MINOR.PATCH`, the first version at which a project chooses between the two.
 
 A **standing constraint** is meant to reach a project's `CLAUDE.md` or `AGENTS.md` and remain in force there — by either path above. A **procedural checklist** describes a one-time procedure, read on demand, and is never inlined into a project's conventions file — inlining it would leave permanent instructions for work already finished.
 

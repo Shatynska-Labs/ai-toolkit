@@ -1,5 +1,6 @@
 name: development-workflow
 target: AGENTS.md
+alternative: development-workflow-direct
 ---
 name: backlog
 target: docs/backlog/AGENTS.md

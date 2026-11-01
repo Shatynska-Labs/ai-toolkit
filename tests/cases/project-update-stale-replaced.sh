@@ -218,7 +218,7 @@ require_update "$PROJECT_UPDATE"
 work="$TESTDIR/work"
 mkdir -p "$work"
 seed_all "$work" stale
-(cd "$work" && bash "$PROJECT_UPDATE") >"$TESTDIR/report.txt" 2>&1
+(cd "$work" && bash "$PROJECT_UPDATE" --workflow full) >"$TESTDIR/report.txt" 2>&1
 n=0
 while read -r name target; do
   [ -n "$name" ] || continue

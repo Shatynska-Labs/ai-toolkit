@@ -220,7 +220,7 @@ put_block "$work" development-workflow "$(lower_version "$(fversion development-
 root_t="$work/$(target_of development-workflow)"
 mv "$root_t" "$work/shared/rules.md"
 ln -s shared/rules.md "$root_t"
-(cd "$work" && bash "$PROJECT_UPDATE") >"$TESTDIR/report.txt" 2>&1
+(cd "$work" && bash "$PROJECT_UPDATE" --workflow full) >"$TESTDIR/report.txt" 2>&1
 [ -L "$root_t" ] || { echo "FAIL: the root AGENTS.md is no longer a link" >&2; exit 1; }
 [ "$(readlink "$root_t")" = shared/rules.md ] || { echo "FAIL: the link now points at $(readlink "$root_t")" >&2; exit 1; }
 [ "$(marker_version "$work/shared/rules.md" development-workflow)" = "$(fversion development-workflow)" ] || { echo "FAIL: the file the link names does not hold the current block" >&2; cat "$TESTDIR/report.txt" >&2; exit 1; }

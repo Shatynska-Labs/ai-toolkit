@@ -17,7 +17,7 @@ print_help() {
 project-update — bring a project's managed blocks to this toolkit's current text
 
 Usage:
-  project-update [--help|-h] [TARGET_DIR]
+  project-update [--workflow full|direct] [--help|-h] [TARGET_DIR]
 
 For each block rules/manifest lists, reads the project's copy and reports it
 as one of:
@@ -38,10 +38,21 @@ as one of:
 Records left edited, ahead, malformed, unwritable, absent or single file are
 named on a final Attention: line.
 
+A project holds one workflow, development-workflow or
+development-workflow-direct, and a run keeps the one its marker names. A
+workflow block older than the choice would be replaced, or converted, into
+something the project never asked for, so such a run is BLOCKED until
+--workflow says which it wants.
+
 Arguments:
   TARGET_DIR   The project's root. Defaults to the current working directory.
 
 Flags:
+  --workflow <full|direct>
+               full is staging and promotion, direct is one deploy by merging.
+               Brings the workflow block to that variant, switching an
+               unedited block that holds the other. An edited, ahead or
+               malformed block is reported and left.
   --help, -h   Show this help and exit. Makes no filesystem change.
 
 Outcomes and exit codes:
@@ -61,9 +72,20 @@ MANIFEST="$TOOLKIT_ROOT/rules/manifest"
 # --- Argument parsing --------------------------------------------------------
 target=""
 show_help=0
+workflow=""
+workflow_given=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --help|-h) show_help=1 ;;
+    --workflow)
+      workflow_given=1
+      workflow="${2:-}"
+      [ $# -ge 2 ] && shift
+      ;;
+    --workflow=*)
+      workflow_given=1
+      workflow="${1#--workflow=}"
+      ;;
     *) [ -z "$target" ] && target="$1" ;;
   esac
   shift
@@ -92,6 +114,12 @@ echo "Target: $target"
 [ -e "$target" ] || finish_blocked "target directory does not exist: $target"
 [ -d "$target" ] || finish_blocked "target is not a directory: $target"
 [ -w "$target" ] || finish_blocked "target directory is not writable: $target"
+if [ "$workflow_given" -eq 1 ]; then
+  case "$workflow" in
+    full|direct) ;;
+    *) finish_blocked "--workflow takes full or direct, not '$workflow'" ;;
+  esac
+fi
 
 # --- The manifest and every fragment it lists, before anything else. -------
 # Read as scripts/project-init reads them; a block built here must equal one
@@ -100,10 +128,11 @@ echo "Target: $target"
 [ -f "$MANIFEST" ] || finish_blocked "manifest not found at $MANIFEST"
 
 manifest_records="$(awk '
-  function out() { if (n != "" || t != "") print n "\t" t; n = ""; t = "" }
+  function out() { if (n != "" || t != "") print n "\t" t "\t" a; n = ""; t = ""; a = "" }
   /^---[[:space:]]*$/ { out(); next }
   /^name:/ { sub(/^name:[[:space:]]*/, ""); n = $0; next }
   /^target:/ { sub(/^target:[[:space:]]*/, ""); t = $0; next }
+  /^alternative:/ { sub(/^alternative:[[:space:]]*/, ""); a = $0; next }
   END { out() }
 ' "$MANIFEST")"
 
@@ -111,7 +140,27 @@ rec_name=()
 rec_target=()
 rec_version=()
 rec_body=()
-while IFS="$(printf '\t')" read -r name tgt; do
+rec_alt=()      # the alternative's name, its version and body, and the version
+rec_alt_version=() # the choice began at, empty for a record with none
+rec_alt_body=()
+rec_alt_since=()
+# Reads fragment $1's kind, version and body into frag_version and frag_body;
+# $2 says what lists it.
+read_fragment() {
+  local frag="$TOOLKIT_ROOT/rules/$1.md" kind closing_line
+  [ -f "$frag" ] || finish_blocked "rule fragment $1, $2, not found at $frag"
+  [ "$(head -n 1 "$frag")" = "---" ] || finish_blocked "rule fragment at $frag has no frontmatter"
+  frontmatter="$(sed -n '2,/^---$/p' "$frag" | sed '$d')"
+  kind="$(printf '%s\n' "$frontmatter" | sed -n 's/^kind:[[:space:]]*//p' | head -n1)"
+  frag_version="$(printf '%s\n' "$frontmatter" | sed -n 's/^version:[[:space:]]*//p' | head -n1)"
+  if [ -z "$kind" ] || ! printf '%s\n' "$frag_version" | grep -qE '^[0-9]+[.][0-9]+[.][0-9]+$'; then
+    finish_blocked "rule fragment at $frag is missing kind, or a version of the form MAJOR.MINOR.PATCH"
+  fi
+  closing_line="$(grep -n '^---$' "$frag" | sed -n '2p' | cut -d: -f1)"
+  [ -n "$closing_line" ] || finish_blocked "rule fragment at $frag has no closing frontmatter delimiter"
+  frag_body="$(tail -n "+$((closing_line + 1))" "$frag")"
+}
+while IFS="$(printf '\t')" read -r name tgt alt; do
   [ -n "$name$tgt" ] || continue
   if ! printf '%s\n' "$name" | grep -qE '^[a-z0-9][a-z0-9-]*$'; then
     finish_blocked "manifest at $MANIFEST has a record without a kebab-case name: '$name'"
@@ -123,21 +172,26 @@ while IFS="$(printf '\t')" read -r name tgt; do
   case "/$tgt/" in
     //*|*/../*|*/./*) finish_blocked "manifest record $name targets '$tgt', not a path inside the project" ;;
   esac
-  frag="$TOOLKIT_ROOT/rules/$name.md"
-  [ -f "$frag" ] || finish_blocked "rule fragment $name, listed in the manifest, not found at $frag"
-  [ "$(head -n 1 "$frag")" = "---" ] || finish_blocked "rule fragment at $frag has no frontmatter"
-  frontmatter="$(sed -n '2,/^---$/p' "$frag" | sed '$d')"
-  kind="$(printf '%s\n' "$frontmatter" | sed -n 's/^kind:[[:space:]]*//p' | head -n1)"
-  version="$(printf '%s\n' "$frontmatter" | sed -n 's/^version:[[:space:]]*//p' | head -n1)"
-  if [ -z "$kind" ] || ! printf '%s\n' "$version" | grep -qE '^[0-9]+[.][0-9]+[.][0-9]+$'; then
-    finish_blocked "rule fragment at $frag is missing kind, or a version of the form MAJOR.MINOR.PATCH"
-  fi
-  closing_line="$(grep -n '^---$' "$frag" | sed -n '2p' | cut -d: -f1)"
-  [ -n "$closing_line" ] || finish_blocked "rule fragment at $frag has no closing frontmatter delimiter"
+  read_fragment "$name" "listed in the manifest"
   rec_name+=("$name")
   rec_target+=("$tgt")
-  rec_version+=("$version")
-  rec_body+=("$(tail -n "+$((closing_line + 1))" "$frag")")
+  rec_version+=("$frag_version")
+  rec_body+=("$frag_body")
+  since=""
+  alt_version=""
+  alt_body=""
+  if [ -n "$alt" ]; then
+    since="$(printf '%s\n' "$frontmatter" | sed -n 's/^alternative_since:[[:space:]]*//p' | head -n1)"
+    printf '%s\n' "$since" | grep -qE '^[0-9]+[.][0-9]+[.][0-9]+$' \
+      || finish_blocked "rule fragment $name names an alternative and carries no alternative_since of the form MAJOR.MINOR.PATCH"
+    read_fragment "$alt" "named as an alternative in the manifest"
+    alt_version="$frag_version"
+    alt_body="$frag_body"
+  fi
+  rec_alt+=("$alt")
+  rec_alt_version+=("$alt_version")
+  rec_alt_body+=("$alt_body")
+  rec_alt_since+=("$since")
 done <<EOF_RECORDS
 $manifest_records
 EOF_RECORDS
@@ -221,7 +275,22 @@ rec_have=()    # the version the project's marker carries
 rec_open=()
 rec_close=()
 rec_restore=() # the path git restores for a converted block, where not its target
+rec_from=()    # the variant a block is leaving, where a run switches it
 any_legacy=0
+# Makes record $1 stand for its alternative: its markers, version and fragment.
+use_alternative() {
+  rec_name[$1]="${rec_alt[$1]}"
+  rec_version[$1]="${rec_alt_version[$1]}"
+  rec_body[$1]="${rec_alt_body[$1]}"
+}
+own_name=()
+own_version=()
+own_body=()
+for i in "${!rec_name[@]}"; do
+  own_name+=("${rec_name[$i]}")
+  own_version+=("${rec_version[$i]}")
+  own_body+=("${rec_body[$i]}")
+done
 for i in "${!rec_name[@]}"; do
   name="${rec_name[$i]}"
   tgt="${rec_target[$i]}"
@@ -244,6 +313,24 @@ for i in "${!rec_name[@]}"; do
     elif [ "$name" = "backlog" ] && [ "$dir" = "docs/backlog" ] && [ ! -e "$p" ] \
       && { [ -e "$target/docs/backlog.md" ] || [ -L "$target/docs/backlog.md" ]; }; then
       state="single file"
+    fi
+  fi
+  # A block held under the alternative's marker is that variant from here on;
+  # one held under both is unreadable, and neither is touched.
+  if [ -z "$state" ] && [ -n "${rec_alt[$i]}" ] && [ -f "$tf" ]; then
+    read -r alt_count _ _ <<EOF_ALT
+$(scan_markers "$tf" "${rec_alt[$i]}")
+EOF_ALT
+    if [ "$alt_count" -gt 0 ]; then
+      read -r count _ _ <<EOF_OWN
+$(scan_markers "$tf" "$name")
+EOF_OWN
+      if [ "$count" -gt 0 ]; then
+        state="malformed"
+      else
+        use_alternative "$i"
+        name="${rec_name[$i]}"
+      fi
     fi
   fi
   if [ -z "$state" ]; then
@@ -284,12 +371,50 @@ EOF_SCAN
       fi
     fi
   fi
-  case "$state" in "legacy block"|"legacy README") any_legacy=1 ;; esac
   rec_state+=("$state")
   rec_file+=("$tf")
   rec_have+=("$have")
   rec_open+=("$ol")
   rec_close+=("$cl")
+  rec_from+=("")
+done
+
+# --- A block older than the choice is not replaced until the project makes it. -
+# Before the git preconditions, so a project is asked this first.
+for i in "${!rec_name[@]}"; do
+  [ -n "${rec_alt[$i]}" ] || continue
+  if [ "$workflow_given" -eq 0 ]; then
+    if [ "${rec_name[$i]}" = "${own_name[$i]}" ]; then
+      case "${rec_state[$i]}" in
+        stale|"legacy block")
+          if [ "$(version_cmp "${rec_have[$i]}" "${rec_alt_since[$i]}")" = "-1" ]; then
+            finish_blocked "${rec_name[$i]} at version ${rec_have[$i]} predates the choice of workflow; run again with --workflow full for staging and promotion, or --workflow direct for one deploy by merging"
+          fi
+          ;;
+      esac
+    fi
+    continue
+  fi
+  case "${rec_state[$i]}" in
+    stale|"legacy block"|current) ;;
+    *) continue ;;
+  esac
+  held="${rec_name[$i]}"
+  if [ "$workflow" = "direct" ]; then
+    use_alternative "$i"
+  else
+    rec_name[i]="${own_name[$i]}"
+    rec_version[i]="${own_version[$i]}"
+    rec_body[i]="${own_body[$i]}"
+  fi
+  if [ "${rec_name[$i]}" != "$held" ]; then
+    rec_from[i]="$held"
+    [ "${rec_state[$i]}" = "current" ] && rec_state[i]="stale"
+  fi
+done
+
+for i in "${!rec_name[@]}"; do
+  case "${rec_state[$i]}" in "legacy block"|"legacy README") any_legacy=1 ;; esac
 done
 
 # --- Where a legacy shape is converted, git must hold what it replaces. -----
@@ -418,6 +543,7 @@ for i in "${!rec_name[@]}"; do
   tf="${rec_file[$i]}"
   version="${rec_version[$i]}"
   have="${rec_have[$i]}"
+  from="${rec_from[$i]}"
   case "${rec_state[$i]}" in
     current)
       echo "$name: current (version $have)"
@@ -426,13 +552,21 @@ for i in "${!rec_name[@]}"; do
       replace_block "$tf" "${rec_open[$i]}" "${rec_close[$i]}" "$i" \
         || replace_failed "$name: $tgt"
       note_touched "$tgt (a hashed block replaced: leave it; a re-run reports it current)"
-      echo "$name: replaced (version $have → $version)"
+      if [ -n "$from" ]; then
+        echo "$name: replaced $from (version $have → $version)"
+      else
+        echo "$name: replaced (version $have → $version)"
+      fi
       ;;
     "legacy block")
       replace_block "$tf" "${rec_open[$i]}" "${rec_close[$i]}" "$i" \
         || replace_failed "$name: $tgt"
       note_touched "${rec_restore[i]:-$tgt} (converted: git restore returns it)"
-      echo "$name: converted from version $have to $version; not checked for edits, review with git diff"
+      if [ -n "$from" ]; then
+        echo "$name: converted from $from version $have to $version; not checked for edits, review with git diff"
+      else
+        echo "$name: converted from version $have to $version; not checked for edits, review with git diff"
+      fi
       ;;
     "legacy README")
       dir="${tgt%/*}"
@@ -487,7 +621,11 @@ for i in "${!rec_name[@]}"; do
       add_attention "$name"
       ;;
     absent)
-      echo "$name: absent; run $SCRIPT_DIR/project-init to write it"
+      if [ -n "${rec_alt[$i]}" ] && [ "$workflow_given" -eq 1 ]; then
+        echo "$name: absent; run $SCRIPT_DIR/project-init --workflow $workflow to write it"
+      else
+        echo "$name: absent; run $SCRIPT_DIR/project-init to write it"
+      fi
       add_attention "$name"
       ;;
   esac

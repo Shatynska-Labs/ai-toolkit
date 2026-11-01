@@ -383,3 +383,12 @@ From the requirement's definition of a shadowing file rather than a scenario: `s
 - **A change needed by two workstreams is listed in one** — `workstreams-seeded-one-workstream-per-change.sh`.
 - **Done when asks for an observable effect of the Goal** — `workstreams-seeded-done-when-step-done-shape.sh` and `workstreams-seeded-done-when-step-done-statement.sh`; the "every step is archived" assertions of `workstreams-seeded-done-when-shape.sh` and `workstreams-seeded-done-when-statement.sh` are retired.
 
+
+## add-a-direct-workflow-variant (103 delta scenarios)
+
+`add-a-direct-workflow-variant` adds a variant of the workflow fragment, a choice in `project-init` and `project-update`, and states `ship` per form in `session-workflow`. `openspec/changes/archive/*-add-a-direct-workflow-variant/test-plan.md` maps each scenario to its case: 93 covered and 10 uncovered, with the reason for each.
+
+- **The two fragments**: `workflow-fragments-differ-only-in-ship.sh`, `workflow-full-promotion-obligations.sh`, `workflow-full-unpromoted-not-archived.sh`.
+- **`project-init`'s choice**: `project-init-workflow-*.sh`, `project-init-help-names-workflow.sh`, `project-init-contrary-choice-reported.sh`, `project-init-both-variants-names-both.sh`, `project-init-holding-direct-never-receives-full.sh`, `project-init-direct-compared-with-own-fragment.sh`.
+- **`project-update`'s choice**: `project-update-choice-*.sh`, `project-update-direct-*.sh`, `project-update-both-variants-malformed.sh`, `project-update-workflow-unknown-blocks.sh`, `project-update-help-names-workflow.sh`.
+- **Existing cases**: those driving a workflow block below `2.0.0` gained `--workflow full` with their assertions unchanged, and `manifest-lists-three-blocks.sh` admits `alternative`, which the modified requirement allows.

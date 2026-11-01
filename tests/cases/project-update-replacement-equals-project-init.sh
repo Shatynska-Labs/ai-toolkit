@@ -239,7 +239,7 @@ compare() {  # LABEL ROOT PATHVALUE
   (cd "$init" && PATH="$p" bash "$root/scripts/project-init") >"$TESTDIR/init-$label.txt" 2>&1
   assert_exit 0 "$?" "fixture — project-init ($label)"
   seed_all "$upd" stale "$root"
-  (cd "$upd" && PATH="$p" bash "$root/scripts/project-update") >"$TESTDIR/upd-$label.txt" 2>&1
+  (cd "$upd" && PATH="$p" bash "$root/scripts/project-update" --workflow full) >"$TESTDIR/upd-$label.txt" 2>&1
   while read -r name target; do
     [ -n "$name" ] || continue
     n=$((n + 1))

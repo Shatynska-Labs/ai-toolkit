@@ -221,7 +221,7 @@ ln -s shared/rules.md "$work/$(target_of development-workflow)"
 git_fixture "$work"
 printf '\nA change not yet committed.\n' >> "$work/shared/rules.md"
 before="$(tree_sum "$work")"
-(cd "$work" && bash "$PROJECT_UPDATE") >"$TESTDIR/report.txt" 2>&1
+(cd "$work" && bash "$PROJECT_UPDATE" --workflow full) >"$TESTDIR/report.txt" 2>&1
 assert_outcome "$TESTDIR/report.txt" 2 "$?" BLOCKED
 assert_contains "$TESTDIR/report.txt" "shared/rules.md" "the report names the file the link resolves to"
 assert_tree "$work" "$before" "a link to a modified file"

@@ -221,7 +221,7 @@ printf '\nA staged line.\n' >> "$f"
 git -C "$work" add -A
 before="$(tree_sum "$work")"
 index_before="$(git -C "$work" diff --cached | md5sum)"
-(cd "$work" && bash "$PROJECT_UPDATE") >"$TESTDIR/report.txt" 2>&1
+(cd "$work" && bash "$PROJECT_UPDATE" --workflow full) >"$TESTDIR/report.txt" 2>&1
 assert_outcome "$TESTDIR/report.txt" 2 "$?" BLOCKED
 assert_tree "$work" "$before" "a staged legacy file"
 [ "$(git -C "$work" diff --cached | md5sum)" = "$index_before" ] || { echo "FAIL: the index changed" >&2; exit 1; }
