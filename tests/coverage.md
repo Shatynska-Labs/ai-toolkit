@@ -14,7 +14,7 @@ Most scenarios this suite cannot cover are of one kind, and it is worth naming o
 | The entry point is not buried inside a skill | Uncovered — static filesystem layout, not tool runtime behavior; verified by directory listing |
 | No Claude Code environment is present | Uncovered here — caller-side behavior (the resolution chain lives in the skill, not the script, per the spec's own split); verified manually by task 6.3 |
 | A caller cannot resolve any root | Uncovered here — caller-side; verified manually by task 6.3 |
-| The executable bit is not relied upon | Covered — `executable-bit-not-relied-upon.sh` (and implicitly, every other case invokes via `bash`) |
+| The executable bit is not relied upon | Covered — `executable-bit-not-relied-upon.sh` (and implicitly, every other case except `shipped-tools-are-executable.sh` invokes via `bash`) |
 | Fragments come from the copy the script belongs to | Covered — `self-location-conflicting-env.sh` |
 | Explicit root reaches the working tree through the caller | Uncovered here — caller-side; verified manually by task 6.3 |
 | A machine consumer can branch on the result | Covered — implicitly by every case's `assert_exit` against the documented codes |
@@ -364,7 +364,7 @@ From the requirement's definition of a shadowing file rather than a scenario: `s
 
 `update-managed-block` adds the `project-update` capability (46 scenarios) — `scripts/project-update`, which brings a project's blocks to the toolkit's current text — and modifies two `project-bootstrap` requirements (13 scenarios) so that `project-init` names it rather than calling reconciliation out of scope. `openspec/changes/archive/*-update-managed-block/test-plan.md` maps each scenario to its case.
 
-- **The tool's interface and outcomes**: `project-update-help.sh`, `-target-line.sh`, `-unusable-target-blocks.sh`, `-self-location.sh`, `-older-bash.sh`, `-fragment-missing-blocks.sh`, `-fragment-invalid-blocks.sh`, `-hash-command-absent-blocks.sh`, `-write-failure-reports-written.sh`, `-attention-edited.sh`, `-attention-order.sh`, `-no-attention.sh`.
+- **The tool's interface and outcomes**: `project-update-help.sh`, `-target-line.sh`, `-unusable-target-blocks.sh`, `-self-location.sh`, `-older-bash.sh`, `-fragment-missing-blocks.sh`, `-fragment-invalid-blocks.sh`, `-hash-command-absent-blocks.sh`, `-write-failure-reports-written.sh`, `-attention-edited.sh`, `-attention-order.sh`, `-no-attention.sh`. `shipped-tools-are-executable.sh` holds the requirement's "runnable" clause, which no scenario states.
 - **Classification**: `project-update-current-untouched.sh`, `-edited-at-current.sh`, `-version-numeric.sh`, `-ahead.sh`, `-malformed-two-markers.sh`, `-malformed-marker-form.sh`, `-malformed-no-closing.sh`.
 - **Replacement**: `project-update-stale-replaced.sh`, `-stale-surrounding-text.sh`, `-replacement-equals-project-init.sh`, `-presence-agrees-with-project-init.sh`, `-second-run.sh`, `-mode-kept.sh`, `-root-link-written-through.sh`.
 - **What is never written**: `project-update-edited-diff.sh`, `-target-link-left.sh`, `-edited-others-proceed.sh`, `-absent-workstreams-named.sh`, `-single-file-backlog-named.sh`.

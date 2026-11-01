@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Scenario: Every shipped tool runs directly, with no interpreter named.
+# Derived from the requirement below, not from a scenario in its specification;
+# it extends to every tool under scripts/ on AGENTS.md's "runnable directly".
 # Requirement: The update tool is a standalone executable beside project-init.
 # Change: update-managed-block (project-update, ADDED), found at its confirm.
 #
