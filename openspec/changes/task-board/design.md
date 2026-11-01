@@ -49,7 +49,7 @@ The function's order is checked by one test case per lookup and per precedence p
 
 ### 5. Parsing is by line, and tolerant
 
-- **Frontmatter:** `key: value` between the first two `---` lines, as `one-file-per-backlog-entry` fixed it. A flat form needs no YAML reader. A double-quoted value is unquoted and its `\"` and `\\\\` unescaped before escaping for the page.
+- **Frontmatter:** `key: value` between the first two `---` lines, as `one-file-per-backlog-entry` fixed it. A flat form needs no YAML reader. A double-quoted value is unquoted and its `\"` and `\\` unescaped before escaping for the page.
 - **Steps:** lines matching a number, a dot and a backticked name after `**Steps**:`, up to the first line starting `- **` or `##`.
 - **Proposal's workstream:** the first line starting `**Workstream**:`, taking its first backticked name. `none` or a line without one names no workstream.
 
