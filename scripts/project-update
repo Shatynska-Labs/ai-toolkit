@@ -38,6 +38,11 @@ as one of:
 Records left edited, ahead, malformed, unwritable, absent or single file are
 named on a final Attention: line.
 
+Beneath a block it replaces or converts, a run prints from rules/changelog
+what each version it crossed changed and what a major asks by hand. A patch
+prints nothing. A block converted, or crossing workflow variants, counts as
+held at 1.0.0 of the variant written. Nothing is printed again on a later run.
+
 A project holds one workflow, development-workflow or
 development-workflow-direct, and a run keeps the one its marker names. A
 workflow block older than the choice would be replaced, or converted, into
@@ -68,6 +73,7 @@ HELP
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TOOLKIT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 MANIFEST="$TOOLKIT_ROOT/rules/manifest"
+CHANGELOG="$TOOLKIT_ROOT/rules/changelog"
 
 # --- Argument parsing --------------------------------------------------------
 target=""
@@ -197,6 +203,67 @@ $manifest_records
 EOF_RECORDS
 
 [ "${#rec_name[@]}" -gt 0 ] || finish_blocked "manifest at $MANIFEST lists no block"
+
+# --- The changelog, as one `name<TAB>version<TAB>kind<TAB>text` line per fact. -
+[ -f "$CHANGELOG" ] || finish_blocked "changelog not found at $CHANGELOG"
+changelog_read="$(awk '
+  function done_record(   v) {
+    if (n == "" && ver == "" && c == "" && asks == 0) return
+    if (n !~ /^[a-z0-9][a-z0-9-]*$/) bad = "a record without a kebab-case name"
+    else if (ver !~ /^[0-9]+[.][0-9]+[.][0-9]+$/) bad = "record " n " without a version of the form MAJOR.MINOR.PATCH"
+    else {
+      split(ver, v, ".")
+      if (v[1] + 0 < 1 || (v[1] + 0 == 1 && v[2] + 0 == 0 && v[3] + 0 == 0)) bad = "record " n " " ver ", not above 1.0.0"
+      else if (c == "") bad = "record " n " " ver " without a changed line"
+      else if (v[2] + 0 == 0 && v[3] + 0 == 0 && asks == 0) bad = "record " n " " ver ", a major with no ask"
+      else if ((v[2] + 0 != 0 || v[3] + 0 != 0) && asks > 0) bad = "record " n " " ver ", a minor or patch with an ask"
+    }
+    if (bad != "") { print "BAD\t" bad; failed = 1; exit }
+    print n "\t" ver "\tchanged\t" c
+    for (a = 1; a <= asks; a++) print n "\t" ver "\task\t" ask[a]
+    n = ""; ver = ""; c = ""; asks = 0
+  }
+  /^---[[:space:]]*$/ { done_record(); next }
+  /^name:/ { sub(/^name:[[:space:]]*/, ""); n = $0; next }
+  /^version:/ { sub(/^version:[[:space:]]*/, ""); ver = $0; next }
+  /^changed:/ { sub(/^changed:[[:space:]]*/, ""); c = $0; next }
+  /^ask:/ { sub(/^ask:[[:space:]]*/, ""); ask[++asks] = $0; next }
+  END { if (!failed) done_record() }
+' "$CHANGELOG")"
+case "$changelog_read" in
+  BAD"$(printf '\t')"*|*"$(printf '\n')BAD$(printf '\t')"*)
+    finish_blocked "changelog at $CHANGELOG holds ${changelog_read##*BAD"$(printf '\t')"}"
+    ;;
+esac
+
+# Prints, indented, what the versions of fragment $1 above $2 and up to $3 ask,
+# oldest first: a minor's or major's records, and a line for a major none
+# records. A patch prints nothing.
+print_changelog() {
+  printf '%s\n' "$changelog_read" | awk -F '\t' -v name="$1" -v held="$2" -v written="$3" '
+    function key(ma, mi, pa) { return ma * 1000000000000 + mi * 1000000 + pa }
+    BEGIN {
+      split(held, h, "."); split(written, w, ".")
+      low = key(h[1], h[2], h[3]); high = key(w[1], w[2], w[3])
+    }
+    $1 == name {
+      split($2, v, ".")
+      k = key(v[1], v[2], v[3])
+      if (k <= low || k > high) next
+      recorded[v[1] + 0] = recorded[v[1] + 0] || (v[2] + 0 == 0 && v[3] + 0 == 0)
+      if (v[3] + 0 != 0) next
+      text = $0
+      sub(/^[^\t]*\t[^\t]*\t[^\t]*\t/, "", text)
+      seq++
+      printf "%d\t%d\t%d\t%d\t%s%s\n", v[1], v[2], v[3], seq, $2 ($3 == "ask" ? " by hand: " : ": "), text
+    }
+    END {
+      for (m = h[1] + 1; m <= w[1] + 0; m++) {
+        if (!recorded[m]) printf "%d\t0\t0\t0\t%d.0.0: no record of what this version asks\n", m, m
+      }
+    }
+  ' | sort -t "$(printf '\t')" -k1,1n -k2,2n -k3,3n -k4,4n | cut -f5- | sed 's/^/    /'
+}
 
 hash_cmd=""
 if command -v sha256sum >/dev/null 2>&1; then
@@ -557,6 +624,11 @@ for i in "${!rec_name[@]}"; do
       else
         echo "$name: replaced (version $have → $version)"
       fi
+      if [ -n "$from" ]; then
+        print_changelog "$name" 1.0.0 "$version"
+      else
+        print_changelog "$name" "$have" "$version"
+      fi
       ;;
     "legacy block")
       replace_block "$tf" "${rec_open[$i]}" "${rec_close[$i]}" "$i" \
@@ -567,6 +639,7 @@ for i in "${!rec_name[@]}"; do
       else
         echo "$name: converted from version $have to $version; not checked for edits, review with git diff"
       fi
+      print_changelog "$name" 1.0.0 "$version"
       ;;
     "legacy README")
       dir="${tgt%/*}"
@@ -591,6 +664,7 @@ for i in "${!rec_name[@]}"; do
       rm -f "$target/$dir/README.md" 2>/dev/null || finish_error "$name: $dir/README.md could not be removed"
       note_touched "$dir/README.md (removed: git restore returns it)"
       echo "$name: converted from $dir/README.md to $tgt (version $version), README.md removed; not checked for edits, review with git diff"
+      print_changelog "$name" 1.0.0 "$version"
       ;;
     edited)
       echo "$name: edited inside the markers (version $have, toolkit carries $version); not replaced"

@@ -397,3 +397,8 @@ From the requirement's definition of a shadowing file rather than a scenario: `s
 
 `report-the-board-as-json` adds `--json` to the `task-board` capability (25 delta scenarios). Its 43 `task-board-json-*.sh` cases and `task-board-format-not-inherited.sh` and the existing `task-board-*` cases cover them, as `openspec/changes/archive/*-report-the-board-as-json/test-plan.md` maps.
 
+`record-what-each-version-asks` adds `rules/changelog` and what `scripts/project-update` prints from it, a record owed by every version rise, and a second non-fragment file in `rules/`. `test-plan.md` in the change maps each scenario.
+
+- **What a run prints**: the `project-update-changelog-*.sh` cases, including `-printed-before-a-failure`, which holds design decision 3 and no scenario.
+- **The record**: `rules-changelog-version-rise-recorded.sh`, `rules-changelog-second-non-fragment.sh`; `rules-manifest-only-non-fragment.sh` is revised to allow `changelog`.
+- **Uncovered**: the run under bash 3.2 of the new lines, where no bash 3.2 is installed; the wording of the shipped records, which the operator reviewed in the plan.

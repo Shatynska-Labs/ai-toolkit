@@ -85,6 +85,9 @@ project-init [--tools <value>] [--workflow full|direct] [--help|-h] [TARGET_DIR]
 Target: <absolute path>
 <name>: current (version X)
 <name>: replaced (version X → Y)
+    <version>: <changed>   [each minor and major crossed, oldest first, beneath a replaced or converted block]
+    <version> by hand: <ask>   [each ask of a major, in the record's order]
+    <M>.0.0: no record of what this version asks   [a major crossed with no record]
 <name>: converted from version vN to Y; not checked for edits, review with git diff
 <name>: converted from <dir>/README.md to <dir>/AGENTS.md (version Y), README.md removed; not checked for edits, review with git diff
 <name>: edited inside the markers (version X, toolkit carries Y); not replaced

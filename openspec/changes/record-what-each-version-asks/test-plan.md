@@ -174,3 +174,9 @@ No REMOVED or RENAMED delta exists.
 | `changelog_records`, `version_above` | `rules-changelog-version-rise-recorded` | Reader of the changelog, and numeric comparison | That case | None | New | `tests/lib.sh` if the tool's cases come to need them |
 | `check_rules`, `expect`, `mkfx` | both `rules-changelog-*` cases | The static check and its fixtures | Those | None | Shape from `rules-manifest-only-non-fragment` | None: a case's own |
 | `record`, `with` | `rules-changelog-version-rise-recorded` | Changelog fixture builders | That case | None | New | None: a case's own |
+
+## Dispositions at apply
+
+Every entry under *Missing shared arrangement* is **kept** local. It repeats what the existing `project-update-*` cases declare locally, and promoting that shared family is a change of its own across all of them rather than work of this one.
+
+`rules-manifest-only-non-fragment` was revised, as task 1.2 states, to allow `changelog`; it and `rules-changelog-second-non-fragment` now overlap, and the revised case keeps the original's fixtures.
