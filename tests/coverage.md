@@ -394,3 +394,6 @@ From the requirement's definition of a shadowing file rather than a scenario: `s
 - **Existing cases**: those driving a workflow block below `2.0.0` gained `--workflow full` with their assertions unchanged, and `manifest-lists-three-blocks.sh` admits `alternative`, which the modified requirement allows.
 
 `task-board` adds the `task-board` capability (66 scenarios) — `scripts/task-board`, which writes a project's board as one HTML page. Its 156 `task-board-*.sh` cases cover every scenario, and `openspec/changes/archive/*-task-board/test-plan.md` maps each to its case, with what stays uncovered: a real browser's click, the page's themes, the half-written-page guarantee on a successful run, and the ten-second goal and parity with the `backlog` skill, which are checked by hand.
+
+`report-the-board-as-json` adds `--json` to the `task-board` capability (25 delta scenarios). Its 43 `task-board-json-*.sh` cases and `task-board-format-not-inherited.sh` and the existing `task-board-*` cases cover them, as `openspec/changes/archive/*-report-the-board-as-json/test-plan.md` maps.
+
