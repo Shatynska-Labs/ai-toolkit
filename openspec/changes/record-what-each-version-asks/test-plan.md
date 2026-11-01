@@ -180,3 +180,5 @@ No REMOVED or RENAMED delta exists.
 Every entry under *Missing shared arrangement* is **kept** local. It repeats what the existing `project-update-*` cases declare locally, and promoting that shared family is a change of its own across all of them rather than work of this one.
 
 `rules-manifest-only-non-fragment` was revised, as task 1.2 states, to allow `changelog`; it and `rules-changelog-second-non-fragment` now overlap, and the revised case keeps the original's fixtures.
+
+`project-update-changelog-printed-after-a-partial-conversion` was added at `build`'s review, from its finding that a README conversion failing after writing its block lost the version's lines.

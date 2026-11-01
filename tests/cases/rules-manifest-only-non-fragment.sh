@@ -5,11 +5,11 @@
 # by record-what-each-version-asks, under which `changelog` is a second such file.
 #
 # SPECIFIED: listing rules/, every .md file other than README.md is a
-# fragment declaring its `kind`, and `manifest` is the one file that is
-# neither: no frontmatter, no .md extension.
-# DERIVED (operationalisation): "neither" is read as rules/ holding exactly
-# one entry that is not a .md file, `manifest`, a regular file whose first
-# line is not `---`.
+# fragment declaring its `kind`, and `manifest` and `changelog` are the only
+# files that are neither: no frontmatter, no .md extension.
+# DERIVED (operationalisation): "neither" is read as rules/ holding no entry
+# that is not a .md file other than these two, `manifest` being a regular file
+# whose first line is not `---`.
 #
 # Static read (third situation); the check runs over fixture directories
 # first. Red until task 1.2 lands (state 2: rules/manifest is absent).

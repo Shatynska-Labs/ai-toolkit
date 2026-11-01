@@ -564,7 +564,11 @@ attention=""
 add_attention() {
   if [ -z "$attention" ]; then attention="$1"; else attention="$attention, $1"; fi
 }
+# A conversion's block is written before its directory's other steps, so a
+# failure in them still owes what the version asks: the next run reads current.
+written_asks=""
 finish_error() {
+  [ -z "$written_asks" ] || printf '%s\n' "$written_asks"
   printf '%s' "$import_lines"
   if [ -n "$touched" ]; then
     echo "Written before the failure:"
@@ -651,6 +655,9 @@ for i in "${!rec_name[@]}"; do
         build_block "$i" > "$tf" 2>/dev/null || { rm -f "$tf" 2>/dev/null; finish_error "$name: $tgt could not be written"; }
         note_touched "$tgt (created: remove it)"
       fi
+      written_asks="$(print_changelog "$name" 1.0.0 "$version")"
+      [ -z "$written_asks" ] || written_asks="$name: block written at version $version
+$written_asks"
       dir_claude="$target/$dir/CLAUDE.md"
       if [ ! -e "$dir_claude" ] && [ ! -L "$dir_claude" ]; then
         printf '%s\n' '@AGENTS.md' > "$dir_claude" 2>/dev/null || finish_error "$name: $dir/CLAUDE.md could not be written"
@@ -664,6 +671,7 @@ for i in "${!rec_name[@]}"; do
       rm -f "$target/$dir/README.md" 2>/dev/null || finish_error "$name: $dir/README.md could not be removed"
       note_touched "$dir/README.md (removed: git restore returns it)"
       echo "$name: converted from $dir/README.md to $tgt (version $version), README.md removed; not checked for edits, review with git diff"
+      written_asks=""
       print_changelog "$name" 1.0.0 "$version"
       ;;
     edited)
