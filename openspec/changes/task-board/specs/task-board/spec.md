@@ -178,6 +178,11 @@ The page SHALL begin with a section listing every task whose status is in flight
 - **WHEN** a branch matching no other task exists, holding no proposal that names an open workstream
 - **THEN** the section lists it as having no workstream
 
+#### Scenario: A step of two workstreams in flight
+
+- **WHEN** a step two workstreams list is in flight
+- **THEN** its line names both workstreams
+
 #### Scenario: Nothing in flight
 
 - **WHEN** no task has the status in flight
@@ -194,9 +199,9 @@ A task in flight SHALL show a stage derived from the repository, and the first o
 5. `plan:drafting`, where its change has a `proposal.md`;
 6. `plan:exploring` otherwise.
 
-These SHALL be state names `session-workflow` fixes, the nearest the repository shows, so `plan:drafting` also covers a plan under review. The stage SHALL NOT depend on a review's verdict, which the repository does not hold, and the page SHALL say that a session's own status report is finer than this one.
+Every stage but unknown SHALL be a state name `session-workflow` fixes, the nearest the repository shows, so `plan:drafting` also covers a plan under review. The stage SHALL NOT depend on a review's verdict, which the repository does not hold, and the page SHALL say that a session's own status report is finer than this one.
 
-A change's files SHALL be read from the first of the local branch of its name, the remote's, and the trunk that holds a reference to them.  Every stage SHALL carry the unchecked mark where the forge was not read in full, since the first two depend on it.
+A change's files SHALL be read from the first of the local branch of its name, the remote's where `git ls-remote` listed it, and the trunk that holds the file. Every stage SHALL carry the unchecked mark where the forge was not read in full, since the first two depend on it.
 
 #### Scenario: A merged change not yet archived
 
@@ -220,7 +225,7 @@ A change's files SHALL be read from the first of the local branch of its name, t
 
 #### Scenario: A branch with no proposal
 
-- **WHEN** the branch holds no change directory of its name
+- **WHEN** the branch holds no change directory of its name, and neither does the trunk
 - **THEN** its stage is `plan:exploring`
 
 #### Scenario: A remote branch with no reference
@@ -254,7 +259,7 @@ In the section of what is in flight, each task SHALL state which of these exist 
 
 ### Requirement: Tasks are listed in columns
 
-Every list of tasks inside a group SHALL have the same columns, with a heading on each: status, task, last commit, and a control opening the entry's body. The section of what is in flight SHALL be the one exception: its status is the same on every row, so its columns are task, stage, last commit and workstream, each with a heading, and its rows open no body. Rows without a body SHALL leave that cell empty and keep the columns aligned. The last commit SHALL show only an elapsed time, such as `6 d`, measured when the page was written: the branch's last commit where the task has a branch with commits of its own, otherwise the last commit on the trunk touching its change directory or entry. A task with neither SHALL leave the cell empty. A task with an entry in a group's list SHALL open by a click anywhere on its row. The list of tasks in no workstream SHALL put tasks in flight first, then the most recent, then parked.
+Every list of tasks inside a group SHALL have the same columns, with a heading on each: status, task, last commit, and a control opening the entry's body. The section of what is in flight SHALL be the one exception: its status is the same on every row, so its columns are task, stage, last commit and workstream, each with a heading, and its rows open no body. Rows without a body SHALL leave that cell empty and keep the columns aligned. The last commit SHALL show only an elapsed time, such as `6 d`, measured when the page was written: the branch's last commit where the task has a branch `git ls-remote` or the local repository lists with commits of its own, otherwise the last commit on the trunk touching its change directory or entry. A task with neither SHALL leave the cell empty. A task with an entry in a group's list SHALL open by a click anywhere on its row. The list of tasks in no workstream SHALL put tasks in flight first, then the others by most recent, an entry still on the trunk after its change finished among them as done, then parked.
 
 #### Scenario: A branch's commit
 

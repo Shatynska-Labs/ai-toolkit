@@ -15,7 +15,7 @@ The status lookups exist today only as prose in `rules/workstreams.md`, reaching
 
 - A checker for malformed frontmatter. The board shows what it can read and warns on the rest; the workstream's open question stays open.
 - Sorting, filtering or searching on the page. They need scripting, and the page is short enough to read and search in the browser.
-- Showing done work beyond the steps of open workstreams.
+- Showing done work beyond the steps of open workstreams, except an entry still on the trunk, which shows as done.
 - Adding the `summary` field to the rules, which is `give-tasks-a-summary`. The tool reads it where present and shows nothing where absent.
 - Changing the `backlog` skill or the workstream rules.
 
@@ -65,7 +65,7 @@ A branch or open pull request becomes a task only where its name is one kebab-ca
 
 It is rendered from the same records as the groups, filtered by status, so it can show no status the groups do not. Links are in-page anchors, needing no script.
 
-A task in flight is the one place the tool reads beyond the trunk, since a change lives on its branch until its first pull request merges: `git show <ref>:openspec/changes/<name>/proposal.md` and `tasks.md` for each such task, a handful of calls. The proposal gives its placement and the tasks its stage. This differs from the skill's trunk-only list of unplaced changes, deliberately: the session's status row reads the proposal on the branch too. Status stays read from the trunk, and remote branches' existence from `ls-remote`, so a stale remote-tracking reference can affect only a stage, never whether a task is in flight.
+A task in flight is the one place the tool reads beyond the trunk, since a change lives on its branch until its first pull request merges: `git show <ref>:openspec/changes/<name>/proposal.md` and `tasks.md` for each such task, a handful of calls. The proposal gives its placement and the tasks its stage. This differs from the skill's trunk-only list of unplaced changes, deliberately: the session's status row reads the proposal on the branch too. Status stays read from the trunk, and remote branches' existence from `ls-remote`, and a remote-tracking reference is read only where `ls-remote` listed the branch, so a stale one affects nothing on the page.
 
 The workflow's states such as `plan:reviewing` are not in the repository, so the tool shows the nearest state `session-workflow` names, which that specification tolerates being one step off. `plan:drafting` therefore also covers a plan under review, and a fix branch, which skips `plan`, reads `plan:exploring`. *Alternative:* recording the stage in a file. Rejected: status is derived and never stored.
 
