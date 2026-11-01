@@ -422,7 +422,7 @@ Not applicable: the change carries only `ADDED` deltas, and no `MODIFIED` or `RE
 
 ## Cases added by code review
 
-The review found defects no derived case reached; each has a case written with its fix, by the implementer rather than the test author: `task-board-target-in-a-subdirectory`, `task-board-export-ignore-does-not-empty-the-board`, `task-board-report-target-does-not-exist`, `task-board-report-output-is-a-directory`, `task-board-flight-change-of-any-name`, `task-board-flight-step-of-any-name`, `task-board-stage-mark-in-a-group`, `task-board-proposal-workstream-none`, `task-board-goal-is-the-first`, `task-board-commit-archived-name-of-digits`.
+The review found defects no derived case reached; each has a case written with its fix, by the implementer rather than the test author: `task-board-target-in-a-subdirectory`, `task-board-export-ignore-does-not-empty-the-board`, `task-board-report-target-does-not-exist`, `task-board-report-output-is-a-directory`, `task-board-flight-change-of-any-name`, `task-board-flight-step-of-any-name`, `task-board-stage-mark-in-a-group`, `task-board-proposal-workstream-none`, `task-board-goal-is-the-first`, `task-board-commit-archived-name-of-digits`, `task-board-default-output-from-a-subdirectory`, `task-board-report-bare-repository`, `task-board-branch-not-a-task-outside-the-steps`, `task-board-commit-of-an-unusual-name`.
 
 ## Findings in the plan
 

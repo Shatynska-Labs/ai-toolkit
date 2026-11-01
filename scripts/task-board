@@ -85,6 +85,7 @@ command -v git >/dev/null 2>&1 || block "git is not installed"
 g rev-parse --git-dir >/dev/null 2>&1 || block "the target is not a Git repository"
 # Every path below is from the top of the repository, wherever the target sits in it.
 ROOT="$(g rev-parse --show-toplevel 2>/dev/null)" || ROOT=""
+[ -n "$ROOT" ] || block "the target has no working tree, as in a bare repository"
 
 # --- The trunk. --------------------------------------------------------------
 FETCHED=yes
@@ -124,7 +125,7 @@ fi
 
 # --- The page's path. --------------------------------------------------------
 COMMON="$(g rev-parse --git-common-dir)"
-case "$COMMON" in /*) ;; *) COMMON="$TARGET/$COMMON" ;; esac
+case "$COMMON" in /*) ;; *) COMMON="$ROOT/$COMMON" ;; esac
 PROJECT="$(basename "$(cd "$COMMON/.." && pwd -P)")"
 [ -n "$OUTPUT" ] || OUTPUT="${TMPDIR:-/tmp}/task-board-$PROJECT.html"
 
@@ -191,7 +192,7 @@ awk -F'\t' '$2 == "OPEN" { print $1 }' "$WORK/prs" | not_trunk | LC_ALL=C sort -
 awk -F'\t' '$2 == "MERGED" { print $1 }' "$WORK/prs" | LC_ALL=C sort -u > "$WORK/prs-merged"
 
 # --- The last commit of each name. -------------------------------------------
-g log --format='@@%ct' --name-only "$TRUNK" -- docs/backlog openspec/changes | awk '
+g -c core.quotePath=false log --format='@@%ct' --name-only "$TRUNK" -- docs/backlog openspec/changes | awk '
   /^@@/ { t = substr($0, 3); next }
   /^docs\/backlog\/[^\/]+\.md$/ { n = $0; sub(/^docs\/backlog\//, "", n); sub(/\.md$/, "", n) }
   /^openspec\/changes\/archive\/[^\/]+\// { n = $0; sub(/^openspec\/changes\/archive\//, "", n); sub(/\/.*/, "", n); sub(/^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]-/, "", n) }
@@ -240,8 +241,13 @@ AWK
 # A branch or pull request is a task only under a one-word kebab-case name; a
 # change, an entry or a step is one whatever its name.
 LC_ALL=C sort -u "$WORK/branches" "$WORK/prs-open" | grep -xE '[a-z0-9]+(-[a-z0-9]+)*' > "$WORK/kebab"
-# shellcheck disable=SC2016 # the backticks are the text being matched
-find "$TREE/docs/workstreams" -mindepth 1 -maxdepth 1 -type f -name '*.md' -exec sed -n 's/^[0-9][0-9]*\. `\([^`]*\)`.*/\1/p' {} + 2>/dev/null > "$WORK/steps"
+while IFS= read -r name; do
+  awk '
+    /^(- )?\*\*Steps\*\*/ { on = 1; next }
+    on && /^(- \*\*|## )/ { on = 0 }
+    on && /^[0-9]+\. `[^`]+`/ { n = $0; sub(/^[0-9]+\. `/, "", n); sub(/`.*/, "", n); print n }
+  ' "$TREE/docs/workstreams/$name.md"
+done < "$WORK/workstreams" > "$WORK/steps"
 LC_ALL=C sort -u "$WORK/open" "$WORK/entries" "$WORK/steps" "$WORK/kebab" \
   | awk -f "$WORK/common.awk" -f "$WORK/flight.awk" > "$WORK/flight"
 
