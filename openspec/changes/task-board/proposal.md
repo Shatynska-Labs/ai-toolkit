@@ -2,7 +2,7 @@
 
 A project's tasks are spread across `docs/workstreams/`, `docs/backlog/`, `openspec/changes/`, branches and pull requests. The `backlog` skill's **workstreams** operation reports them in a session, one answer at a time, but nothing shows them all at once, so with parallel sessions the operator holds the picture in memory. commerce-ops has 18 workstreams and 101 entries.
 
-**Workstream**: `see-a-projects-tasks`, its third step. Its Decisions fix the board's scope and form: one project, grouped by workstream, read-only, a bash tool writing one HTML file.
+**Workstream**: `see-a-projects-tasks`, its second step. Its Decisions fix the board's scope and form: one project, grouped by workstream, read-only, a bash tool writing one HTML file.
 
 ## What Changes
 
