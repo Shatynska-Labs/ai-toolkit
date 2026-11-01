@@ -2,14 +2,15 @@
 
 **Goal**: the operator sees all of one project's tasks on one board read from its repository, grouped by workstream with each step's status, with the tasks no workstream holds beside them, and with what is in work first, each change shown with its stage and against its workstream, so that the project's work stays findable without holding it in memory.
 
-**Done when**: this library ships a tool that, run in a project on the directory shape, writes one HTML file opening with every task in flight, its stage and the workstream it belongs to, then showing each open workstream with its steps in order and each step's status, a step with no backlog entry among them as planned, and the entries naming no workstream in a group of their own; and a step's status on the board matches what the `backlog` skill's **workstreams** operation reports for it.
+**Done when**: this library ships a tool that, run in a project on the directory shape, writes one HTML file opening with every task in flight, its stage and the workstream it belongs to, then showing each open workstream with its steps in order and each step's status, a step with no backlog entry among them as planned, and the entries naming no workstream in a group of their own; and a step's status on the board matches what the `backlog` skill's **workstreams** operation reports for it; and every step is done, since opening the board from a session, summaries and grouping are wanted whatever the page shows.
 
 **Steps**:
 
 1. `one-file-per-backlog-entry` — the backlog becomes one file per entry with its values as frontmatter, with a converter for the single-file shape.
 2. `task-board` — a read-only tool that writes one self-contained HTML file for one project: what is in flight, its workstreams with their steps and statuses, and its entries that no workstream holds.
-3. `give-tasks-a-summary` — backlog entries and workstreams gain an optional one-line summary, expected of new ones, for a list to show.
-4. `group-tasks-into-workstreams` — the `backlog` skill groups entries that have no workstream into a new or existing workstream, and moves a task from one workstream to another, so the board's contents are changed by asking in a session.
+3. `open-the-board-from-a-session` — asking in a session shows the board, through a `task-board` skill and an `--open` flag that finds the system's opener.
+4. `give-tasks-a-summary` — backlog entries and workstreams gain an optional one-line summary, expected of new ones, for a list to show.
+5. `group-tasks-into-workstreams` — the `backlog` skill groups entries that have no workstream into a new or existing workstream, and moves a task from one workstream to another, so the board's contents are changed by asking in a session.
 
 - **Not in scope**: a board over several projects; a local server, any page that updates itself, or editing from the page; workstreams nested in workstreams; a tracker outside the repository (ClickUp, Linear, GitHub Projects), two-way or not; storing status in an entry; migrating each consuming project, which each does in a pull request of its own.
 - **Open questions**: whether a checker refusing malformed frontmatter ships, and whether on its own or inside the board.

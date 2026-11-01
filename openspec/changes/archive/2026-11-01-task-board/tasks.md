@@ -21,4 +21,4 @@
 
 - [x] 4.1 Add the tool and its report contract to `tests/README.md`, and its cases to `tests/coverage.md`, and verify the contract matches the script's output
 - [x] 4.2 Run ShellCheck on `scripts/task-board` and `bash tests/run.sh`, and verify both are clean
-- [ ] 4.3 Run the tool on this repository and on commerce-ops, and verify each step's status matches the `backlog` skill's **workstreams** operation, that no entry is missing, and that commerce-ops takes under ten seconds
+- [x] 4.3 Run the tool on this repository and on commerce-ops, and verify each step's status matches the `backlog` skill's **workstreams** operation, that no entry is missing, and that commerce-ops takes under ten seconds
