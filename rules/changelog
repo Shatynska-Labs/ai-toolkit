@@ -1,0 +1,11 @@
+name: development-workflow
+version: 2.0.0
+changed: `ship` gains a staging deploy on merging and a production deploy reached only by a promotion the operator triggers, followed by a smoke check, and a change is archived once it is in production.
+ask: Provide a staging deploy triggered by merging, a production deploy triggered deliberately, and a smoke check; these rules cannot be followed without them.
+ask: Where this project keeps one deploy by merging, run project-update --workflow direct instead.
+---
+name: workstreams
+version: 2.0.0
+changed: A step taken as a fix is done once a pull request from a branch of its name has merged, a change is a step of one workstream only, and "every step is done", beside a Done when's effect, replaces "every step is archived".
+ask: Where one change is a step of two workstreams, keep it in one, and name it in `waits_on` of the backlog entry of the other's step that cannot start before it, recording that entry where there is none.
+ask: Where an open workstream's Done when still says "every step is archived", change it to "every step is done", since a step taken as a fix is never archived.

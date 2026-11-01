@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 # Scenario: The manifest is the one file in rules/ that is not a fragment.
 # Requirement: One directory level for every asset type.
-# Change: list-what-a-project-receives (toolkit-structure, MODIFIED).
+# Change: list-what-a-project-receives (toolkit-structure, MODIFIED); revised
+# by record-what-each-version-asks, under which `changelog` is a second such file.
 #
 # SPECIFIED: listing rules/, every .md file other than README.md is a
-# fragment declaring its `kind`, and `manifest` is the one file that is
-# neither: no frontmatter, no .md extension.
-# DERIVED (operationalisation): "neither" is read as rules/ holding exactly
-# one entry that is not a .md file, `manifest`, a regular file whose first
-# line is not `---`.
+# fragment declaring its `kind`, and `manifest` and `changelog` are the only
+# files that are neither: no frontmatter, no .md extension.
+# DERIVED (operationalisation): "neither" is read as rules/ holding no entry
+# that is not a .md file other than these two, `manifest` being a regular file
+# whose first line is not `---`.
 #
 # Static read (third situation); the check runs over fixture directories
 # first. Red until task 1.2 lands (state 2: rules/manifest is absent).
@@ -35,7 +36,7 @@ check_rules() {
   local dir="$1" f n others
   [ -f "$dir/manifest" ] || { echo "[manifest] rules/manifest is absent" >&2; return 1; }
   [ "$(head -n 1 "$dir/manifest")" != "---" ] || { echo "[no-frontmatter] rules/manifest opens with frontmatter" >&2; return 1; }
-  others="$(cd "$dir" && for n in * .*; do case "$n" in .|..|'*'|'.*'|*.md|manifest) ;; *) printf '%s ' "$n" ;; esac; done)"
+  others="$(cd "$dir" && for n in * .*; do case "$n" in .|..|'*'|'.*'|*.md|manifest|changelog) ;; *) printf '%s ' "$n" ;; esac; done)"
   [ -z "$others" ] || { echo "[only-one] rules/ holds another non-.md entry: $others" >&2; return 1; }
   for f in "$dir"/*.md; do
     [ "${f##*/}" = README.md ] && continue
