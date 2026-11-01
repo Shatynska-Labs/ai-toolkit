@@ -11,8 +11,8 @@
 
 ## 3. Rendering
 
-- [ ] 3.1 Render the page and verify the cases pass for active and other workstreams, nothing active, step order, the columns with and without a body, last commit from a branch, level with the trunk and absent, summary present and absent, Goal, no archived workstream, priority, `waits_on`, entry body, the open group in a project with no workstream, and the absence of any external reference or script
-- [ ] 3.2 Render the in-flight section first, and on every task what exists under its name, and verify the cases pass for a change in a workstream, a change with none, nothing in flight, one name in three concepts, and a change with no entry
+- [ ] 3.1 Render the page and verify the cases pass for active and other workstreams, nothing active, step order, the page's stated moment, the columns with and without a body, a click on a row, the order of tasks in no workstream, the in-flight count including unplaced tasks, the Done when on opening, last commit from a branch, level with the trunk and absent, summary present, quoted with an escape, and absent, Goal, no archived workstream, priority, `waits_on`, entry body, the open group in a project with no workstream, and the absence of any external reference or script
+- [ ] 3.2 Render the in-flight section first, newest first with its own columns, and on every task what exists under its name, and verify the cases pass for its ordering and columns, a summary shown there, a change in a workstream, a change with none, nothing in flight, one name in three concepts, and a change with no entry
 - [ ] 3.3 Derive each in-flight task's stage from its branch or the trunk and verify a case passes for each stage, including the unknown stage, a remote-only branch, an open and a merged pull request of one name, and the page's note that a session's report is finer
 - [ ] 3.4 Escape every repository value and verify the case for markup in an entry passes
 - [ ] 3.5 State the stale trunk, no remote, unlisted remote branches and unreached forge on the page and in the report, with the warning count in the report, and verify the unchecked mark appears only where the forge was not read in full

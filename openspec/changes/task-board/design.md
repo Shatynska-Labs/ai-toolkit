@@ -49,7 +49,7 @@ The function's order is checked by one test case per lookup and per precedence p
 
 ### 5. Parsing is by line, and tolerant
 
-- **Frontmatter:** `key: value` between the first two `---` lines, as `one-file-per-backlog-entry` fixed it. A flat form needs no YAML reader.
+- **Frontmatter:** `key: value` between the first two `---` lines, as `one-file-per-backlog-entry` fixed it. A flat form needs no YAML reader. A double-quoted value is unquoted and its `\"` and `\\\\` unescaped before escaping for the page.
 - **Steps:** lines matching a number, a dot and a backticked name after `**Steps**:`, up to the first line starting `- **` or `##`.
 - **Proposal's workstream:** the first line starting `**Workstream**:`, taking its first backticked name. `none` or a line without one names no workstream.
 
@@ -57,7 +57,7 @@ A value that cannot be read never stops the run: the task is shown and warned on
 
 ### 6. Branches as tasks
 
-A branch or open pull request becomes a task only where its name is one kebab-case word, is not the trunk's, and its status is in flight. Branch names here are change names, so the `/` that automation uses (`dependabot/...`, `renovate/...`) is the filter, with no list of tools to keep. Requiring in flight keeps out a merged branch left undeleted, which reads as done and is not work.
+A branch or open pull request becomes a task only where its name is one kebab-case word, is not the trunk's, is not `main` or `master`, and its status is in flight. Branch names here are change names, so the `/` that automation uses (`dependabot/...`, `renovate/...`) is the filter, with no list of tools to keep. Requiring in flight keeps out a merged branch left undeleted, which reads as done and is not work.
 
 *Alternative:* a configurable ignore pattern. Rejected: nothing yet needs it, and the tool has no configuration.
 
@@ -71,9 +71,9 @@ The workflow's states such as `plan:reviewing` are not in the repository, so the
 
 ### 8. Layout, agreed from a prototype
 
-`prototype/` in this change holds the generator run on this repository and commerce-ops, and the page the operator accepted: status, task, last commit and details columns, active workstreams first, the rest in one collapsed row. Run on commerce-ops it took about nine seconds with its 838 pull requests. It is a reference for `apply`, not code to port: it is Python, and it is not shipped.
+`prototype/` in this change holds the generator run on this repository and commerce-ops, and the page the operator accepted: status, task, last commit and details columns in a group's lists, task, stage, last commit and workstream in the section of what is in flight, where a status column would repeat one value, active workstreams first, the rest in one collapsed row. Run on commerce-ops it took about nine seconds with its 838 pull requests. It is a reference for `apply`, not code to port: it is Python, and it is not shipped.
 
-The last commit comes from one `git log --name-only` over the trunk, mapped to names, and one `for-each-ref`, so its cost does not grow with the tasks. A branch at the trunk's tip counts as having no commit of its own, or a new branch would read as just touched.
+The last commit comes from one `git log --name-only` over the trunk, mapped to names, and one `for-each-ref`, so its cost does not grow with the tasks. A branch counts only where `git for-each-ref --no-merged <trunk>` lists it, so a branch at or behind the trunk has no commit of its own and a new branch does not read as just touched.
 
 ### 9. HTML from a heredoc, collapsing with `<details>`
 

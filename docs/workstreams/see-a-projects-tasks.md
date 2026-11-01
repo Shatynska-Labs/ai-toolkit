@@ -29,6 +29,6 @@
 
 **6. Changes, workstreams and backlog entries are one view.** The operator, 2026-11-01, with `task-board`. A name is one task whichever of these it appears in, and the page opens with what is in flight, at what stage, and how each relates to a workstream, so the three need no separate reading. The stage is what the repository shows, and read from a change's branch, since its progress lives there.
 
-**7. A summary is its own field, and nothing stands in for it.** The operator, 2026-11-01. A Goal cut to two lines read badly on real data, and first sentences of entries are too long, so a task with no summary shows its name alone. Every entity should have one; existing ones stay valid without it, so no project must fill them in at once.
+**7. A summary is its own field, and nothing stands in for it.** The operator, 2026-11-01. A Goal cut to two lines read badly on real data, and first sentences of entries are too long, so a task with no summary shows no summary: an entry its name, a step its name and description. Every entity should have one; existing ones stay valid without it, so no project must fill them in at once.
 
 **8. The page leads with what is active.** The operator, 2026-11-01. commerce-ops has 18 workstreams with 4 active, so the rest collapse into one row.

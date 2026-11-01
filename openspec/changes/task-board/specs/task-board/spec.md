@@ -6,7 +6,7 @@ Shows the operator all of one project's tasks on one page, grouped by workstream
 
 ### Requirement: The tool writes one self-contained page for one project
 
-`scripts/task-board` SHALL take a project's directory as its one optional argument, defaulting to the current working directory, and write one HTML file for that project. The file SHALL load nothing from outside itself and work with scripting disabled. It SHALL be written to the path given by `--output`, or otherwise to a file in the system's temporary directory named for the project's main working tree, so every working tree of a project shares one page. The tool SHALL print the file's path. It SHALL accept `--help`, which prints usage and writes nothing.
+`scripts/task-board` SHALL take a project's directory as its one optional argument, defaulting to the current working directory, and write one HTML file for that project. The file SHALL load nothing from outside itself and work with scripting disabled. It SHALL state when it was written and from which trunk commit, since its elapsed times are measured from then. It SHALL be written to the path given by `--output`, or otherwise to a file in the system's temporary directory named for the project's main working tree, so every working tree of a project shares one page. The tool SHALL print the file's path. It SHALL accept `--help`, which prints usage and writes nothing.
 
 #### Scenario: Default output
 
@@ -17,6 +17,11 @@ Shows the operator all of one project's tasks on one page, grouped by workstream
 
 - **WHEN** the tool runs with `--output <path>`
 - **THEN** the page is written to that path
+
+#### Scenario: The page states its moment
+
+- **WHEN** the page is written
+- **THEN** it shows the time of the run and the trunk commit read
 
 #### Scenario: The page stands alone
 
@@ -58,7 +63,7 @@ The tool SHALL fetch from the remote named `origin`, and read `docs/backlog/`, `
 
 ### Requirement: Open workstreams are the board's groups
 
-The page SHALL show one group for each open workstream, a `.md` file directly in `docs/workstreams/` other than `AGENTS.md`, `CLAUDE.md` and `README.md`. A workstream is active where any task placed in it is in flight. Active workstreams SHALL be listed first, each a closed row showing its name, its summary where it has one, and its progress as one mark per step with the count done and in work. Every other open workstream SHALL be listed the same way inside one collapsed row. Where no workstream is active, the page SHALL say so. Opening a row SHALL show the workstream's Goal, its Done when, and its steps in the order the file lists them, each with its name, its status and the description the file gives it. Archived workstreams SHALL NOT be shown. A workstream file whose steps cannot be read SHALL still appear, with a warning on its group, and a numbered line among its steps that cannot be read SHALL be warned on rather than dropped silently.
+The page SHALL show one group for each open workstream, a `.md` file directly in `docs/workstreams/` other than `AGENTS.md`, `CLAUDE.md` and `README.md`. A workstream is active where any task placed in it is in flight. Active workstreams SHALL be listed first, each a closed row showing its name, its summary where it has one, and its progress as one mark per step with the count of steps done and of placed tasks in work, unplaced ones included. Every other open workstream SHALL be listed the same way inside one collapsed row. Where no workstream is active, the page SHALL say so. Opening a row SHALL show the workstream's Goal, its Done when, and its steps in the order the file lists them, each with its name, its status and the description the file gives it. Archived workstreams SHALL NOT be shown. A workstream file whose steps cannot be read SHALL still appear, with a warning on its group, and a numbered line among its steps that cannot be read SHALL be warned on rather than dropped silently.
 
 #### Scenario: Active and other workstreams
 
@@ -184,13 +189,14 @@ A task in flight SHALL show a stage derived from the repository, and the first o
 
 1. `ship:merged`, where the trunk holds an open change of its name and a pull request from a branch of that name has merged, so its archive is outstanding;
 2. `ship:pr-open`, where a pull request of its name is open;
-3. `build:applying`, with the number of tasks ticked out of the total, where its `tasks.md` holds at least one ticked task;
-4. `plan:drafting`, where its change has a `proposal.md`;
-5. `plan:exploring` otherwise.
+3. unknown, where the branch is on the remote with no local reference to read and the trunk holds no change of its name;
+4. `build:applying`, with the number of tasks ticked out of the total, where its `tasks.md` holds at least one ticked task;
+5. `plan:drafting`, where its change has a `proposal.md`;
+6. `plan:exploring` otherwise.
 
 These SHALL be state names `session-workflow` fixes, the nearest the repository shows, so `plan:drafting` also covers a plan under review. The stage SHALL NOT depend on a review's verdict, which the repository does not hold, and the page SHALL say that a session's own status report is finer than this one.
 
-A change's files SHALL be read from the first of the local branch of its name, the remote's, and the trunk that holds a reference to them. A branch that exists on the remote with no local reference to read SHALL show its stage as unknown. Every stage SHALL carry the unchecked mark where the forge was not read in full, since the first two depend on it.
+A change's files SHALL be read from the first of the local branch of its name, the remote's, and the trunk that holds a reference to them.  Every stage SHALL carry the unchecked mark where the forge was not read in full, since the first two depend on it.
 
 #### Scenario: A merged change not yet archived
 
@@ -219,7 +225,7 @@ A change's files SHALL be read from the first of the local branch of its name, t
 
 #### Scenario: A remote branch with no reference
 
-- **WHEN** `git ls-remote` lists a branch that no local reference reaches
+- **WHEN** `git ls-remote` lists a branch that no local reference reaches, the trunk holds no change of its name, and no pull request of its name is open
 - **THEN** its stage is unknown
 
 #### Scenario: The forge is not read in full
@@ -229,7 +235,7 @@ A change's files SHALL be read from the first of the local branch of its name, t
 
 ### Requirement: A task shows what it consists of
 
-In the section of what is in flight, each task SHALL state which of these exist under its name: a workstream step, a backlog entry, a change, whether on the trunk or on its branch, a branch, an open pull request, a merged pull request. Each task SHALL show the description its step gives where it has one, and its summary where its entry has one. Where neither exists it SHALL show its name alone: a Goal or an entry's body SHALL NOT stand in for a summary.
+In the section of what is in flight, each task SHALL state which of these exist under its name: a workstream step, a backlog entry, a change, whether on the trunk or on its branch, a branch, an open pull request, a merged pull request. In a group's list, each task SHALL show the description its step gives where it has one, and its summary where its entry has one. The section of what is in flight SHALL show a task's summary where it has one, and no step description. Where neither exists it SHALL show its name alone: a Goal or an entry's body SHALL NOT stand in for a summary.
 
 #### Scenario: One name in three concepts
 
@@ -238,7 +244,7 @@ In the section of what is in flight, each task SHALL state which of these exist 
 
 #### Scenario: No summary
 
-- **WHEN** an entry has no summary
+- **WHEN** an entry that no step names has no summary
 - **THEN** it shows its name and no description
 
 #### Scenario: A summary
@@ -248,16 +254,16 @@ In the section of what is in flight, each task SHALL state which of these exist 
 
 ### Requirement: Tasks are listed in columns
 
-Every list of tasks SHALL have the same columns, with a heading on each: status, task, last commit, and a control opening the entry's body. Rows without a body SHALL leave that cell empty and keep the columns aligned. The last commit SHALL show only an elapsed time, such as `6 d`, measured when the page was written: the branch's last commit where the task has a branch with commits of its own, otherwise the last commit on the trunk touching its change directory or entry. A task with neither SHALL leave the cell empty. A task with an entry SHALL open by a click anywhere on its row. The list of tasks in no workstream SHALL put tasks in flight first, then the most recent, then parked.
+Every list of tasks inside a group SHALL have the same columns, with a heading on each: status, task, last commit, and a control opening the entry's body. The section of what is in flight SHALL be the one exception: its status is the same on every row, so its columns are task, stage, last commit and workstream, each with a heading, and its rows open no body. Rows without a body SHALL leave that cell empty and keep the columns aligned. The last commit SHALL show only an elapsed time, such as `6 d`, measured when the page was written: the branch's last commit where the task has a branch with commits of its own, otherwise the last commit on the trunk touching its change directory or entry. A task with neither SHALL leave the cell empty. A task with an entry in a group's list SHALL open by a click anywhere on its row. The list of tasks in no workstream SHALL put tasks in flight first, then the most recent, then parked.
 
 #### Scenario: A branch's commit
 
-- **WHEN** a task's branch has commits the trunk's tip does not
+- **WHEN** a task's branch has commits the trunk does not
 - **THEN** its last commit is the branch's
 
-#### Scenario: A branch level with the trunk
+#### Scenario: A branch with no commits of its own
 
-- **WHEN** a task's branch points at the trunk's tip
+- **WHEN** a task's branch is at or behind the trunk's tip
 - **THEN** its last commit is the one touching its change directory or entry
 
 #### Scenario: A step that is only a name
@@ -269,6 +275,21 @@ Every list of tasks SHALL have the same columns, with a heading on each: status,
 
 - **WHEN** a list holds a task with an entry and a task without
 - **THEN** their columns line up
+
+#### Scenario: The in-flight section's columns
+
+- **WHEN** the page lists what is in flight
+- **THEN** its columns are task, stage, last commit and workstream, and a row there opens no body
+
+#### Scenario: Clicking a row
+
+- **WHEN** a task with an entry in a group's list is clicked anywhere on its row
+- **THEN** its body opens
+
+#### Scenario: Order of tasks in no workstream
+
+- **WHEN** the group of tasks in no workstream holds tasks in flight, recorded and parked
+- **THEN** those in flight come first, then the most recent, then those parked
 
 ### Requirement: A task's status is derived by its name
 
