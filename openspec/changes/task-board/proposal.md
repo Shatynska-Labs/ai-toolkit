@@ -28,6 +28,6 @@ None.
 
 - **New:** `scripts/task-board` and its `tests/cases/task-board-*.sh`. `prototype/` in this change holds the generator and page the layout was agreed from, run on real data, and is not shipped.
 - **Documentation:** `tests/README.md` gains the tool and its report contract, and `tests/coverage.md` its cases.
-- **Dependencies:** bash, awk, sed, tar and git. `gh` is used where present and is not required.
+- **Dependencies:** bash, awk, sed and git. `gh` is used where present and is not required.
 - **This repository's plan:** the workstream `see-a-projects-tasks` and the entries `give-tasks-a-summary`, `task-board` and `group-tasks-into-workstreams` are revised in this change's plan commit, replacing `see-the-backlog-across-projects` and `backlog-board`.
 - **Consumers:** the tool ships with the plugin and runs in any project on the directory shape. It reaches an installed copy only when the plugin's version rises, which `raise-the-plugin-version-on-release` covers.

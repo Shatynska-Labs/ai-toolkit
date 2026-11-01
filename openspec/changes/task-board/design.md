@@ -23,9 +23,9 @@ The status lookups exist today only as prose in `rules/workstreams.md`, reaching
 
 ### 1. Read a snapshot of the trunk
 
-The tool runs `git fetch --quiet --no-prune origin`, overriding any `fetch.prune` setting, so that remote-only branches can be read for their stage (decision 7), then `git archive <trunk> docs/backlog docs/workstreams openspec/changes | tar -x` into a temporary directory removed on exit, and everything afterwards reads plain files. It is one git call rather than a `git show` per file, and no reader can reach the working tree by accident.
+The tool runs `git fetch --quiet --no-prune origin`, overriding any `fetch.prune` setting, so that remote-only branches can be read for their stage (decision 7), then `read-tree` of the trunk into a temporary index and `checkout-index --prefix` of `docs/backlog`, `docs/workstreams` and `openspec/changes` into a temporary directory removed on exit, and everything afterwards reads plain files. It is a few git calls rather than a `git show` per file, and no reader can reach the working tree by accident. `git archive` would be shorter, but it honours `export-ignore` and an empty board would read as success.
 
-The trunk is `origin/HEAD`, else `origin/main`, else `origin/master`. Only the paths that exist are archived, since `git archive` fails on an absent one. A repository with no remote named `origin` reads `HEAD` instead.
+The trunk is `origin/HEAD`, else `origin/main`, else `origin/master`. Only the paths that exist are read. All paths are from the top of the repository, so a target in a subdirectory reads the same board. A repository with no remote named `origin` reads `HEAD` instead.
 
 *Alternative:* reading the working tree. Rejected: the board would differ by working tree, and the rules read status from the freshly fetched trunk.
 
@@ -77,7 +77,7 @@ The last commit comes from one `git log --name-only` over the trunk, mapped to n
 
 ### 9. HTML from a heredoc, collapsing with `<details>`
 
-Inline CSS with a light and dark theme through `prefers-color-scheme`, no script. `<details>` gives the collapsed group and entry bodies without any scripting. Escaping is one `sed` for `&`, `<`, `>` and `"`, every value passing through it.
+Inline CSS with a light and dark theme through `prefers-color-scheme`, no script. `<details>` gives the collapsed group and entry bodies without any scripting. Escaping is one awk function for `&`, `<`, `>` and `"`, every value passing through it.
 
 Status is shown as a word as well as a colour.
 
