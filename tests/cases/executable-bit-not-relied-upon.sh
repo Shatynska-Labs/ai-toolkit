@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Scenario: The executable bit is not relied upon.
-# Every other case invokes the script via `bash <path>` already; this case
+# Every other case except shipped-tools-are-executable.sh invokes the script via `bash <path>` already; this case
 # makes the property explicit by stripping the executable bit first.
 # shellcheck disable=SC1090 # $TESTLIB is set by tests/run.sh at runtime, not statically resolvable
 source "$TESTLIB"

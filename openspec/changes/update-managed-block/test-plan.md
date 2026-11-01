@@ -32,6 +32,7 @@ The derived assertions that recur across cases are summarised under *Derived ass
 | Requirement | Scenario | Case |
 |---|---|---|
 | The update tool is a standalone executable beside project-init | Help describes the tool and changes nothing | `project-update-help` |
+| | No scenario: the requirement's "runnable" clause, added when confirm found the tool shipped as 100644 | `shipped-tools-are-executable` |
 | | The target is stated before any change | `project-update-target-line` |
 | | An unusable target blocks | `project-update-unusable-target-blocks` |
 | | Fragments come from the copy the tool belongs to | `project-update-self-location` |
