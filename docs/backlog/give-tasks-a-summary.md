@@ -2,7 +2,7 @@
 priority: normal
 kind: change
 waits_on: []
-design_with: [task-board]
+design_with: []
 workstream: see-a-projects-tasks
 recorded_by: "the operator"
 re_checked: 2026-11-01

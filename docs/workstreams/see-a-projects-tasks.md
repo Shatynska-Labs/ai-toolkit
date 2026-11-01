@@ -2,7 +2,7 @@
 
 **Goal**: the operator sees all of one project's tasks on one board read from its repository, grouped by workstream with each step's status, with the tasks no workstream holds beside them, and with what is in work first, each change shown with its stage and against its workstream, so that the project's work stays findable without holding it in memory.
 
-**Done when**: this library ships a tool that, run in a project on the directory shape, writes one HTML file opening with every task in flight, its stage and the workstream it belongs to, then showing each open workstream with its steps in order and each step's status, a step with no backlog entry among them as planned, and the entries naming no workstream in a group of their own; and a step's status on the board matches what the `backlog` skill's **workstreams** operation reports for it.
+**Done when**: this library ships a tool that, run in a project on the directory shape, writes one HTML file opening with every task in flight, its stage and the workstream it belongs to, then showing each open workstream with its steps in order and each step's status, a step with no backlog entry among them as planned, and the entries naming no workstream in a group of their own; and a step's status on the board matches what the `backlog` skill's **workstreams** operation reports for it; and every step is done, since opening the board from a session, summaries and grouping are wanted whatever the page shows.
 
 **Steps**:
 
