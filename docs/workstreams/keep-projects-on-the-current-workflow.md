@@ -17,7 +17,7 @@
 
 ## Context
 
-**Two channels, neither with an update path.** The plugin carries skills, agents and rules, and an installed copy is cached by the version in `.claude-plugin/plugin.json`, which has stayed `0.2.0` since August, so `/plugin update` finds nothing new and a copy is refreshed only by reinstalling. `scripts/project-init` seeds a managed block in `AGENTS.md` and the READMEs of `docs/backlog/` and `docs/workstreams/`, and by its own requirement never rewrites any of them once present. The managed block carries a version (`v12`); the READMEs carry none, so no tool can tell an older copy from one a project edited. `openspec/changes/update-managed-block` proposed the updater for the block alone in September and stopped at three open questions.
+**Two channels, each needing its own update path.** The plugin carries skills, agents and rules, and an installed copy is cached by the version in `.claude-plugin/plugin.json`, which has stayed `0.2.0` since August, so `/plugin update` finds nothing new and a copy is refreshed only by reinstalling. `scripts/project-init` writes the blocks `rules/manifest` lists and by its own requirement never rewrites one it finds; `scripts/project-update` brings them current. Each block's marker carries its version and hash, so a tool can tell an older copy from one a project edited. A shape before `1.0.0` carries no hash, so converting one cannot detect a project's edit inside the block: only the report and `git diff` show it (`update-managed-block`, decision 4).
 
 **The adopting projects on 2026-10-28.** Every one is the operator's own.
 

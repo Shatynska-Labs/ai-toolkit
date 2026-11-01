@@ -91,3 +91,15 @@ Reason: <text>   [BLOCKED or ERROR only]
 ## Migration Plan
 
 Nothing in a project changes until the tool is run there. After this change merges, the confirm step runs it in each adopting project's working tree and reviews the diff with the operator; the project commits what it wrote. Rollback is reverting the change's commits; a project that ran the tool reverts with `git restore`.
+
+## Confirmation
+
+The operator chose to confirm in each adopting project's own working tree on 2026-11-01, and reviewed the outcome from the reports and diffs. The first run found two things, and the record was held until the first was fixed:
+
+- `scripts/project-update` shipped as `100644`, so it failed run by path. The cases run the tools through `bash`, which that mode passes. Fixed by pull request #82, with `shipped-tools-are-executable` holding every tool to `100755`.
+- In `fuperia/commerce-ops` the conversion replaced the staging and promotion stages that project kept inside its `v12` block. The tool did as decision 4 says: a legacy block cannot be checked for edits, and the report and `git diff` are what expose it. The operator kept that project on `v12`, since those stages become the toolkit's default workflow in `add-a-direct-workflow-variant`, so it is reviewed but not converted.
+
+`fuperia/infrastructure`, `shatynska/basis`, `shatynska/infrastructure` and `infrastructure-template` converted with `SUCCESS` (their pull requests #92, #52, #307 and #20). The first run was done on each project's trunk, then discarded and repeated on a branch of its own.
+
+`shatynska/basis` (Prettier) and `shatynska/infrastructure` (tests pinning the old shapes) each needed a follow-up in those pull requests. These are the effect a conversion has on a project's own checks, not a defect in the tool.
+
