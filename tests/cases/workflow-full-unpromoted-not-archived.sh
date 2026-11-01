@@ -72,12 +72,14 @@ discriminate_scans() {
     exit 1
   done
 }
-need archive-in-production 'archiv' 'production'
+need archive-gate '^\*\*archive\*\*' 'in production'
+need not-archived 'never promoted' 'not archived'
 need promote-waiver 'waiv' 'promot'
 need waiver-distinct 'waiv' 'promot' 'distinct|separate|different|not the same'
 fx="$TESTDIR/fx"
 cat > "$fx" <<'FIXTURE'
-A change is archived only once it is confirmed and it is in production.
+**archive** — once it is confirmed and the change is in production.
+A change confirmed and never promoted is not archived.
 A change not going further is recorded on a waiver of `promote`, which is distinct from a confirmation waiver.
 FIXTURE
 discriminate_scans "$fx"
