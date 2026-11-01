@@ -122,7 +122,7 @@ Checked without the implementation: ShellCheck clean over the new cases; the `jv
 
 ## Cases added by code review
 
-`task-board-json-merge-unchecked-of-an-archived-task`, `task-board-json-nul-byte` and `task-board-format-not-inherited`, each written with its fix by the implementer. That fd 3 reaches no child stays uncovered: a case would have to time a stub leaving a background process.
+`task-board-json-merge-unchecked-of-an-archived-task`, `task-board-json-nul-byte` and `task-board-format-not-inherited`, each written with its fix by the implementer. `task-board-json-fd-3-not-inherited` holds that fd 3 reaches neither `git` nor `gh`.
 
 ## Dispositions at apply
 
