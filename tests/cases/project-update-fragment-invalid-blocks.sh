@@ -218,7 +218,7 @@ run_blocked() {  # LABEL COPY
   mkdir -p "$work"
   seed_all "$work" stale "$TOOLKIT_ROOT"
   before="$(tree_sum "$work")"
-  (cd "$work" && bash "$2/scripts/project-update") >"$TESTDIR/report-$1.txt" 2>&1
+  (cd "$work" && bash "$2/scripts/project-update" --workflow full) >"$TESTDIR/report-$1.txt" 2>&1
   assert_outcome "$TESTDIR/report-$1.txt" 2 "$?" BLOCKED
   assert_tree "$work" "$before" "$1"
 }

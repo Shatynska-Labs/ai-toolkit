@@ -41,10 +41,10 @@ If none resolves, report yourself blocked — name what you looked for — and s
 Run it through its interpreter, never as a bare path:
 
 ```
-bash "<resolved-root>/scripts/project-init" [--tools <value>] [TARGET_DIR]
+bash "<resolved-root>/scripts/project-init" [--tools <value>] [--workflow full|direct] [TARGET_DIR]
 ```
 
-Pass through whatever the user specified (a `--tools` value, a target directory other than the current one). Do not parse or second-guess the tool's internal logic — it owns every decision about what gets created, skipped, or reported.
+Pass through whatever the user specified (a `--tools` value, a `--workflow` value, a target directory other than the current one). `full`, staging with production reached by a promotion, is the tool's default; pass `direct` where the user says the repository has no production or that merging is its only deploy. Do not parse or second-guess the tool's internal logic — it owns every decision about what gets created, skipped, or reported.
 
 ## 3. Relay the report
 

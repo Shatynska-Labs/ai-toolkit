@@ -6,7 +6,7 @@
 # SPECIFIED: rules/manifest's first three records are development-workflow ->
 # AGENTS.md, backlog -> docs/backlog/AGENTS.md, workstreams ->
 # docs/workstreams/AGENTS.md, in that order; records are separated by a line
-# `---`; each carries the two keys name and target; no record carries a
+# `---`; each carries name and target, and may carry alternative (add-a-direct-workflow-variant); no record carries a
 # version.
 # DERIVED (operationalisation): "two keys" is read as every non-blank line
 # other than a separator being `name:` or `target:`, and each record holding
@@ -35,7 +35,7 @@ check_manifest() {
   local f="$1" recs stray
   [ -f "$f" ] || { echo "ABSENT: $f" >&2; return 2; }
   if grep -q -E '^version:' "$f"; then echo "[no-version] a record carries a version" >&2; return 1; fi
-  stray="$(grep -v -E '^(name|target):|^---[[:space:]]*$|^[[:space:]]*$' "$f")"
+  stray="$(grep -v -E '^(name|target|alternative):|^---[[:space:]]*$|^[[:space:]]*$' "$f")"
   if [ -n "$stray" ]; then echo "[two-keys] a line is neither name, target nor a separator: $stray" >&2; return 1; fi
   if awk '/^---/ { if (n != 1 || t != 1) bad = 1; n = 0; t = 0; next } /^name:/ { n++ } /^target:/ { t++ } END { if (n != 1 || t != 1) bad = 1; exit !bad }' "$f"; then
     echo "[one-each] a record does not hold exactly one name and one target" >&2; return 1

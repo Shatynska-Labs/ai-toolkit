@@ -237,7 +237,7 @@ sdir="$(dirname "$work/$(target_of "$second")")"
 ssum="$(md5sum "$work/$(target_of "$second")" | awk '{print $1}')"
 chmod 555 "$sdir"
 trap 'chmod 755 "$sdir"' EXIT
-(cd "$work" && bash "$PROJECT_UPDATE") >"$TESTDIR/report.txt" 2>&1
+(cd "$work" && bash "$PROJECT_UPDATE" --workflow full) >"$TESTDIR/report.txt" 2>&1
 status=$?
 chmod 755 "$sdir"
 assert_outcome "$TESTDIR/report.txt" 1 "$status" ERROR

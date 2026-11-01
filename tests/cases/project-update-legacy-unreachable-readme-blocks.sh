@@ -222,7 +222,7 @@ ln -s "$ext" "$work/docs/workstreams"
 git_fixture "$work"
 before="$(tree_sum "$work")"
 ext_before="$(tree_sum "$ext")"
-(cd "$work" && bash "$PROJECT_UPDATE") >"$TESTDIR/report.txt" 2>&1
+(cd "$work" && bash "$PROJECT_UPDATE" --workflow full) >"$TESTDIR/report.txt" 2>&1
 assert_outcome "$TESTDIR/report.txt" 2 "$?" BLOCKED
 assert_tree "$work" "$before" "an unreachable README"
 assert_tree "$ext" "$ext_before" "the directory the link names"

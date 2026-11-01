@@ -79,7 +79,7 @@ project-init [--tools <value>] [--help|-h] [TARGET_DIR]
 
 ## project-update's report
 
-`scripts/project-update [--help|-h] [TARGET_DIR]` takes `project-init`'s outcomes and exit codes: `0` SUCCESS, `1` ERROR, `2` BLOCKED. One line per manifest record, in manifest order, then the directory-import lines, then:
+`scripts/project-update [--workflow full|direct] [--help|-h] [TARGET_DIR]` takes `project-init`'s outcomes and exit codes: `0` SUCCESS, `1` ERROR, `2` BLOCKED. One line per manifest record, in manifest order, then the directory-import lines, then:
 
 ```
 Target: <absolute path>
@@ -101,6 +101,9 @@ Written before the failure:   [ERROR only, one indented line per file, saying wh
 Outcome: SUCCESS | BLOCKED | ERROR
 Reason: <text>   [BLOCKED or ERROR only]
 ```
+
+
+Where a workflow block is `stale` or `legacy block` below `alternative_since` and no `--workflow` was given, the run is `BLOCKED` before any write and any git precondition, and `Reason:` names `--workflow full` and `--workflow direct`. A block held under `development-workflow-direct` reports under that name, and a block crossing variants reads `<to>: replaced <from> (version A → B)` or `<to>: converted from <from> version A to B; …`. `absent` with a value names `project-init --workflow <value>`. `project-init` reports a held direct block as `conventions file: block already present (development-workflow-direct, version N, matches)`.
 
 ## backlog-migrate's report
 

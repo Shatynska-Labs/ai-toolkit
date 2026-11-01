@@ -292,9 +292,9 @@ for shell in new old; do
   seed_all "$w" stale
   edit_inside "$w/$(target_of backlog)" backlog "a line the project changed"
 done
-(cd "$TESTDIR/work-new" && bash "$PROJECT_UPDATE") >"$TESTDIR/report-new.txt" 2>&1
+(cd "$TESTDIR/work-new" && bash "$PROJECT_UPDATE" --workflow full) >"$TESTDIR/report-new.txt" 2>&1
 s_new=$?
-(cd "$TESTDIR/work-old" && "$old" "$PROJECT_UPDATE") >"$TESTDIR/report-old.txt" 2>&1
+(cd "$TESTDIR/work-old" && "$old" "$PROJECT_UPDATE" --workflow full) >"$TESTDIR/report-old.txt" 2>&1
 s_old=$?
 assert_exit "$s_new" "$s_old" "the exit code under bash 3.2"
 [ "$(tree_sum "$TESTDIR/work-new")" = "$(tree_sum "$TESTDIR/work-old")" ] || { echo "FAIL: bash 3.2 leaves a different tree" >&2; exit 1; }

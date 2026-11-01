@@ -231,6 +231,6 @@ work="$TESTDIR/work"
 mkdir -p "$work"
 seed_all "$work" stale
 before="$(tree_sum "$work")"
-(cd "$work" && PATH="$bin" bash "$PROJECT_UPDATE") >"$TESTDIR/report.txt" 2>&1
+(cd "$work" && PATH="$bin" bash "$PROJECT_UPDATE" --workflow full) >"$TESTDIR/report.txt" 2>&1
 assert_outcome "$TESTDIR/report.txt" 2 "$?" BLOCKED
 assert_tree "$work" "$before" "no hash command"

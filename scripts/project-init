@@ -17,7 +17,7 @@ print_help() {
 project-init — deterministic project initialization for the ai-toolkit development workflow
 
 Usage:
-  project-init [--tools <value>] [--help|-h] [TARGET_DIR]
+  project-init [--tools <value>] [--workflow full|direct] [--help|-h] [TARGET_DIR]
 
 Modes (derived automatically, never flagged):
   new project  — TARGET_DIR's repository has no commit yet. Ends by naming
@@ -40,6 +40,12 @@ Arguments:
                directory if omitted.
 
 Flags:
+  --workflow <full|direct>
+                     Which workflow the project receives: full is staging and
+                     promotion (development-workflow), direct is one deploy by
+                     merging (development-workflow-direct). Default: full. A
+                     project already holding one keeps it; scripts/project-update
+                     --workflow switches it.
   --tools <value>   Specification-tooling target, passed through to
                      `openspec init --tools <value>`. Default: claude.
   --help, -h        Show this help and exit. Makes no filesystem change.
@@ -64,6 +70,8 @@ MANIFEST="$TOOLKIT_ROOT/rules/manifest"
 target=""
 tools="claude"
 show_help=0
+workflow="full"
+workflow_given=0
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -77,6 +85,16 @@ while [ $# -gt 0 ]; do
       ;;
     --tools=*)
       tools="${1#--tools=}"
+      shift
+      ;;
+    --workflow)
+      workflow_given=1
+      workflow="${2:-}"
+      if [ $# -ge 2 ]; then shift 2; else shift; fi
+      ;;
+    --workflow=*)
+      workflow_given=1
+      workflow="${1#--workflow=}"
       shift
       ;;
     *)
@@ -130,6 +148,10 @@ fi
 if [ ! -w "$target" ]; then
   finish_blocked "target directory is not writable: $target"
 fi
+case "$workflow" in
+  full|direct) ;;
+  *) finish_blocked "--workflow takes full or direct, not '$workflow'" ;;
+esac
 
 # --- The manifest and every fragment it lists are read unconditionally, ----
 # --- before any other precondition. ----------------------------------------
@@ -141,10 +163,11 @@ fi
 # rules/<name>.md and the marker's name) and its target, an AGENTS.md
 # relative to the project root.
 manifest_records="$(awk '
-  function out() { if (n != "" || t != "") print n "\t" t; n = ""; t = "" }
+  function out() { if (n != "" || t != "") print n "\t" t "\t" a; n = ""; t = ""; a = "" }
   /^---[[:space:]]*$/ { out(); next }
   /^name:/ { sub(/^name:[[:space:]]*/, ""); n = $0; next }
   /^target:/ { sub(/^target:[[:space:]]*/, ""); t = $0; next }
+  /^alternative:/ { sub(/^alternative:[[:space:]]*/, ""); a = $0; next }
   END { out() }
 ' "$MANIFEST")"
 
@@ -152,7 +175,32 @@ rec_name=()
 rec_target=()
 rec_version=()
 rec_body=()
-while IFS="$(printf '\t')" read -r name tgt; do
+rec_alt=()
+rec_alt_version=()
+rec_alt_body=()
+# Reads fragment $1's version and body into frag_version and frag_body; $2 says
+# what lists it.
+read_fragment() {
+  local frag="$TOOLKIT_ROOT/rules/$1.md" frontmatter kind closing_line
+  if [ ! -f "$frag" ]; then
+    finish_blocked "rule fragment $1, $2, not found at $frag"
+  fi
+  if [ "$(head -n 1 "$frag")" != "---" ]; then
+    finish_blocked "rule fragment at $frag has no frontmatter"
+  fi
+  frontmatter="$(sed -n '2,/^---$/p' "$frag" | sed '$d')"
+  kind="$(printf '%s\n' "$frontmatter" | sed -n 's/^kind:[[:space:]]*//p' | head -n1)"
+  frag_version="$(printf '%s\n' "$frontmatter" | sed -n 's/^version:[[:space:]]*//p' | head -n1)"
+  if [ -z "$kind" ] || ! printf '%s\n' "$frag_version" | grep -qE '^[0-9]+[.][0-9]+[.][0-9]+$'; then
+    finish_blocked "rule fragment at $frag is missing kind, or a version of the form MAJOR.MINOR.PATCH"
+  fi
+  closing_line="$(grep -n '^---$' "$frag" | sed -n '2p' | cut -d: -f1)"
+  if [ -z "$closing_line" ]; then
+    finish_blocked "rule fragment at $frag has no closing frontmatter delimiter"
+  fi
+  frag_body="$(tail -n "+$((closing_line + 1))" "$frag")"
+}
+while IFS="$(printf '\t')" read -r name tgt alt; do
   [ -n "$name$tgt" ] || continue
   if ! printf '%s\n' "$name" | grep -qE '^[a-z0-9][a-z0-9-]*$'; then
     finish_blocked "manifest at $MANIFEST has a record without a kebab-case name: '$name'"
@@ -164,27 +212,21 @@ while IFS="$(printf '\t')" read -r name tgt; do
   case "/$tgt/" in
     //*|*/../*|*/./*) finish_blocked "manifest record $name targets '$tgt', not a path inside the project" ;;
   esac
-  frag="$TOOLKIT_ROOT/rules/$name.md"
-  if [ ! -f "$frag" ]; then
-    finish_blocked "rule fragment $name, listed in the manifest, not found at $frag"
-  fi
-  if [ "$(head -n 1 "$frag")" != "---" ]; then
-    finish_blocked "rule fragment at $frag has no frontmatter"
-  fi
-  frontmatter="$(sed -n '2,/^---$/p' "$frag" | sed '$d')"
-  kind="$(printf '%s\n' "$frontmatter" | sed -n 's/^kind:[[:space:]]*//p' | head -n1)"
-  version="$(printf '%s\n' "$frontmatter" | sed -n 's/^version:[[:space:]]*//p' | head -n1)"
-  if [ -z "$kind" ] || ! printf '%s\n' "$version" | grep -qE '^[0-9]+[.][0-9]+[.][0-9]+$'; then
-    finish_blocked "rule fragment at $frag is missing kind, or a version of the form MAJOR.MINOR.PATCH"
-  fi
-  closing_line="$(grep -n '^---$' "$frag" | sed -n '2p' | cut -d: -f1)"
-  if [ -z "$closing_line" ]; then
-    finish_blocked "rule fragment at $frag has no closing frontmatter delimiter"
-  fi
+  read_fragment "$name" "listed in the manifest"
   rec_name+=("$name")
   rec_target+=("$tgt")
-  rec_version+=("$version")
-  rec_body+=("$(tail -n "+$((closing_line + 1))" "$frag")")
+  rec_version+=("$frag_version")
+  rec_body+=("$frag_body")
+  alt_version=""
+  alt_body=""
+  if [ -n "$alt" ]; then
+    read_fragment "$alt" "named as an alternative in the manifest"
+    alt_version="$frag_version"
+    alt_body="$frag_body"
+  fi
+  rec_alt+=("$alt")
+  rec_alt_version+=("$alt_version")
+  rec_alt_body+=("$alt_body")
 done <<EOF_RECORDS
 $manifest_records
 EOF_RECORDS
@@ -278,7 +320,33 @@ for i in "${!rec_name[@]}"; do
   state=""
   existing=""
   detail=""
-  if [ "$tgt" = "AGENTS.md" ]; then
+  if [ -n "${rec_alt[$i]}" ]; then
+    # A project holds one of the two: what it holds decides, and only a project
+    # holding neither takes the one asked for.
+    own="${rec_name[$i]}"
+    wanted_alternative=0
+    [ "$workflow" = "direct" ] && wanted_alternative=1
+    use_alternative=$wanted_alternative
+    if [ -f "$target/$tgt" ]; then
+      if block_present "$target/$tgt" "${rec_alt[$i]}"; then
+        use_alternative=1
+        if block_present "$target/$tgt" "$own"; then state="present-both"; fi
+      elif block_present "$target/$tgt" "$own"; then
+        use_alternative=0
+      fi
+    fi
+    if [ "$workflow_given" -eq 1 ] && [ "$use_alternative" -ne "$wanted_alternative" ]; then
+      detail="contrary"
+    fi
+    if [ "$use_alternative" -eq 1 ] && [ "$state" != "present-both" ]; then
+      rec_name[i]="${rec_alt[$i]}"
+      rec_version[i]="${rec_alt_version[$i]}"
+      rec_body[i]="${rec_alt_body[$i]}"
+    fi
+  fi
+  if [ "$state" = "present-both" ]; then
+    :
+  elif [ "$tgt" = "AGENTS.md" ]; then
     if [ -f "$target/AGENTS.md" ]; then
       existing="$(block_version "$target/AGENTS.md" "${rec_name[$i]}")"
       if block_present "$target/AGENTS.md" "${rec_name[$i]}"; then state="present"; else state="append"; fi
@@ -481,7 +549,14 @@ for i in "${!rec_name[@]}"; do
   if [ "$tgt" = "AGENTS.md" ]; then
     case "${rec_state[$i]}" in
       present)
-        report_line root_line "conventions file: block already present ($(present_detail "$existing" "$version"))"
+        held=""
+        [ -n "${rec_alt[$i]}" ] && [ "$name" = "${rec_alt[$i]}" ] && held="$name, "
+        report_line root_line "conventions file: block already present ($held$(present_detail "$existing" "$version"))"
+        [ "${rec_detail[$i]}" = "contrary" ] \
+          && report_line root_line "conventions file: holds $name, not the workflow asked for; $SCRIPT_DIR/project-update --workflow switches it"
+        ;;
+      present-both)
+        report_line root_line "conventions file: holds both $name and ${rec_alt[$i]}; neither written, remove one"
         ;;
       append)
         { echo ""; build_block "$i"; } >> "$agents_path" || fail_record "conventions file: could not append the managed block"

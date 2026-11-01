@@ -339,6 +339,8 @@ Comment-only staleness, needing no revision to stay correct: the headers of `wor
 
 ## Missing shared arrangement
 
+**Disposition, every entry below: kept local.** This repository's conventions record no location for a shared test arrangement, so the workflow keeps each entry; the backlog entry `record-this-repositorys-shared-test-arrangement` holds that decision.
+
 The dispatch named no shared arrangement, so there is no home to propose for anything below and no near-miss to record. Q1 asks whether there should be one.
 
 **Group T** is the 30 cases named `project-init-*` and `project-update-*` in this pass. **Group S** is the 12 static cases, `manifest-alternative-and-versions` and `workflow-*`. Each case in a group declares the group's helpers locally; none imports them.

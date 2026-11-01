@@ -221,7 +221,7 @@ ln -s conf/AGENTS.md "$work/$(target_of development-workflow)"
 git_fixture "$work"
 sum="$(md5sum "$outside" | awk '{print $1}')"
 before="$(tree_sum "$work")"
-(cd "$work" && bash "$PROJECT_UPDATE") >"$TESTDIR/report.txt" 2>&1
+(cd "$work" && bash "$PROJECT_UPDATE" --workflow full) >"$TESTDIR/report.txt" 2>&1
 assert_outcome "$TESTDIR/report.txt" 2 "$?" BLOCKED
 assert_contains "$TESTDIR/report.txt" "outside/workflow-rules.md" "the report names the file outside the working tree"
 assert_unchanged "$outside" "$sum" "the file outside the working tree"

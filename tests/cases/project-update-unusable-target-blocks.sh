@@ -234,7 +234,7 @@ seed_all "$ro" stale
 before="$(tree_sum "$ro")"
 chmod 555 "$ro"
 trap 'chmod 755 "$ro"' EXIT
-(cd "$TESTDIR" && bash "$PROJECT_UPDATE" "$ro") >"$TESTDIR/r3.txt" 2>&1
+(cd "$TESTDIR" && bash "$PROJECT_UPDATE" --workflow full "$ro") >"$TESTDIR/r3.txt" 2>&1
 status=$?
 chmod 755 "$ro"
 assert_outcome "$TESTDIR/r3.txt" 2 "$status" BLOCKED

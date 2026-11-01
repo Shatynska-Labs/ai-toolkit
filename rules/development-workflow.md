@@ -1,15 +1,16 @@
 ---
 kind: standing-constraint
-version: 1.0.0
+version: 2.0.0
+alternative_since: 2.0.0
 ---
 
 ## Development workflow
 
 The unit of work is a **change**: a feature, a modification, or a decision with design content, carried from proposal to record. These rules describe its life in three stages — `plan`, `build`, `ship` — and what holds throughout.
 
-Work too small to be a change — a typo, a one-line correction with nothing to specify — skips `plan`. It does not skip `ship`: nothing reaches production except by merging.
+Work too small to be a change — a typo, a one-line correction with nothing to specify — skips `plan`. It does not skip `ship`: nothing reaches production except by merging and a promotion.
 
-These rules assume this project has a remote, pull requests, continuous integration, a deploy triggered by merging to the trunk, and OpenSpec for its change records, and that more than one session may work on it at once.
+These rules assume this project has a remote, pull requests, continuous integration, a staging deploy triggered by merging to the trunk, a production deploy triggered deliberately, and OpenSpec for its change records, and that more than one session may work on it at once.
 
 ### Your branch and working tree
 
@@ -48,10 +49,12 @@ Derive the report from the repository where you can — the change's own artifac
 ```
 plan:   explore · draft · review · fix · approve · commit · derive tests
 build:  apply · verify · review · fix
-ship:   open pr · merge · deploy · confirm · archive
+ship:   open pr · merge · deploy staging · confirm · promote · deploy production · smoke · archive
 ```
 
 A state is `<family>:<transition>ing` while that transition runs and `<family>:<transition>ed` once it has happened — `plan:drafting`, `build:applying`, `plan:approved`, `ship:merged`. Two reorder: `plan:tests-derived` and `ship:pr-open`. Add `blocked:<what>` and `abandoned` at any point.
+
+`ship` has two `deploy` transitions, so neither derives its state from `deploy` alone: they are `ship:deploying-staging` / `ship:deployed-staging` and `ship:deploying-production` / `ship:deployed-production`. The two transitions between them are `ship:promoting` / `ship:promoted` and `ship:smoking` / `ship:smoked`. `ship:confirmed` means the effect was confirmed on staging.
 
 Always write the family prefix: `plan:reviewing` and `build:reviewing` dispatch different reviewers.
 
@@ -93,26 +96,34 @@ _Claude Code binding:_ run `ai-toolkit:change-code-reviewer` over the change's c
 
 ### ship
 
-Nothing ships from a local machine. Never run the deploy command against production — a change reaches production by merging and by nothing else. Local credentials for production, where they exist at all, are for reading — a plan, a status, a log — and not for applying.
+Nothing ships from a local machine. Never run the deploy command locally against either host — a change reaches staging by merging, and production by a promotion the operator triggers, and by nothing else. Triggering a workflow is not deploying: it asks the forge to run a job and does not touch a host. Local credentials for production, where they exist at all, are for reading — a plan, a status, a log — and not for applying.
 
 Every change reaches the trunk through pull requests, and takes at least two. A repository's first commit reaches the trunk directly, because there is no commit before it for a pull request to merge into, and no other commit does. Begin once verification passes on the branch head and `build`'s review has cleared.
 
-**open pr → merge → deploy** — open the pull request, let continuous integration run, and wait for the operator's confirmation that it merged and that the deploy is healthy. Do not infer a merge, a deploy or a confirmed effect from a green pull request, an approval, or silence.
+**open pr → merge → deploy staging** — open the pull request, let continuous integration run, and wait for the operator's confirmation that it merged and that staging's deploy is healthy. Do not infer a merge, a deploy or a confirmed effect from a green pull request, an approval, or silence.
 
 _Claude Code binding:_ write the pull request's title and description with `ai-toolkit:commits-and-pull-requests`.
 
-**confirm** — a healthy deploy is not the change working. Propose how the effect can be observed — what to look at, what provokes it, what result would mean it worked — and wait for the operator's confirmation.
+**confirm** — a healthy deploy is not the change working, and this is where the change is shown to work. Propose how the effect can be observed on staging — what to look at, what provokes it, what result would mean it worked — and wait for the operator's confirmation. Staging is where an effect can be provoked safely, against data made for the purpose.
 
 Two classes cannot answer that gate and are waivable. Say so plainly, name the class, and wait for the operator to waive it; record the waiver in the change's own artifacts — the record is archived on the strength of it, and waiving your own gate is not the confirmation this step exists to obtain. Where a successor is intended, the waiver names its backlog entry or the branch it was opened on:
 
 - no observation can actually be made — a refactor, a dependency bump or an internal cleanup with no externally observable effect, and equally an observation you proposed that turns out not to be performable;
 - a change that was the wrong change: its observation was made, its effect is absent, and it is not to be corrected in place.
 
-A recorded waiver completes **confirm**: `ship:confirmed` is true of a waived change.
+A recorded waiver completes **confirm**: `ship:confirmed`, which names confirmation on staging, is true of a waived change.
 
-**archive** — once the effect is confirmed or the gate waived, bring the branch back to the freshly fetched trunk, commit the change's specification record there, and open a pull request for it: the last of the change's pull requests. The work is on the trunk by now, however it was merged, so bringing the branch back to it discards nothing. Before opening that pull request, re-read `docs/backlog/` for the entries this change completed, made obsolete, unblocked or made stale (including entries naming files or specifications it touched, not only entries naming it) and update each as its `AGENTS.md` directs, in the commit that carries the record. Where the change advanced a workstream, re-read it the same way: place the entries attached to it, revise the steps the change made obsolete, and archive it once what finishes it holds, as `docs/workstreams/AGENTS.md` directs, in the same commit.
+**promote → deploy production → smoke** — production runs what staging has already run, and reaches it only when a person promotes that commit. Propose the promotion and do not trigger it silently. A confirmed staging effect does not establish that production has received it. Production's own gate is the smoke check the promotion runs, not a second `confirm`: wait for the operator's word that the promotion completed and its gate passed.
 
-Two is a floor. Where the deploy is unhealthy, or the effect is absent through a defect, the change is not delivered and its record is not written: fix it and re-enter at `build`'s review gate; the fix takes a pull request of its own.
+A promotion whose smoke check fails leaves production running the promoted image. That is not a delivered change: it re-enters at `build`'s review gate like any other defect, and the immediate remedy, promoting the previous commit, is the operator's.
+
+Production runs behind the trunk by every merge not yet promoted. That is the pipeline working, not drift. The previous release a change must stay compatible with is the one production runs, not the trunk's last merge, because rollback is a promotion: open a change that removes what the previous release uses only once production runs a release that no longer uses it.
+
+**archive** — once the effect is confirmed on staging or the gate waived, **and the change is in production**, bring the branch back to the freshly fetched trunk, commit the change's specification record there, and open a pull request for it: the last of the change's pull requests. The work is on the trunk by now, however it was merged, so bringing the branch back to it discards nothing. Before opening that pull request, re-read `docs/backlog/` for the entries this change completed, made obsolete, unblocked or made stale (including entries naming files or specifications it touched, not only entries naming it) and update each as its `AGENTS.md` directs, in the commit that carries the record. Where the change advanced a workstream, re-read it the same way: place the entries attached to it, revise the steps the change made obsolete, and archive it once what finishes it holds, as `docs/workstreams/AGENTS.md` directs, in the same commit.
+
+A change confirmed on staging and never promoted is not archived: its record would say a thing is delivered that production has never run. Where a change is deliberately not going to production — a documentation-only merge is the ordinary case — say so and archive it on the operator's word, which is a waiver of **promote**, distinct from a waiver of **confirm**, and is recorded the same way.
+
+Two is a floor. Where a deploy is unhealthy, the smoke check fails, or the effect is absent through a defect, the change is not delivered and its record is not written: fix it and re-enter at `build`'s review gate; the fix takes a pull request of its own.
 
 **then remove the branch and the working tree** — once the record has reached the trunk through its own pull request, every other pull request the change opened has merged, and nothing uncommitted or unpushed remains. **Read a merge from the pull request's state, not from branch ancestry** — a squash or rebase merge leaves no ancestry to read.
 

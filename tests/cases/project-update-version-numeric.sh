@@ -218,6 +218,6 @@ set_version "$copy/rules/development-workflow.md" 1.10.0
 work="$TESTDIR/work"
 mkdir -p "$work"
 put_block "$work" development-workflow 1.9.0 "the text at 1.9.0" "$copy"
-(cd "$work" && bash "$copy/scripts/project-update") >"$TESTDIR/report.txt" 2>&1
+(cd "$work" && bash "$copy/scripts/project-update" --workflow full) >"$TESTDIR/report.txt" 2>&1
 expect_line "$TESTDIR/report.txt" development-workflow replaced 1.9.0 1.10.0
 [ "$(marker_version "$work/$(target_of development-workflow "$copy")" development-workflow)" = 1.10.0 ] || { echo "FAIL: the block does not carry 1.10.0 after the run" >&2; exit 1; }

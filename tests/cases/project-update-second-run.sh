@@ -216,7 +216,7 @@ require_update "$PROJECT_UPDATE"
 work="$TESTDIR/work"
 mkdir -p "$work"
 seed_all "$work" stale
-(cd "$work" && bash "$PROJECT_UPDATE") >"$TESTDIR/first.txt" 2>&1
+(cd "$work" && bash "$PROJECT_UPDATE" --workflow full) >"$TESTDIR/first.txt" 2>&1
 after_first="$(tree_sum "$work")"
 (cd "$work" && bash "$PROJECT_UPDATE") >"$TESTDIR/second.txt" 2>&1
 assert_tree "$work" "$after_first" "the second run"

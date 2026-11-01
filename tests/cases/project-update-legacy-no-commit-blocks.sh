@@ -218,6 +218,6 @@ printf '%s\n' "$V12_BLOCK" > "$work/$(target_of development-workflow)"
 git -C "$work" init -q >/dev/null 2>&1 || { echo "FAIL: fixture — git init" >&2; exit 1; }
 git -C "$work" add -A
 before="$(tree_sum "$work")"
-(cd "$work" && bash "$PROJECT_UPDATE") >"$TESTDIR/report.txt" 2>&1
+(cd "$work" && bash "$PROJECT_UPDATE" --workflow full) >"$TESTDIR/report.txt" 2>&1
 assert_outcome "$TESTDIR/report.txt" 2 "$?" BLOCKED
 assert_tree "$work" "$before" "a repository with no commit"

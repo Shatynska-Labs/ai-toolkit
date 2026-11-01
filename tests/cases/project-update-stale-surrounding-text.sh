@@ -233,7 +233,7 @@ outside() {  # FILE: the bytes before the opening marker's line, a separator, an
   tail -n +$((c + 1)) "$1"
 }
 outside "$f" > "$TESTDIR/before"
-(cd "$work" && bash "$PROJECT_UPDATE") >"$TESTDIR/report.txt" 2>&1
+(cd "$work" && bash "$PROJECT_UPDATE" --workflow full) >"$TESTDIR/report.txt" 2>&1
 [ "$(marker_version "$f" development-workflow)" = "$(fversion development-workflow)" ] || { echo "FAIL: the stale block was not replaced" >&2; cat "$TESTDIR/report.txt" >&2; exit 1; }
 outside "$f" > "$TESTDIR/after"
 cmp -s "$TESTDIR/before" "$TESTDIR/after" || { echo "FAIL: text outside the markers changed" >&2; diff "$TESTDIR/before" "$TESTDIR/after" >&2; exit 1; }

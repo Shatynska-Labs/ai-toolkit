@@ -228,7 +228,7 @@ printf '# Backlog\n\nOur rules.\n' > "$d/README.md"
 git_fixture "$work"
 chmod 555 "$d"
 trap 'chmod 755 "$d"' EXIT
-(cd "$work" && bash "$PROJECT_UPDATE") >"$TESTDIR/report.txt" 2>&1
+(cd "$work" && bash "$PROJECT_UPDATE" --workflow full) >"$TESTDIR/report.txt" 2>&1
 status=$?
 chmod 755 "$d"
 assert_outcome "$TESTDIR/report.txt" 1 "$status" ERROR

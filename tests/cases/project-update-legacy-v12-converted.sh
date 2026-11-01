@@ -222,7 +222,7 @@ f="$work/$(target_of development-workflow)"
 { printf '%s\n' "$V12_BLOCK"; printf '\n## Our conventions\n\nKept as written.\n'; } > "$f"
 git_fixture "$work"
 tail -n +6 "$f" > "$TESTDIR/below.before"
-(cd "$work" && bash "$PROJECT_UPDATE") >"$TESTDIR/report.txt" 2>&1
+(cd "$work" && bash "$PROJECT_UPDATE" --workflow full) >"$TESTDIR/report.txt" 2>&1
 [ "$(marker_version "$f" development-workflow)" = "$(fversion development-workflow)" ] || { echo "FAIL: the v12 block was not replaced by the current block" >&2; cat "$f" "$TESTDIR/report.txt" >&2; exit 1; }
 hash_ok "$f" development-workflow || { echo "FAIL: the converted block's hash does not match" >&2; exit 1; }
 if grep -q -F 'development-workflow v12' "$f"; then echo "FAIL: the v12 marker remains" >&2; exit 1; fi

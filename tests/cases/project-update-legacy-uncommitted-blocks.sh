@@ -220,7 +220,7 @@ printf '# Workstreams\n\nOur rules.\n' > "$work/docs/workstreams/README.md"
 git_fixture "$work"
 printf 'A change not yet committed.\n' >> "$work/docs/workstreams/README.md"
 before="$(tree_sum "$work")"
-(cd "$work" && bash "$PROJECT_UPDATE") >"$TESTDIR/report.txt" 2>&1
+(cd "$work" && bash "$PROJECT_UPDATE" --workflow full) >"$TESTDIR/report.txt" 2>&1
 assert_outcome "$TESTDIR/report.txt" 2 "$?" BLOCKED
 assert_contains "$TESTDIR/report.txt" "docs/workstreams/README.md" "the report names the file"
 assert_tree "$work" "$before" "an uncommitted legacy README"
