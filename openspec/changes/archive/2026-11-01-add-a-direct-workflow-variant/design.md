@@ -50,3 +50,13 @@
 ## Migration Plan
 
 After this merges, `confirm` runs in `fuperia/commerce-ops` (after moving `publish-prompts` out of the block and committing that) and `shatynska/basis` with `--workflow full`, and in `fuperia/infrastructure`, `shatynska/infrastructure` and `infrastructure-template` with `--workflow direct`, each on its own branch from a fresh trunk, reviewing each diff with the operator. Rollback is reverting this change's commits; a project reverts its own pull request.
+
+## Confirmation
+
+Run on 2026-11-01 in each adopting project, on a branch from its fresh trunk, and merged by the operator after reviewing each pull request:
+
+- `fuperia/commerce-ops` (#843) and `shatynska/basis` (#53) took `--workflow full` and hold `development-workflow` at `2.0.0`. `commerce-ops` converted from `v12` once its `publish-prompts` rule was committed outside the block, and `basis` trimmed what its `## Deployment` repeated.
+- `fuperia/infrastructure` (#93), `shatynska/infrastructure` (#308) and `infrastructure-template` (#21) took `--workflow direct` and hold `development-workflow-direct` at `1.0.0`, with only the marker lines changed.
+
+Both `infrastructure` repositories had tests naming the old marker, revised in their pull requests. A marker's name is therefore something a project's own tests may pin.
+
