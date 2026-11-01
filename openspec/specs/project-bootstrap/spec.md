@@ -776,9 +776,13 @@ The tool SHALL create no workstream.
 
 ### Requirement: A project receives exactly the blocks the manifest lists
 
-The library SHALL carry a manifest at `rules/manifest` listing every managed block a shipped tool writes into a project. It SHALL hold one record per block, records separated by a line `---`, in the order the tool writes them, each with two keys: `name`, which is both the name in the block's markers and the fragment `rules/<name>.md` the block is read from; and `target`, the path of the `AGENTS.md` the block is written into, relative to the project root. It SHALL be written in the flat subset of YAML the backlog's entries use, so that a shell reads it with nothing installed.
+*Modified by `add-a-direct-workflow-variant`: a record may name an alternative fragment, and a project holds one of the two. Every scenario keeps its title.*
+
+The library SHALL carry a manifest at `rules/manifest` listing every managed block a shipped tool writes into a project. It SHALL hold one record per block, records separated by a line `---`, in the order the tool writes them, each with `name` and `target`: `name`, which is both the name in the block's markers and the fragment `rules/<name>.md` the block is read from; and `target`, the path of the `AGENTS.md` the block is written into, relative to the project root. It SHALL be written in the flat subset of YAML the backlog's entries use, so that a shell reads it with nothing installed.
 
 The manifest SHALL list, as its first three records: `development-workflow` into `AGENTS.md`; `backlog` into `docs/backlog/AGENTS.md`; and `workstreams` into `docs/workstreams/AGENTS.md`. A later change may add a record after them.
+
+A record MAY carry a third key, `alternative`, naming a second fragment `rules/<alternative>.md` that is written into the same target in the record's place. A project holds at most one of the two, and the marker it holds says which. `alternative` is what a project chooses between, not a block of its own, so it adds no record.
 
 `scripts/project-init` SHALL write the blocks the manifest lists, each into its target, and SHALL write no managed block the manifest does not list. A version SHALL NOT appear in the manifest: it is the fragment's own, in its frontmatter, beside the text it versions.
 
@@ -1036,3 +1040,48 @@ The file is kept when there are no entries because the tool created it: deleting
 
 - **WHEN** the seeded block is written
 - **THEN** its entry shape states that names, set values and dates are bare, free text is double-quoted with `"` and `\` escaped, lists are inline, nothing is nested, and no value spans lines
+
+### Requirement: A project chooses its workflow when it is initialized
+
+`scripts/project-init` SHALL accept `--workflow <full|direct>`, default `full`, and SHALL document it in `--help`. `full` writes the first record's own fragment and `direct` its alternative. Any other value SHALL produce `BLOCKED` before anything is written.
+
+A block is present in a target where it holds an opening marker of the record's name or of its alternative's. Where one is present, the tool SHALL write neither, and SHALL report it as it reports any block it finds, with the root line `conventions file: block already present` naming `development-workflow-direct` where that is what it holds, and comparing its version against the fragment of the variant it holds; where both are present, it SHALL write neither and report both names. Where `--workflow` was given and names the other one, the report SHALL also name `scripts/project-update --workflow` as what switches it, and the tool SHALL NOT change the block.
+
+A fragment an `alternative` names SHALL count as a fragment the manifest lists: where it is missing, or lacks a `kind` or a `MAJOR.MINOR.PATCH` version, the tool SHALL report `BLOCKED` whichever variant was selected.
+
+**The promoting workflow is the default** (operator, 2026-11-01). A project that runs a product has staging and promotes to production, so that is what a project gets without asking; a repository with no production, or whose job is that every server runs, asks for `direct`.
+
+#### Scenario: A new project gets the promoting workflow
+
+- **WHEN** `project-init` runs with no `--workflow` in a new project
+- **THEN** `AGENTS.md` holds a `development-workflow` block with the text of `rules/development-workflow.md`, and no `development-workflow-direct` block
+
+#### Scenario: Direct is asked for
+
+- **WHEN** `project-init --workflow direct` runs in a new project
+- **THEN** `AGENTS.md` holds a `development-workflow-direct` block with the text of `rules/development-workflow-direct.md`, and no `development-workflow` block
+
+#### Scenario: A missing alternative blocks
+
+- **WHEN** the manifest names an `alternative` whose fragment that copy does not hold
+- **THEN** the outcome is `BLOCKED` and nothing is written, with or without `--workflow`
+
+#### Scenario: An unknown value blocks
+
+- **WHEN** `project-init --workflow staged` runs
+- **THEN** the outcome is `BLOCKED`, the report names `full` and `direct`, and nothing is written
+
+#### Scenario: A project holding one never receives the other
+
+- **WHEN** `project-init` runs in a project whose `AGENTS.md` holds a `development-workflow-direct` block
+- **THEN** no `development-workflow` block is written and the existing block is unchanged
+
+#### Scenario: A direct block is compared with its own fragment
+
+- **WHEN** `project-init` runs in a project holding `development-workflow-direct` at that fragment's version
+- **THEN** the report reads it as matching, names `development-workflow-direct`, and does not say to bring it current
+
+#### Scenario: A contrary choice is reported, not applied
+
+- **WHEN** `project-init --workflow full` runs in a project holding a `development-workflow-direct` block
+- **THEN** the block is unchanged and the report names `scripts/project-update --workflow`
