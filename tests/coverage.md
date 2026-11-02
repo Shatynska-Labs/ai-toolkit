@@ -408,3 +408,17 @@ From the requirement's definition of a shadowing file rather than a scenario: `s
 - **The check**: `lib/plugin-version-rise.sh`, the logic, sourced by the `plugin-version-rise-*.sh` cases over fixture repositories, including three the code review added (`-unreadable-refused`, `-trunk-ref-not-shadowed`, `-quoted-path-counted`), and by `plugin-version-rise-checks-this-repository.sh` over this repository's own branch.
 - **The rule and the manifests**: `plugin-version-rise-rule-stated.sh`, `plugin-manifests-name-no-skill.sh`, `plugin-marketplace-no-skills-array.sh`.
 - **Uncovered**: "discovered in the next session", which needs a Claude Code session; a rise merged after the last fetch, which a local suite cannot see.
+
+## match-backlog-entries-to-a-workstream (79 delta scenarios)
+
+`match-backlog-entries-to-a-workstream` modifies six requirements across `backlog-maintenance`, `project-bootstrap` and `session-workflow`, and adds one to `session-workflow`. 20 scenarios are added or revised and take the cases below; the 59 unchanged scenarios stay with the cases that already covered them, each named in the change's `test-plan.md`.
+
+- **The `workstream` rule and *The seeded block makes `none` the end of a search*** — `backlog-block-none-ends-a-search.sh`.
+- **What placing means and detaching at a workstream's archive** — `workstreams-block-placing-settled.sh` and `workstreams-block-archive-detaches.sh`; the "backlog entry naming no workstream" assertion of `workstreams-seeded-statements.sh` now reads "backlog entry detached from it".
+- **The archive re-read's set and the two bindings** — `workflow-fragments-archive-names-unplaced.sh`, `workflow-fragments-record-binding.sh`, `workflow-fragments-sweep-binding.sh` and `workflow-fragments-binding-restates-no-rule.sh`.
+- **Record reads the Goals and places the entry** — `backlog-skill-record-reads-goals.sh` and `backlog-skill-record-places-entry.sh`.
+- **Sweep gathers the unplaced and detaches by the read** — `backlog-skill-sweep-unplaced.sh` and `backlog-skill-sweep-detaches-by-read.sh`.
+- **A mention in a step's description is not a step** — `backlog-skill-workstreams-names-a-step.sh`.
+- **Proposal and design statements, not delta scenarios** — `backlog-skill-description-follow-ups.sh` and `rules-changelog-placement-records.sh`.
+
+Not covered: whether a session really reads the Goals, and whether it carries out record, sweep and the bindings. The scans show only that the rules and the skill direct those acts. The version assertions of `manifest-alternative-and-versions.sh` are retired, since each version rises.

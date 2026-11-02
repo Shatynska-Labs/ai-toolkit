@@ -3,7 +3,7 @@
 # Requirement: A project receives exactly the blocks the manifest lists
 # Change: add-a-direct-workflow-variant (project-bootstrap, MODIFIED).
 #
-# SPECIFIED: rules/manifest's first three records are development-workflow, backlog and workstreams; the first carries `alternative: development-workflow-direct`; alternative adds no record, so no record is named development-workflow-direct; no record carries a version. rules/development-workflow-direct.md carries a kind and version 1.0.0; rules/development-workflow.md carries version 2.0.0 and alternative_since: 2.0.0.
+# SPECIFIED: rules/manifest's first three records are development-workflow, backlog and workstreams; the first carries `alternative: development-workflow-direct`; alternative adds no record, so no record is named development-workflow-direct; no record carries a version. rules/development-workflow-direct.md carries a kind; rules/development-workflow.md carries alternative_since: 2.0.0. The versions themselves were retired by match-backlog-entries-to-a-workstream: each rises, and manifest-fragments-kind-semver holds their form.
 # DERIVED: records are read by the `---` separators in the file; `name`, `target` and `alternative` are the only keys.
 #
 # Static read (third situation); one mutant per property over a fixture root. Red until tasks 1.1 to 1.3 land (state 1 on the manifest's missing alternative).
@@ -82,8 +82,6 @@ check() {  # ROOT
   printf '%s\n' "$first" | grep -q -E '^alternative:[[:space:]]*development-workflow-direct[[:space:]]*$' || { echo "[alternative]" >&2; return 1; }
   if grep -q -E '^name:[[:space:]]*development-workflow-direct' "$m"; then echo "[no-record]" >&2; return 1; fi
   [ -n "$(frag_key "$root/rules/development-workflow-direct.md" kind)" ] || { echo "[direct-kind]" >&2; return 1; }
-  [ "$(frag_key "$root/rules/development-workflow-direct.md" version)" = 1.0.0 ] || { echo "[direct-version]" >&2; return 1; }
-  [ "$(frag_key "$root/rules/development-workflow.md" version)" = 2.0.0 ] || { echo "[full-version]" >&2; return 1; }
   [ "$(frag_key "$root/rules/development-workflow.md" alternative_since)" = 2.0.0 ] || { echo "[since]" >&2; return 1; }
 }
 mkroot() {
@@ -114,8 +112,6 @@ mutate d keys "\$a path: x" manifest
 mutate e first-three 's/^name: backlog$/name: later/' manifest
 mutate f no-record "\$a ---\nname: development-workflow-direct\ntarget: AGENTS.md" manifest
 mutate g direct-kind '/^kind:/d' development-workflow-direct.md
-mutate h direct-version 's/^version: .*/version: 1.1.0/' development-workflow-direct.md
-mutate i full-version 's/^version: .*/version: 1.9.0/' development-workflow.md
 mutate j since '/^alternative_since:/d' development-workflow.md
 
 check "$TOOLKIT_ROOT" || exit 1

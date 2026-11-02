@@ -255,3 +255,11 @@ The dispatch named `tests/lib.sh`, `tests/cases/lib/static-scan.sh` and `tests/c
 - **Near-miss:** none in the shared arrangement.
 - **Found in test module:** `rules-changelog-version-rise-recorded.sh` holds a `changelog_records` without the `ask` count, and the same `record` and `expect` shape.
 - **Proposed home:** `tests/lib.sh`, for `changelog_records`; the rest stay local.
+
+## Disposition of the local declarations
+
+All five are **kept** local, for one reason: this repository's conventions record no location for a shared arrangement, and the entry `record-this-repositorys-shared-test-arrangement` is where that decision belongs, not this change.
+
+## Retired
+
+Both obsolete assertions were dealt with in task 3.3. `manifest-alternative-and-versions` loses `[direct-version]`, `[full-version]` and mutants `h` and `i`, keeping `[since]`. `workstreams-seeded-statements` asserts "backlog entry detached from it" in place of "backlog entry naming no workstream".

@@ -3,19 +3,19 @@ name: backlog
 description: >
   This skill should be used when the user wants to work on a project's
   backlog in docs/backlog/ or its docs/workstreams/ — "add this to the
-  backlog", "record this as a backlog entry", "what can I pick up from the
-  backlog", "close the x backlog entry", "sweep the backlog for the change I
-  just archived", "audit the backlog", "is the backlog still accurate",
-  "where does the x workstream stand", "what's in flight". It performs six
-  operations in the project it is invoked in: record, pick, close, sweep
-  (the archive re-read, by name and by what the change's merged pull
-  requests touched), audit (parallel read-only agents, applied only on the
-  operator's word) and workstreams (each open workstream's steps and their
-  status, read from the repository). It reads entry and workstream rules
-  from each directory's AGENTS.md. Not for writing them (project-init),
-  nor for converting a single-file docs/backlog.md (scripts/backlog-migrate),
-  nor for opening, proposing or implementing the change an entry names
-  (openspec-new-change, openspec-propose, openspec-apply-change).
+  backlog", "write up these follow-ups as backlog entries",
+  "record the follow-ups found on staging", "where does this entry belong",
+  "what can I pick up from the backlog", "close the x backlog entry", "sweep the backlog
+  for the change I just archived", "audit the backlog", "where does the x
+  workstream stand", "what's in flight". It performs six operations: record,
+  pick, close, sweep (the archive re-read), audit (parallel read-only agents,
+  applied only on the operator's word) and workstreams (each open
+  workstream's steps and status, read from the repository). It reads entry
+  and workstream rules from each directory's AGENTS.md. Not for writing them
+  (project-init), nor for converting a single-file docs/backlog.md
+  (scripts/backlog-migrate), nor for opening, proposing or implementing the
+  change an entry names (openspec-new-change, openspec-propose,
+  openspec-apply-change).
 metadata:
   tags: [project-lifecycle]
 ---
@@ -48,17 +48,18 @@ The checks and gates below bind you only while you run the operation. An entry w
 
 ## record
 
-Write one entry as its own file, `docs/backlog/<name>.md`: its values as frontmatter in the form the README states, its prose and reasons as the body. Create exactly that one file, and change no other entry file and not the README.
+Write one entry as its own file, `docs/backlog/<name>.md`: its values as frontmatter in the form the README states, its prose and reasons as the body. Create exactly that one file, and change no other entry file and not the README; the workstream file whose steps take it is the one other file you may edit.
 
 1. **Fold in.** Where you are in a change, test the work against the fold-in rule the project's workflow states, if it states one. Where the work meets it, say that it can be folded into that change and write no entry.
 2. **Name.** Check the proposed name against the entry files in `docs/backlog/`, every directory under the project's open and archived changes (for OpenSpec, `openspec/changes/` and `openspec/changes/archive/`, where archived names carry a date prefix), and every local and remote branch. If any already uses it, do not write the entry; ask for another name. Refuse `readme`, `agents` and `claude` in any case too: their files would collide with `README.md`, `AGENTS.md` and `CLAUDE.md` where the filesystem ignores case.
 3. **Kind.** Set `kind` by the README's own definition and write the reason in the body: for a change, which delta it owes, which decision it needs, or that it is too large.
 4. **Waits.** Write into `waits_on` only names, of entries or changes. Write a wait on anything else, such as an answer, an access grant or an event, as a condition in `waits_for`.
 5. **Design with.** Search the existing entries for ones naming the same files, specifications or capabilities. Present each as a Design with candidate and say what they share. Write into `design_with` only the candidates the session or the operator confirms share a design, or the README's empty value, `[]` in the seeded README. A shared pointer is evidence of a shared design, not the same thing.
-6. **Workstream.** Default `workstream` to the open workstream the change you are in serves, as its proposal or a workstream's steps name it, and otherwise to the README's absent value, `none` in the seeded README; write another open workstream, or that absent value, where the session or the operator states the entry serves another goal or none. Write only a name an open workstream carries. Where the workstreams README exists, the name check in step 2 also covers workstream names, open and archived.
+6. **Workstream.** The default is the open workstream the change you are in serves, as its proposal or a workstream's steps name it. Read the Goal and Not in scope of every open workstream, and keep or replace that default as the README's `workstream` key directs, asking the operator where more than one Goal is served. What the operator states the entry serves wins over this reading. Write only a name an open workstream carries, or the README's absent value, `none` in the seeded README. Say in your answer which workstream you chose for each entry and why. Where the workstreams README exists, the name check in step 2 also covers workstream names, open and archived.
 7. **Recorded by.** As the README describes it, with the reason in the body.
 8. **Priority.** Where the README names `priority`, set it to the README's default, `normal` in the seeded README, unless the session or the operator states the evidence or the condition the README requires for another value. Propose `high` with its evidence, or `parked` with its `parked_until`, and write either only once the operator confirms it.
 9. **Re-checked.** Set `re_checked` to today's date.
+10. **Place.** Where the entry names an open workstream, add it to that workstream's steps in the same edit, as the workstreams README directs, asking the operator where in the order. Where you do not, say that it is left for the archive and why.
 
 ## pick
 
@@ -79,12 +80,12 @@ Delete the file of the entry you are given. In the same edit, remove its name fr
 
 ## sweep
 
-Given a change, find the entries it completed, made obsolete, unblocked, unparked or made stale, and update each entry's file as the README directs.
+Given a change, find the entries it completed, made obsolete, unblocked, unparked or made stale, and update each entry's file as the README directs. The steps of the change's workstream are the one edit it makes outside the entry files, in the same commit as the entry edits.
 
 1. **What the change touched.** Read it from the change's merged pull requests on the forge, every one of them, since a change takes at least two: `gh pr list --state merged --head <branch> --json number`, then `gh pr view <number> --json files` for each. Where the forge cannot be reached, fall back to the change's specification deltas and the files its design and tasks name, and say that the fallback was used. Do not use the branch's diff against the trunk: by the archive step the branch has been brought back to the trunk, and a squash merge leaves no ancestry, so that diff holds the record alone.
-2. **Which entries.** Those naming the change; those whose `waits_on` names it, with the name proposed removed; those whose `waits_for` it fulfils; parked entries whose condition, their `parked_until`, it fulfils, and `high` entries whose evidence it removed, each with its `priority` proposed as the README directs; those naming a file, specification or capability it touched; and, where the change's archive archives its workstream, those naming that workstream, to be re-pointed or set to the README's absent value as `docs/workstreams/AGENTS.md` directs. The group naming files, specifications or capabilities is the one a search by name misses, because a change that finishes an entry's work seldom names the entry.
+2. **Which entries.** Those naming the change; those whose `waits_on` names it, with the name proposed removed; those whose `waits_for` it fulfils; parked entries whose condition, their `parked_until`, it fulfils, and `high` entries whose evidence it removed, each with its `priority` proposed as the README directs; those naming a file, specification or capability it touched; where the change's archive archives its workstream, those naming that workstream, to be detached as `docs/workstreams/AGENTS.md` directs: re-pointed by the same read, or set to the README's absent value only where it finds none; and, where the change advanced an open workstream its archive does not archive, the entries the **workstreams** operation's *Unplaced* read finds in it, made over the change's working tree as well as the trunk so that the entries this change recorded are among them, each to be placed among the steps, the order asked of the operator, or detached as `docs/workstreams/AGENTS.md` directs, by the same read of the open workstreams' Goals **record** makes. The group naming files, specifications or capabilities is the one a search by name misses, because a change that finishes an entry's work seldom names the entry.
 3. **Present, then edit.** Show each entry with what the change did to it. Make the edits once the session or the operator agrees.
-4. **Where the edit goes.** Run before the archive commit, leave the edit for that commit. Run after the change's record is already on the trunk, make the same edit and say that it is to be delivered as work too small to be a change.
+4. **Where the edit goes.** Run before the archive commit, leave the edit for that commit, the workstream's steps with the entries. Run after the change's record is already on the trunk, make the same edit and say that it is to be delivered as work too small to be a change.
 
 ## audit
 
@@ -102,7 +103,7 @@ Report where each open workstream stands. It is read-only: it writes nothing, op
 
 1. **Steps and status.** For each open workstream, list its steps in order, each with its status — done, in flight, recorded or planned — derived by the step's name, with the sources and precedence the README states. Read change directories and the backlog's entry files from the freshly fetched trunk, and branches and pull requests from the local repository, the remote and the forge. Where the forge cannot be reached, say so and derive from what you can reach.
 2. **Next.** Name as next the first step in list order that is planned, or recorded with an entry pick would list as takeable: unwaited or its wait satisfied, and not parked. Never name a step in flight or done: list order is never a wait.
-3. **Unplaced.** List the entries, and the open changes whose proposals name the workstream, that name it while no step names them, as unplaced. Show each unplaced open change beside the planned steps, since it may be one of them opened under another name.
+3. **Unplaced.** List the entries, and the open changes whose proposals name the workstream, that name it while no step names them, as the README states what names a step, as unplaced. Show each unplaced open change beside the planned steps, since it may be one of them opened under another name.
 4. **Done when.** Where every step is done, say that the workstream's Done when is to be checked.
 
 Given a name, report that workstream alone.
@@ -115,4 +116,5 @@ Given a name, report that workstream alone.
 
 - **Positive** — "Add this to the backlog: the install script should verify the plugin version before writing the managed block." → expected routing: `backlog`.
 - **Positive** — "Where does the test-speed workstream stand, and what's next in it?" → expected routing: `backlog`.
+- **Positive** — "Write up these follow-ups we found on staging as backlog entries, and tell me where each belongs." → expected routing: `backlog`.
 - **Negative** — "Open a change for the `seed-the-worktree-ignore-entry` backlog entry." → expected routing: `openspec-new-change`.
