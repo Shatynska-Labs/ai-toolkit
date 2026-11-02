@@ -24,6 +24,10 @@ With no argument every case runs; naming one or more cases, by file name with or
 
 Each file in `tests/cases/*.sh` runs as its own subprocess in a fresh `mktemp -d` temporary directory (`$TESTDIR`), so no case can observe another's filesystem state. `tests/lib.sh` supplies `assert_exit`, `assert_file`, `assert_file_absent`, `assert_unchanged`, `assert_contains`, `fenced_line` (the line number of a fenced `**<label>**` field, written as a paragraph or a list item), `prose_line` (the line number of the first line outside fenced code containing a phrase), and `offset_in` (a phrase's 1-based offset in a line) — sourced via `$TESTLIB`, which `run.sh` exports. A failed assertion prints to stderr and exits the case non-zero immediately. `run.sh` itself exits non-zero if any case failed.
 
+## The plugin version check
+
+`tests/cases/plugin-version-rise-checks-this-repository.sh` compares the current branch with `origin/main`, so it needs that ref and fails where it is absent rather than passing without having compared. Run `git fetch origin` first: a rise merged since the last fetch is not seen. A failure names a `[TAG]` and the versions it compared, and is met by raising `version` in `.claude-plugin/plugin.json`. `AGENTS.md` states the rule.
+
 ## The report contract
 
 `scripts/project-init` prints a fixed, greppable report to stdout. Cases assert against these tokens, so the script and this suite must agree on them — this is the normative form, written before the script, and section 5 implements against it rather than inventing wording independently.
