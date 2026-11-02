@@ -51,6 +51,30 @@ Two causes:
    - Check whether **archive**'s re-read paragraph should name the sweep the same way.
 5. **The skill's description.** Add trigger phrases for recording follow-ups found during a change: "record the follow-ups found on staging", "write these up as backlog entries", "where does this entry belong". Run `create-skill`'s trigger check after editing it.
 
+## A second occurrence: an entry naming its workstream, never placed among its steps
+
+On 2026-11-02 in commerce-ops, a session closing `answer-a-step-from-its-columns` (step 7 of `work-the-launch-in-the-sheet`) recorded three backlog entries during the change and correctly wrote `workstream: work-the-launch-in-the-sheet` on each:
+
+- `drop-the-fincci-only-column-flag`
+- `edit-a-columns-owning-step-in-the-admin`
+- `register-a-column-launchs-sku-in-stock-base`
+
+None became a step. The archive edited the workstream file (step 7's text, an answered open question, a decision) and swept the backlog, yet left all three outside the step list, beside five older entries naming the same workstream that earlier archives had also left: `retire-a-launch-record-column`, `fill-taken-into-work-as-the-launch-starts`, `give-date-columns-a-date-picker-in-the-sheet`, `link-a-step-result-in-the-next-task`, `file-the-seo-workbook-by-brand-and-model`. The operator noticed that the follow-ups were "only in the backlog"; the eight were placed by a separate pull request (commerce-ops #873). This is the gap after the one above: there the value was wrong; here the value was right and the entry was still not part of the plan.
+
+Causes:
+
+1. **Placement is deferred, so it is forgotten.** `rules/workstreams.md` lets an entry naming a workstream wait to be placed "at the next edit of the workstream, and at the latest at the archive of a change in it". Recording sets the value and moves on; nothing ties the placement to the moment the entry is written.
+2. **The archive's sweep does not look for it.** `skills/backlog/SKILL.md`, **sweep** step 2, gathers the entries naming the change, waiting on it, touching what it touched, and those naming its workstream only where the archive archives that workstream. An entry naming the change's still-open workstream that no step names is in none of those groups, so the sweep that runs at exactly the deadline the rule sets passes it by. The workflow fragment's **archive** paragraph says "place the entries attached to it", which reads as the entries already placed.
+3. **The check that exists is not run.** The skill's **workstreams** operation already lists entries naming a workstream that no step names, as *Unplaced* (step 3), but it is read-only and on request; neither **record** nor **sweep** calls it.
+4. **"No step names it" is ambiguous.** `register-a-column-launchs-sku-in-stock-base` was named inside step 7's description, so a search for its name found it "placed" although it was no step.
+
+## Proposals (second occurrence)
+
+6. **`skills/backlog/SKILL.md`, sweep step 2.** Add a group: every entry whose `workstream` names the change's workstream and that no step of it names — the entries this change recorded among them — each to be placed among the steps or detached, the order asked of the operator, in the record commit. Run the **workstreams** operation's *Unplaced* read for this rather than a second definition.
+7. **`skills/backlog/SKILL.md`, record step 6, and `rules/workstreams.md`.** Where an entry names an open workstream, place it among that workstream's steps in the same edit, asking the operator where in the order, or say plainly that it is left for the archive and why. State the obligation in `rules/workstreams.md` too ("placed when recorded, at the latest at the archive"), so a session that never loads the skill still owes it.
+8. **Define "a step names it"** in `rules/workstreams.md` and the skill: only a step's own name, the backticked name a numbered step begins with. A mention inside a step's description, in Context or in Decisions does not place an entry.
+9. **The workflow fragment's archive paragraph.** Replace "place the entries attached to it" with the concrete set: "every backlog entry whose `workstream` names it and that no step names", so the obligation is checkable by a grep of `^workstream: <name>` against the step names. Consider whether a project may add a deterministic check — a test failing on an entry naming an open workstream that no step names — as a project choice the rules mention, not one they impose.
+
 ## What bears on it
 
 - **The workstream `complete-the-workstream-loop`**: its Goal includes a workstream being "unambiguous about which changes are its own". This change serves that Goal, and its proposal should say so or argue otherwise.
