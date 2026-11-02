@@ -865,6 +865,8 @@ The fragment SHALL state the reason promotion happens in the same change in as f
 
 ### Requirement: A change states the workstream it advances, and archiving re-reads it
 
+*Modified by `match-backlog-entries-to-a-workstream`: the archive re-read names the entries it places by a set that can be checked, the entries naming the workstream that no step names, rather than the entries attached to it. Every scenario keeps its title; one is added.*
+
 *Modified by `list-what-a-project-receives`: a directory's rules are the managed block in its `AGENTS.md`, and the fragment defers to that file rather than to a README. Every scenario keeps its title; a title naming the README reads it as that file.*
 
 *Modified by `one-file-per-backlog-entry`: the backlog is the directory `docs/backlog/`, its entry rules stated in `docs/backlog/README.md`. Every scenario keeps its title.*
@@ -873,7 +875,7 @@ The workflow fragment SHALL direct, at **draft**, that a change's proposal names
 
 The fragment SHALL NOT state, where it routes an identified change to `docs/backlog/`, which workstream the entry takes. That an entry recorded during a change in a workstream takes that workstream is an entry rule, owned by `project-bootstrap` and stated in the backlog's `AGENTS.md`, and the fragment already directs recording as that file directs.
 
-The fragment's **archive** step SHALL direct, where the change advanced a workstream, re-reading that workstream before the record's pull request is opened: placing the entries attached to it, revising the steps the change made obsolete, and archiving the workstream once what finishes it holds, as `docs/workstreams/AGENTS.md` directs, in the commit that carries the record.
+The fragment's **archive** step SHALL direct, where the change advanced a workstream, re-reading that workstream before the record's pull request is opened: placing the entries that name it and that no step names, revising the steps the change made obsolete, and archiving the workstream once what finishes it holds, as `docs/workstreams/AGENTS.md` directs, in the commit that carries the record.
 
 A change is usually smaller than the goal it serves, and an operator running several sessions across several goals otherwise holds in their head which change belongs to which goal and what follows it. The proposal is where a change first states what it is for, so it is where the link is made; the archive is the one moment every change passes through after it lands, so it is where the goal's plan is brought up to date, as it already is for the backlog.
 
@@ -910,6 +912,11 @@ A change is usually smaller than the goal it serves, and an operator running sev
 
 - **WHEN** a session reads the fragment to learn how a workstream is shaped or archived
 - **THEN** the fragment directs it to `docs/workstreams/AGENTS.md`, and states no workstream field, file shape or archive path itself
+
+#### Scenario: The archive re-read names the entries no step names
+
+- **WHEN** a session reads the fragment's **archive** step for a change that advanced a workstream
+- **THEN** it is directed to place the entries that name that workstream and that no step names, and the fragment names no entry field in saying so
 
 ### Requirement: Fragment prose is not hard-wrapped
 
@@ -1006,3 +1013,19 @@ Every requirement `project-bootstrap` and this capability state of the workflow 
 
 - **WHEN** the test is given `rules/development-workflow.md` and `rules/development-workflow-direct.md`
 - **THEN** it passes
+
+### Requirement: Recording and sweeping the backlog are bound to a skill
+
+The workflow fragment SHALL carry two Claude Code bindings naming `ai-toolkit:backlog`: one, under *A second change surfacing*, as what a session uses to record an entry, naming its **record** operation; and one, at the **archive** step, as what a session uses for the entries' part of the re-read, naming its **sweep** operation. Revising a workstream's obsolete steps and archiving it stay the session's. Both forms of the workflow SHALL carry them.
+
+The bindings state which tool carries an obligation out and add no obligation: the rules the entry and the re-read follow stay in `docs/backlog/AGENTS.md` and `docs/workstreams/AGENTS.md`. A session that wrote its entries by hand never met the skill's steps, and nothing in the fragment sent it there.
+
+#### Scenario: Both bindings name a shipped skill
+
+- **WHEN** either workflow fragment is read at *A second change surfacing* and at **archive**
+- **THEN** each carries a Claude Code binding naming `ai-toolkit:backlog`, the first its **record** and the second its **sweep**, and the library ships `skills/backlog/SKILL.md`
+
+#### Scenario: A binding restates no entry rule
+
+- **WHEN** a binding is read for how an entry is written
+- **THEN** it names the skill and the operation, and names no entry field
