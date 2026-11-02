@@ -639,6 +639,8 @@ The tool itself SHALL NOT configure a remote or push. The remote step is the wra
 
 ### Requirement: A workstream register is seeded where none exists
 
+*Modified by `match-backlog-entries-to-a-workstream`: an entry is placed when it is recorded, or left for the archive with the reason said; detaching re-points before it clears, a workstream's archive included; and only a step's own name places anything. Every scenario keeps its title; one is added.*
+
 *Modified by `list-what-a-project-receives`: the rules are a managed block in `docs/workstreams/AGENTS.md`, read from the fragment `rules/workstreams.md`, beside a `CLAUDE.md` importing it, and a register holding them in a README is reported, not converted. Every scenario keeps its title.*
 
 *Modified by `one-file-per-backlog-entry`: a step is recorded where `docs/backlog/` holds an entry of its name, and a step's ordering wait is its entry's `waits_on`.*
@@ -664,9 +666,11 @@ The block SHALL state, as prose a session has loaded once it reads or writes a f
 - that a change is a step of one workstream only: another workstream whose goal also needs it does not list it among its steps, and a step of that workstream that cannot start before the change names it in its backlog entry's `waits_on`, an entry being recorded for that step where it has none;
 - that the file is edited only when the plan or what it holds changes — a step added, removed, reordered or renamed, what finishes it or what is out of scope revised, an open question added or answered, context or a decision added or revised, or the workstream archived;
 - that a workstream is opened when the operator decides a goal needs more than one change, and committed with the plan of the first change that advances it or as work too small to be a change;
-- that a change or a backlog entry may name the workstream it serves before any step names it, and that each such change or entry is placed among the steps or detached at the next edit of the workstream, and at the latest at the archive of a change in it;
+- that a change or a backlog entry may name the workstream it serves before any step names it, that an entry is placed among the steps when it is recorded, or left for the archive with the reason said, and that each such change or entry is placed among the steps or detached at the next edit of the workstream other than one placing a recorded entry, and at the latest at the archive of a change in it;
+- that detaching re-points a change or an entry to another open workstream whose Goal it serves and whose Not in scope does not leave it out, and clears it to `none` only where there is none;
+- that a step names a change or an entry only by its own name, the backticked name a numbered step begins with, and that a mention in a step's description, in Context or in Decisions places nothing;
 - that what finishes a workstream, its Done when, is an observable effect of its Goal — what to look at in the repository, the forge or production, what provokes it where something must, and the result that means the Goal holds — and that every step being done may stand beside that effect where it is wanted but never in its place, since it shows only that the step list was worked through, which a list missing a step satisfies as well;
-- that when what finishes a workstream holds, its file moves to `archive/<YYYY-MM-DD>-<name>.md`, dated the day it is archived, in the commit that carries the record of the change that completed it, after each step not done, other than the change whose record that commit carries, is removed from the steps, first recorded as a backlog entry naming no workstream where it is still wanted and not yet in flight, an in-flight one continuing as its own change, and every backlog entry still naming it is re-pointed or cleared;
+- that when what finishes a workstream holds, its file moves to `archive/<YYYY-MM-DD>-<name>.md`, dated the day it is archived, in the commit that carries the record of the change that completed it, after each step not done, other than the change whose record that commit carries, is removed from the steps, first recorded as a backlog entry detached from it where it is still wanted and not yet in flight, an in-flight one continuing as its own change, and every backlog entry still naming it is re-pointed or cleared by detaching it;
 - that the operator may abandon a workstream whose goal will not be met, which gains an **Abandoned** item after Opened, with the date and the reason, has its steps and entries dealt with as on completion, and is moved to `archive/` the same way, as work too small to be a change;
 - that besides its plan a workstream holds what its steps share: under `## Context`, the research, findings and options considered that the goal was planned from, with why one option was chosen; and under `## Decisions`, the decisions that shape more than one step or were taken before any step's proposal existed, each with who took it, when and why, a decision already recorded in a change's design pointed to rather than copied;
 - that a decision shaping one step only belongs in that step's design, which points to the workstream for what it shares rather than copying it;
@@ -782,6 +786,11 @@ The tool SHALL create no workstream.
 
 - **WHEN** a session reads the seeded file for a change that serves the goals of two open workstreams
 - **THEN** the file directs listing the change among the steps of one workstream only, and the other's dependent step naming it in its backlog entry's `waits_on`, recording that entry where the step has none
+
+#### Scenario: The seeded block settles what placing means
+
+- **WHEN** the seeded block is written
+- **THEN** it states that an entry is placed when recorded or left for the archive with the reason said, that placing a recorded entry is not the edit at which the others fall due, that detaching re-points to another open workstream whose Goal is served and whose Not in scope admits it and clears only where there is none, and that only a step's own name places a change or an entry
 
 ### Requirement: A project receives exactly the blocks the manifest lists
 
@@ -913,6 +922,8 @@ The project root is excluded because its `README.md` is the project's own docume
 
 ### Requirement: The backlog's rules are written where none exist
 
+*Modified by `match-backlog-entries-to-a-workstream`: the rule on `workstream` requires reading the open workstreams' Goals before `none` is written. Every scenario keeps its title; one is added.*
+
 *Replaces `A backlog is seeded where none exists`, removed by `list-what-a-project-receives`: the rules are a managed block in `docs/backlog/AGENTS.md`, read from the fragment `rules/backlog.md`, beside a `CLAUDE.md` importing it; a backlog holding them in a README is reported, not converted; a missing fragment blocks every run. The entry rules are carried over unchanged.*
 
 Where neither `docs/backlog/` nor `docs/backlog.md` exists in the target, the tool SHALL write the backlog's rules as a managed block into `docs/backlog/AGENTS.md`, in both the new-project and the adoption mode, creating `docs/` and `docs/backlog/` if absent, and SHALL give the directory a `CLAUDE.md` as *A directory's rules block is imported by a `CLAUDE.md` beside it* states. Where `docs/backlog/AGENTS.md` holds a block of that name, the tool SHALL leave every file in the directory byte-for-byte unchanged and report the backlog present, with the versions *Workflow rules reach a project as a versioned managed block* requires of a block already present. Where `docs/backlog/` holds `README.md` and no such block, the tool SHALL act as *A directory holding its rules in a README is reported, not converted* states. Where `docs/backlog.md` exists and `docs/backlog/` does not, the tool SHALL leave the file byte-for-byte unchanged, create nothing under `docs/backlog/`, and report that the backlog is present in the single-file shape and that `scripts/backlog-migrate` converts it. Where `docs/backlog/` exists as a directory, not through a symbolic link, holding neither a block of that name nor a `README.md`, the tool SHALL write the block, appending it to an `AGENTS.md` the directory already holds and creating that file otherwise, leave every other file in the directory unchanged, and report the rules written beside existing entries. Where `docs/backlog` exists as a symbolic link or as anything other than a directory, the tool SHALL write nothing there and report that the path is not a directory it will write into, the remaining concerns proceeding as usual.
@@ -935,7 +946,7 @@ The block SHALL state, as prose a session has loaded once it reads or writes a f
 - the frontmatter's form: a name, a value from a stated set or a date is written bare; free text is double-quoted, with `"` and `\` escaped by a backslash; a list is written inline as `[a, b]`, and empty as `[]`; nothing is nested, and no value spans more than one line;
 - the meaning of an absent key: an entry without `priority` is `normal`; without `waits_on` or `design_with`, the empty list; without `workstream`, `none`;
 - the rules on `priority`: that `high` needs evidence of harm happening now — an incident, a measurement, an observation; that a parked entry is not folded into another change before its condition holds; that a parked entry whose condition holds becomes `normal`, or `high` with evidence; and that a `high` entry whose evidence no longer holds becomes `normal`;
-- the rule on `workstream`: that an entry recorded by a change in a workstream takes that workstream unless it serves another goal;
+- the rule on `workstream`: that an entry recorded by a change in a workstream takes that workstream unless it serves another goal or that workstream's Not in scope leaves it out; that otherwise it takes the open workstream whose Goal it serves, found by reading the Goal and Not in scope of every open workstream; and that `none` is written only after that read finds none, or on the operator's word;
 - the shape of an entry's body: what the change is and why, written for a session that has not seen the work that found it, followed by one list giving the reasons the frontmatter's values need — **Kind**, why it is a fix or a change; **Priority**, on a `high` or parked entry only, the evidence or why it is parked; **Recorded by**, why it was not done there — and that further items a project's own rules add to that list are kept as written.
 
 **Kind is `fix` only where the entry owes no specification delta, needs no decision from the operator, and is small enough to review in one sitting**; otherwise it is `change`. The size condition is the workflow's own: a fix is work too small to be a change, which skips `plan`, so an entry too large for one sitting is not one whatever it owes. The reason is stated because the label alone cannot be checked, and an entry's kind is the first thing a session picking work reads.
@@ -944,7 +955,7 @@ The block SHALL state, as prose a session has loaded once it reads or writes a f
 
 **Priority is `high` only with evidence of harm happening now**, and **`parked` only with a condition that can be checked**, under which the entry becomes worth taking. Both are stated so that a later reading can tell whether they still hold, which a bare label cannot show. There is no `low`: an entry not worth taking with no condition under which it would be is one the operator has decided will not be made, which is already a deletion ground. Parked is not a wait: a waiting entry cannot be taken, a parked one can and is deliberately deferred, and an entry may be both. The condition has a key of its own, `parked_until`, because it is what a later reading checks; the reason it was parked is prose, in the body.
 
-**Workstream is not Design with.** Design with groups entries that share a design, a property of the work; Workstream places an entry in a goal's sequence of changes, a property of the plan. Two entries may share either without the other, so neither field stands in for the other. The default is the recording change's workstream because work a change identifies usually serves the goal that change serves, and an entry recorded without it is detached from the plan it belongs to.
+**Workstream is not Design with.** Design with groups entries that share a design, a property of the work; Workstream places an entry in a goal's sequence of changes, a property of the plan. Two entries may share either without the other, so neither field stands in for the other. The default is the recording change's workstream because work a change identifies usually serves the goal that change serves, and an entry recorded without it is detached from the plan it belongs to. **The search is an obligation of the entry rule, not only of the `backlog` skill**, because a session writing an entry by hand owes the same, and `none` written unexamined leaves a fitting goal unserved.
 
 **One entry is one file, and its values are frontmatter.** A backlog shared by every session of a project is edited by several at once, and one file makes their edits conflict where one file per entry keeps them apart. A value a program reads — to build a board, to resolve a wait, to group a workstream — has to be found where it is without reading prose, and the free-text fields of the single file drifted in spelling across projects (`nothing`, `none`, `nothing.`) until no reader could rely on them. **The form is a flat subset of YAML** so that any YAML reader reads it and a shell tool reads it with no parser installed, which this library's tooling requires. **Reasons stay prose in the body**, because they are read by a person deciding, not by a program, and a long quoted value is harder to write and to read than a sentence.
 
@@ -1049,6 +1060,11 @@ The file is kept when there are no entries because the tool created it: deleting
 
 - **WHEN** the seeded block is written
 - **THEN** its entry shape states that names, set values and dates are bare, free text is double-quoted with `"` and `\` escaped, lists are inline, nothing is nested, and no value spans lines
+
+#### Scenario: The seeded block makes `none` the end of a search
+
+- **WHEN** the seeded block is written
+- **THEN** its entry shape states that the Goal and Not in scope of every open workstream are read, that the entry takes the one whose Goal it serves, and that `none` is written only after that read finds none or on the operator's word
 
 ### Requirement: A project chooses its workflow when it is initialized
 
