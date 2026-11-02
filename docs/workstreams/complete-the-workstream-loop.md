@@ -8,8 +8,9 @@
 
 1. `define-what-a-step-is` — a step taken as a fix stops reading as planned, and a change is a step of one workstream only, so its status row and its placement have one answer.
 2. `observe-what-finishes-a-workstream` — `rules/workstreams.md` asks Done when for an observable effect, not "every step is archived".
-3. `review-a-workstream-against-its-goal` — a workstream is reviewed when opened and when its steps change: the steps cover the Goal and agree with its Decisions.
-4. `run-a-workstream-retrospective` — archiving a workstream compares its plan with what happened and routes each lesson to a rule, a skill, a backlog entry, or nowhere.
+3. `match-backlog-entries-to-a-workstream` — an entry takes the workstream whose Goal it serves and is placed among its steps, so `none` follows a search and no entry stays outside the plan it names.
+4. `review-a-workstream-against-its-goal` — a workstream is reviewed when opened and when its steps change: the steps cover the Goal and agree with its Decisions.
+5. `run-a-workstream-retrospective` — archiving a workstream compares its plan with what happened and routes each lesson to a rule, a skill, a backlog entry, or nowhere.
 
 The status lookups first, then the review, then the retrospective. The order is intended, not a wait.
 
