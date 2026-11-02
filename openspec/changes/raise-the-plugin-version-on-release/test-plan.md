@@ -90,6 +90,8 @@ No stack skill question arises: `bash` covers this stack. Convention files name 
 
 ## Missing shared arrangement
 
+**Disposition: every entry kept local.** This project's conventions record no shared arrangement's location, and recording one is a testing-strategy decision, which `record-this-repositorys-shared-test-arrangement` holds.
+
 Dispatched shared arrangement: `tests/lib.sh`. It holds no git fixture. Nothing was written to it. Each entry's proposed home is a new `tests/plugin-version-lib.sh`, beside `tests/task-board-lib.sh` and sourced the same way, unless the entry says otherwise. The set "the 13 fixture cases" means every `plugin-version-rise-*` case except `plugin-version-rise-rule-stated`, the 13 being the cases declaring these names.
 
 | Declared | Declared in | Stands in for | Used by | Near-miss in the shared arrangement | Found in a test module |

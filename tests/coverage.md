@@ -402,3 +402,9 @@ From the requirement's definition of a shadowing file rather than a scenario: `s
 - **What a run prints**: the `project-update-changelog-*.sh` cases, including `-printed-before-a-failure` and `-printed-after-a-partial-conversion`, which hold design decision 3 and no scenario.
 - **The record**: `rules-changelog-version-rise-recorded.sh`, `rules-changelog-second-non-fragment.sh`; `rules-manifest-only-non-fragment.sh` is revised to allow `changelog`.
 - **Uncovered**: the run under bash 3.2 of the new lines, where no bash 3.2 is installed; the wording of the shipped records, which the operator reviewed in the plan.
+
+`raise-the-plugin-version-on-release` adds that the plugin's version rises with what it ships (14 scenarios) and narrows *Skills are discovered without manifest enumeration* (2 scenarios). `test-plan.md` in the change maps each scenario.
+
+- **The check**: `lib/plugin-version-rise.sh`, the logic, sourced by the `plugin-version-rise-*.sh` cases over fixture repositories and by `plugin-version-rise-checks-this-repository.sh` over this repository's own branch.
+- **The rule and the manifests**: `plugin-version-rise-rule-stated.sh`, `plugin-manifests-name-no-skill.sh`, `plugin-marketplace-no-skills-array.sh`.
+- **Uncovered**: "discovered in the next session", which needs a Claude Code session; a rise merged after the last fetch, which a local suite cannot see.
