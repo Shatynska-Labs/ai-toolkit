@@ -39,3 +39,9 @@ See `proposal.md`. `/plugin update` reads the version in `.claude-plugin/plugin.
 ## Migration Plan
 
 The first `/plugin update` after this merges takes the operator's copy from `0.2.0` to `2.0.0`. Where the update does not take from a copy that old, reinstall once.
+
+## Confirmation
+
+The operator confirmed on 2026-11-02, after `/plugin update`, that the version is `2.0.0`. `claude plugin list` under all three of this machine's configurations reports `ai-toolkit` at `2.0.0`, read from `/home/shatynska/projects/shatynska/ai-toolkit`, while `installed_plugins.json` and the plugin cache still say `0.2.0`.
+
+The marketplace here is a `directory` source on that checkout, so what the machine reports follows the checkout. At the merge it was 12 commits behind and at `1.0.0`, and it reported `2.0.0` only once the checkout was fast-forwarded, which the plan did not foresee: on this machine a merge arrives by pulling that checkout, and the version rise alone does not bring it. An install from a Git source was not exercised, nor was a second rise reaching a copy already at `2.0.0`.
