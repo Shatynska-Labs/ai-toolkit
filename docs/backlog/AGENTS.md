@@ -1,4 +1,4 @@
-<!-- ai-toolkit:backlog 1.0.0 sha256:4320396a1c4cf064d9830b21f605a4a090f20eb9319e104061a9376ef789995a -->
+<!-- ai-toolkit:backlog 1.1.0 sha256:378b154d97200ea02459283de0e3d038696605753d9b153f4c5e108f04427ae9 -->
 <!-- Generated. Do not edit inside this block — it is replaced on update.
      Project-specific conventions belong outside the markers. -->
 
@@ -22,7 +22,7 @@ An entry's values are frontmatter, its keys in this order, one per line:
 - `waits_on`: the names of entries or changes that must be archived first, and nothing but names. An entry without `waits_on` waits on the empty list.
 - `waits_for`: present only where the entry waits on something that is not a name, the condition that can be checked, such as a person's answer, an access grant or an event; a wait that is not a name goes in `waits_for`, never in `waits_on`. An entry may carry both.
 - `design_with`: the names of the entries that share a design with this one. An entry without `design_with` designs with the empty list.
-- `workstream`: the workstream the entry is a step of or serves, by name, or `none`. An entry recorded by a change in a workstream takes that workstream unless it serves another goal. An entry without `workstream` is `none`.
+- `workstream`: the workstream the entry is a step of or serves, by name, or `none`. An entry recorded by a change in a workstream takes that workstream unless it serves another goal or that workstream's Not in scope leaves it out. Otherwise it takes the open workstream whose Goal it serves, found by reading the Goal and Not in scope of every open workstream; `none` is written only after that read finds none, or on the operator's word. An entry without `workstream` is `none`.
 - `recorded_by`: the change that identified it, by name, or a double-quoted text where no change did.
 - `re_checked`: the date the entry was last verified against the repository, as `YYYY-MM-DD`.
 

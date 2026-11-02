@@ -9,3 +9,19 @@ version: 2.0.0
 changed: A step taken as a fix is done once a pull request from a branch of its name has merged, a change is a step of one workstream only, and "every step is done", beside a Done when's effect, replaces "every step is archived".
 ask: Where one change is a step of two workstreams, keep it in one, and name it in `waits_on` of the backlog entry of the other's step that cannot start before it, recording that entry where there is none.
 ask: Where an open workstream's Done when still says "every step is archived", change it to "every step is done", since a step taken as a fix is never archived.
+---
+name: backlog
+version: 1.1.0
+changed: `none` is written only after the Goal and Not in scope of every open workstream were read, or on the operator's word, and an entry that a workstream's Not in scope leaves out takes the open workstream whose Goal it serves.
+---
+name: workstreams
+version: 2.1.0
+changed: An entry is placed among the steps when it is recorded, or left for the archive with the reason said; detaching re-points before it clears, a workstream's archive included; and only a step's own name places a change or an entry.
+---
+name: development-workflow
+version: 2.1.0
+changed: The archive re-read places the entries that name the workstream and that no step names, and Claude Code bindings send recording and that re-read to the backlog skill.
+---
+name: development-workflow-direct
+version: 1.1.0
+changed: The archive re-read places the entries that name the workstream and that no step names, and Claude Code bindings send recording and that re-read to the backlog skill.

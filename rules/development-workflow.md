@@ -1,6 +1,6 @@
 ---
 kind: standing-constraint
-version: 2.0.0
+version: 2.1.0
 alternative_since: 2.0.0
 ---
 
@@ -119,7 +119,9 @@ A promotion whose smoke check fails leaves production running the promoted image
 
 Production runs behind the trunk by every merge not yet promoted. That is the pipeline working, not drift. The previous release a change must stay compatible with is the one production runs, not the trunk's last merge, because rollback is a promotion: open a change that removes what the previous release uses only once production runs a release that no longer uses it.
 
-**archive** — once the effect is confirmed on staging or the gate waived, **and the change is in production**, bring the branch back to the freshly fetched trunk, commit the change's specification record there, and open a pull request for it: the last of the change's pull requests. The work is on the trunk by now, however it was merged, so bringing the branch back to it discards nothing. Before opening that pull request, re-read `docs/backlog/` for the entries this change completed, made obsolete, unblocked or made stale (including entries naming files or specifications it touched, not only entries naming it) and update each as its `AGENTS.md` directs, in the commit that carries the record. Where the change advanced a workstream, re-read it the same way: place the entries attached to it, revise the steps the change made obsolete, and archive it once what finishes it holds, as `docs/workstreams/AGENTS.md` directs, in the same commit.
+**archive** — once the effect is confirmed on staging or the gate waived, **and the change is in production**, bring the branch back to the freshly fetched trunk, commit the change's specification record there, and open a pull request for it: the last of the change's pull requests. The work is on the trunk by now, however it was merged, so bringing the branch back to it discards nothing. Before opening that pull request, re-read `docs/backlog/` for the entries this change completed, made obsolete, unblocked or made stale (including entries naming files or specifications it touched, not only entries naming it) and update each as its `AGENTS.md` directs, in the commit that carries the record. Where the change advanced a workstream, re-read it the same way: place the entries that name it and that no step names, revise the steps the change made obsolete, and archive it once what finishes it holds, as `docs/workstreams/AGENTS.md` directs, in the same commit.
+
+_Claude Code binding:_ carry out the entries' part of this re-read with `ai-toolkit:backlog`'s **sweep**.
 
 A change confirmed on staging and never promoted is not archived: its record would say a thing is delivered that production has never run. Where a change is deliberately not going to production — a documentation-only merge is the ordinary case — say so and archive it on the operator's word, which is a waiver of **promote**, distinct from a waiver of **confirm**, and is recorded the same way.
 
@@ -143,6 +145,8 @@ While applying, the derived tests fail by design until the implementation is com
 
 - Where the change in progress **depends** on it: record the dependency and the wait in the current change's own artifacts, then at most open the identified change and recommend it be continued in a separate session.
 - Where it **does not**: record it in `docs/backlog/`. That is what is owed; opening the identified change instead is the option.
+
+_Claude Code binding:_ record an entry with `ai-toolkit:backlog`'s **record**.
 
 *Opening* one means a branch of its own and a `handoff.md`, with no proposal — why the change was identified, what bears on it, and what it must not undo. Place it in the new change's own directory in this project's change-record layout — for OpenSpec, `openspec/changes/<name>/handoff.md`. The session that takes it up writes the proposal. Commit that branch at once: the session that opened it is not returning to it, so no later commit of its own will carry the handoff.
 

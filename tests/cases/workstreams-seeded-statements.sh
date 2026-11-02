@@ -64,7 +64,7 @@ assert_contains "$r" "at the latest at the archive of a change in it" "attached 
 # shellcheck disable=SC2016 # backticks are literal markdown, not expansions
 assert_contains "$r" '`archive/<YYYY-MM-DD>-<name>.md`' "archived to a dated file"
 assert_contains "$r" "in the commit that carries the record" "in the record's commit"
-assert_contains "$r" "backlog entry naming no workstream" "a still-wanted step kept as an entry naming no workstream"
+assert_contains "$r" "backlog entry detached from it" "a still-wanted step kept as an entry detached from the workstream"
 assert_contains "$r" "continues as its own change" "an in-flight step continues as its own change"
 assert_contains "$r" "re-point or clear every backlog entry still naming it" "entries re-pointed or cleared"
 assert_contains "$r" "**Abandoned**" "abandonment line"
