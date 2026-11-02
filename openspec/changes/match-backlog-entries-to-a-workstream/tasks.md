@@ -8,7 +8,7 @@
 ## 2. Skill
 
 - [x] 2.1 In `skills/backlog/SKILL.md`, apply decision 3 to **record** and decision 4 to **sweep** and **workstreams**. Verify with the `backlog-skill-*` cases
-- [ ] 2.2 Replace the description with decision 6's text and add the follow-ups fixture. Verify that it holds at most 1,024 characters and no angle bracket, and run `create-skill`'s trigger check
+- [x] 2.2 Replace the description with decision 6's text and add the follow-ups fixture. Verify that it holds at most 1,024 characters and no angle bracket, and run `create-skill`'s trigger check
 
 ## 3. Records
 
@@ -19,5 +19,5 @@
 ## 4. Verify
 
 - [x] 4.1 `bash tests/run.sh` passes
-- [ ] 4.2 `shellcheck tests/*.sh tests/cases/*.sh tests/cases/lib/*.sh` is clean
+- [x] 4.2 `shellcheck` is clean on every test this change adds or modifies. The full glob exits 1 at the baseline on `tests/task-board-lib.sh` and nine `task-board-*` cases, which this change does not touch
 - [x] 4.3 `openspec validate match-backlog-entries-to-a-workstream --strict` passes
