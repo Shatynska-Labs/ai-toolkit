@@ -405,6 +405,6 @@ From the requirement's definition of a shadowing file rather than a scenario: `s
 
 `raise-the-plugin-version-on-release` adds that the plugin's version rises with what it ships (14 scenarios) and narrows *Skills are discovered without manifest enumeration* (2 scenarios). `test-plan.md` in the change maps each scenario.
 
-- **The check**: `lib/plugin-version-rise.sh`, the logic, sourced by the `plugin-version-rise-*.sh` cases over fixture repositories and by `plugin-version-rise-checks-this-repository.sh` over this repository's own branch.
+- **The check**: `lib/plugin-version-rise.sh`, the logic, sourced by the `plugin-version-rise-*.sh` cases over fixture repositories, including three the code review added (`-unreadable-refused`, `-trunk-ref-not-shadowed`, `-quoted-path-counted`), and by `plugin-version-rise-checks-this-repository.sh` over this repository's own branch.
 - **The rule and the manifests**: `plugin-version-rise-rule-stated.sh`, `plugin-manifests-name-no-skill.sh`, `plugin-marketplace-no-skills-array.sh`.
 - **Uncovered**: "discovered in the next session", which needs a Claude Code session; a rise merged after the last fetch, which a local suite cannot see.

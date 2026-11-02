@@ -21,7 +21,8 @@
 
 unset GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE
 
-PVR_TRUNK=origin/main
+# The full ref: a local branch or tag named origin/main would shadow the short one.
+PVR_TRUNK=refs/remotes/origin/main
 PVR_MANIFEST=.claude-plugin/plugin.json
 
 # pvr_refuse TAG REASON: reports the refusal; returns 1 for the caller's return.
@@ -89,7 +90,8 @@ pvr_names_something() {
 
 plugin_version_check() {
   local root="$1"
-  local base tip_text base_text tip_v base_v now_v diff
+  local base tip_text base_text tip_v base_v now_v
+  local diff_status=0
   local status path shipped=0 required=1 before after why=""
 
   if ! git -C "$root" rev-parse --verify --quiet "$PVR_TRUNK^{commit}" >/dev/null 2>&1; then
@@ -114,12 +116,16 @@ plugin_version_check() {
   # Compared with the working tree, so an uncommitted edit counts and an
   # untracked file does not; --no-renames makes a rename a removal and an
   # addition (design decision 3).
-  if ! diff="$(git -C "$root" -c core.quotePath=false diff --no-renames --name-status "$base" -- 2>/dev/null)"; then
+  # -z, because git quotes a path holding a tab, a quote or a backslash, and a
+  # quoted path would match no shipped directory.
+  # --quiet exits 1 for a difference and above that for a failure.
+  git -C "$root" diff --quiet "$base" -- >/dev/null 2>&1 || diff_status=$?
+  if [ "$diff_status" -gt 1 ]; then
     pvr_refuse unreadable "git diff against the merge base $base failed in $root"
     return 1
   fi
 
-  while IFS=$'\t' read -r status path; do
+  while IFS= read -r -d '' status && IFS= read -r -d '' path; do
     [ -n "$path" ] || continue
     case "$path" in
       skills/*|agents/*|rules/*|scripts/*) ;;
@@ -146,7 +152,7 @@ plugin_version_check() {
         fi
         ;;
     esac
-  done <<< "$diff"
+  done < <(git -C "$root" diff --no-renames --name-status -z "$base" -- 2>/dev/null)
 
   echo "compared base=$base base_version=$base_v trunk_version=$tip_v version=$now_v shipped=$shipped"
 

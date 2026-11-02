@@ -69,7 +69,7 @@ fixture_base="$(git -C "$R" rev-parse origin/main)"
 case "$OUT" in *"compared base=$fixture_base base_version=2.0.0 "*" version=2.0.0 shipped=1"*) ;;
   *) die "the report does not name the fixture's own base, version and diff: $OUT" ;; esac
 
-base="$(git -C "$TOOLKIT_ROOT" merge-base HEAD origin/main)" || die "no merge base of HEAD and origin/main in $TOOLKIT_ROOT"
+base="$(git -C "$TOOLKIT_ROOT" merge-base HEAD refs/remotes/origin/main)" || die "no merge base of HEAD and origin/main in $TOOLKIT_ROOT"
 version="$(sed -n -E 's/.*"version"[[:space:]]*:[[:space:]]*"([^"]*)".*/\1/p' "$TOOLKIT_ROOT/.claude-plugin/plugin.json" | head -n 1)"
 [ -n "$version" ] || die "no version read from this repository's plugin.json"
 shipped="$(git -C "$TOOLKIT_ROOT" diff --no-renames --name-only "$base" -- skills agents rules scripts | grep -c '' || true)"
