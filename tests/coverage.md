@@ -422,3 +422,15 @@ From the requirement's definition of a shadowing file rather than a scenario: `s
 - **Proposal and design statements, not delta scenarios** — `backlog-skill-description-follow-ups.sh` and `rules-changelog-placement-records.sh`.
 
 Not covered: whether a session really reads the Goals, and whether it carries out record, sweep and the bindings. The scans show only that the rules and the skill direct those acts. The version assertions of `manifest-alternative-and-versions.sh` are retired, since each version rises.
+
+## review-a-workstream-against-its-goal (48 delta scenarios)
+
+`review-a-workstream-against-its-goal` adds the `workstream-review` capability (22 scenarios), modifies two `change-review` requirements and adds one (15), and adds one `session-workflow` requirement (11). 41 scenarios take the cases below, each for what a static read can hold; `test-plan.md` in the change's archive maps every scenario to its scans.
+
+- **The workstream reviewer's contract, questions, severity, stance and report** — `workstream-reviewer-description-names-inputs.sh`, `workstream-reviewer-no-write-grant.sh`, `workstream-reviewer-dispatch-contract.sh`, `workstream-reviewer-five-questions.sh`, `workstream-reviewer-verdict-and-severity.sh`, `workstream-reviewer-stays-inside-the-plan.sh`, `workstream-reviewer-data-stance.sh`, `workstream-reviewer-evidence-levels.sh` and `workstream-reviewer-report-structure.sh`.
+- **The plan reviewer takes a workstream file** — `change-plan-reviewer-workstream-file.sh` and `change-plan-reviewer-evidence-level-decisions.sh`.
+- **When a workstream is reviewed, its loop and its binding, in both forms** — `workflow-fragments-workstream-review-trigger.sh`, `workflow-fragments-workstream-review-loop.sh` and `workflow-fragments-workstream-review-binding.sh`; `workflow-fragments-differ-only-in-ship.sh` holds the two forms identical.
+- **The plan review is given the workstream** — `workflow-fragments-plan-review-role-names-workstream.sh` and `workflow-fragments-plan-review-binding-supplies-workstream.sh`.
+- **Proposal and design statements, not delta scenarios** — `rules-changelog-workstream-review-records.sh`.
+
+Not covered: the seven `change-review` scenarios the MODIFIED requirements keep word for word, which describe reviewer conduct no case reads, and, for every covered scenario, whether an agent or a session does what the text directs. The two agents' conduct is held by the trigger and cold-run checks recorded in `agents/workstream-reviewer.checks.yaml` and `agents/change-plan-reviewer.checks.yaml`.
