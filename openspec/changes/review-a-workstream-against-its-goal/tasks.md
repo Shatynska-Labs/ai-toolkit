@@ -1,7 +1,7 @@
 ## 1. The agent
 
-- [ ] 1.1 Present the agent's proposed frontmatter and body outline to the operator, `create-agent`'s Checkpoints 1 and 3. Verify that the operator approved them before any file is written
-- [ ] 1.2 Write `agents/workstream-reviewer.md` to design.md decision 1 and the `workstream-review` spec. Verify with `create-agent`'s post-write validation and the derived cases
+- [x] 1.1 Present the agent's proposed frontmatter and body outline to the operator, `create-agent`'s Checkpoints 1 and 3. Verify that the operator approved them before any file is written
+- [x] 1.2 Write `agents/workstream-reviewer.md` to design.md decision 1 and the `workstream-review` spec. Verify with `create-agent`'s post-write validation and the derived cases
 
 ## 2. The plan review and the checks
 
