@@ -1,6 +1,6 @@
 ---
 kind: standing-constraint
-version: 2.1.0
+version: 2.2.0
 alternative_since: 2.0.0
 ---
 
@@ -66,9 +66,9 @@ Always write the family prefix: `plan:reviewing` and `build:reviewing` dispatch 
 
 Where a workstream in `docs/workstreams/` names this change among its steps, or the change serves one's goal, the proposal names that workstream; otherwise it states that the change advances none. Where the change is one of several a goal needs and no workstream holds them, propose opening one, as that directory's `AGENTS.md` directs.
 
-**review → fix → approve** — dispatch review against the complete artifact set, never a package still being written. Fix and re-review until the verdict permits proceeding, bounded at six rounds; on reaching it, report where the loop stands and what is outstanding, and ask before continuing. A conditional pass is permission conditional on the fixes it names: apply them and continue without a further round. Where the reviewer judges the concept unsound rather than the artifacts defective, stop and raise it immediately, whatever the count.
+**review → fix → approve** — dispatch review against the complete artifact set, with the workstream its proposal names, never a package still being written. Fix and re-review until the verdict permits proceeding, bounded at six rounds; on reaching it, report where the loop stands and what is outstanding, and ask before continuing. A conditional pass is permission conditional on the fixes it names: apply them and continue without a further round. Where the reviewer judges the concept unsound rather than the artifacts defective, stop and raise it immediately, whatever the count.
 
-_Claude Code binding:_ dispatch `ai-toolkit:change-plan-reviewer` once every artifact the change calls for is complete. Do not use `/code-review` for this gate — it reads a diff, and at this point there is none. On `FIX REQUIRED` fix and re-dispatch; on `CONDITIONALLY APPROVED` apply the `[MINOR]` fixes and continue; on `APPROVED` continue; on `REJECTED` stop and raise it.
+_Claude Code binding:_ dispatch `ai-toolkit:change-plan-reviewer` once every artifact the change calls for is complete, supplying the workstream's file where the proposal names one. Do not use `/code-review` for this gate — it reads a diff, and at this point there is none. On `FIX REQUIRED` fix and re-dispatch; on `CONDITIONALLY APPROVED` apply the `[MINOR]` fixes and continue; on `APPROVED` continue; on `REJECTED` stop and raise it.
 
 **commit** — commit the approved plan before tests are derived from it; the tests map to that baseline.
 
@@ -153,6 +153,10 @@ _Claude Code binding:_ record an entry with `ai-toolkit:backlog`'s **record**.
 Such a branch is created and left: it takes no working tree and does not become the branch this session works on.
 
 `docs/backlog/` holds identified changes, one file per entry, each the separate proposed change the scope rule calls for, recorded rather than opened. It sits outside any change, because a note kept inside one is archived with it: it is the change succeeding, not the session ending, that would lose it. Its `AGENTS.md` states how an entry is written and when it is deleted.
+
+**A workstream's plan.** An independent reviewer checks that a workstream's steps reach what it is for, agree with what it has decided and leave out what it leaves out, and that what finishes it can be observed. This happens before the commit that opens it, and before a commit whose edit adds or removes a step, changes what a step does, or changes what the workstream is for, what finishes it, what it leaves out or what it has decided, whether or not the edit belongs to a change. A commit holding several such edits takes one review. Renaming or reordering steps, adding to what the workstream knows, and archiving it take none, and it adds no stage to a change. Fix and re-review until the verdict permits proceeding, bounded at six rounds; on reaching it, report where the loop stands and what is outstanding, and ask before continuing. A conditional pass is permission conditional on the fixes it names: apply them and continue without a further round. Where the reviewer judges the concept unsound rather than the plan defective, stop and raise it immediately, whatever the count. A fix that changes the plan's substance rather than its wording is the operator's to decide; where the operator decides to leave a defect, commit on that word and say so.
+
+_Claude Code binding:_ dispatch `ai-toolkit:workstream-reviewer`. On `FIX REQUIRED` fix what is the session's to fix, take the rest to the operator, and re-dispatch unless the operator left what remains; on `CONDITIONALLY APPROVED` apply the `[MINOR]` fixes and continue; on `APPROVED` continue; on `REJECTED` stop and raise it.
 
 **Assumptions.** Do not silently invent a requirement that was not stated and cannot reasonably be inferred; where an important decision cannot be inferred, ask rather than guess. Record significant decisions in this project's own artifacts rather than in conversation history alone.
 
