@@ -220,3 +220,7 @@ The dispatch named `tests/lib.sh` and `tests/cases/lib/line-scan.sh`, `static-sc
 - **Near-miss:** none.
 - **Found in test module:** no.
 - **Proposed home:** none. Each fixture is specific to its scans.
+
+## Disposition of the local declarations
+
+All six entries above are **kept** local. The fixture files are kept for the reason their entry gives. The other five are kept for one reason: this repository's conventions record no location for a shared arrangement, and the backlog entry `record-this-repositorys-shared-test-arrangement` is where that decision belongs, not this change. `tools_of` and `changelog_records` now have copies in three test files each, which that entry should weigh.
