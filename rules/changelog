@@ -25,3 +25,11 @@ changed: The archive re-read places the entries that name the workstream and tha
 name: development-workflow-direct
 version: 1.1.0
 changed: The archive re-read places the entries that name the workstream and that no step names, and Claude Code bindings send recording and that re-read to the backlog skill.
+---
+name: development-workflow
+version: 2.2.0
+changed: A workstream is reviewed by an independent reviewer before the commit that opens it and before one that changes its plan, bounded at six rounds, and the plan review is given the workstream its proposal names.
+---
+name: development-workflow-direct
+version: 1.2.0
+changed: A workstream is reviewed by an independent reviewer before the commit that opens it and before one that changes its plan, bounded at six rounds, and the plan review is given the workstream its proposal names.
