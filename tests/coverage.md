@@ -434,3 +434,14 @@ Not covered: whether a session really reads the Goals, and whether it carries ou
 - **Proposal and design statements, not delta scenarios** — `rules-changelog-workstream-review-records.sh`.
 
 Not covered: the seven `change-review` scenarios the MODIFIED requirements keep word for word, which describe reviewer conduct no case reads, and, for every covered scenario, whether an agent or a session does what the text directs. The two agents' conduct is held by the trigger and cold-run checks recorded in `agents/workstream-reviewer.checks.yaml` and `agents/change-plan-reviewer.checks.yaml`.
+
+## report-a-tasks-kind-and-wait (98 delta scenarios)
+
+`report-a-tasks-kind-and-wait` modifies one `project-bootstrap` requirement, four `backlog-maintenance` requirements and two `task-board` requirements. 28 scenarios are added or revised and take the cases below; the unchanged scenarios stay with the cases that already covered them, each named in the change's `test-plan.md`.
+
+- **The seeded block's `need` and `waits_for_type`** — `backlog-dir-seeded-structured-keys-need-and-type.sh` and `backlog-dir-seeded-fields-are-a-list-with-need.sh`, which replace `backlog-dir-seeded-structured-keys.sh` and `backlog-dir-seeded-fields-are-a-list.sh`, retired as the test plan proposed; `backlog-dir-seeded-need-values.sh`, `backlog-dir-seeded-need-step-not-must.sh`, `backlog-dir-seeded-waits-for-types.sh` and `backlog-dir-seeded-untyped-condition-valid.sh`.
+- **Record, pick, audit and older shapes** — `backlog-skill-record-need.sh`, `backlog-skill-record-types-condition.sh`, `backlog-skill-pick-need-order.sh`, `backlog-skill-audit-waits-for-type.sh` and `backlog-skill-older-shape-untyped-condition.sh`.
+- **The JSON task's fields and readiness** — the ten `task-board-json-*` cases the test plan names; `task-board-json-keys-and-version.sh` asserts the revised task key set.
+- **The page** — `task-board-entry-kind-and-need.sh`, `task-board-entry-waits-on-done.sh`, `task-board-entry-typed-condition.sh` and `task-board-entry-unchecked-wait-warned.sh`.
+
+Not covered: whether a session really proposes `need` only with the operator's word, types a condition as its wording states, and orders pick by need. The scans show only that the rules and the skill direct those acts.

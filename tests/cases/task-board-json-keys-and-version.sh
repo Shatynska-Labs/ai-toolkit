@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Requirement: The tool reports the board as JSON
-# Change: report-the-board-as-json (task-board, ADDED).
+# Change: report-the-board-as-json (task-board, ADDED); the task key set revised by report-a-tasks-kind-and-wait.
 #
 # SPECIFIED: schema_version is 1, and the document, trunk, a workstream, a step and a task hold the keys the requirement names.
 # DERIVED: the sets are exact (design, Risks: a case fixes the key set, so a change to it has to touch the case).
@@ -72,4 +72,4 @@ jis @ '["forge","forge_limit","project","remote_branches_read","schema_version",
 jis trunk.@ '["branch","commit","ref","state"]'
 jis workstreams:ws-a.@ '["active","done_when","goal","name","steps","summary","warnings"]'
 jis workstreams:ws-a.steps:a-step.@ '["description","name"]'
-jis tasks:a-step.@ '["body","closed_workstream","last_commit","merge_unchecked","name","parts","priority","stage","status","summary","unplaced","waits_on","warnings","workstreams"]'
+jis tasks:a-step.@ '["body","closed_workstream","kind","last_commit","merge_unchecked","name","need","parked_until","parts","priority","readiness","stage","status","summary","unplaced","waits_for","waits_for_type","waits_on","waits_on_done","warnings","workstreams"]'

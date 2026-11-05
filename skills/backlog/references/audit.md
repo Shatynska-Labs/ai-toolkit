@@ -25,7 +25,8 @@ Return, for each entry, by its file's name:
   - `obsolete`: done, or no longer needed. Name the change or pull request that did it, or what made it unnecessary;
   - `waiting`: blocked, and its trigger has not fired. Name the trigger and how you checked it. If the trigger *has* fired, say so: that entry is takeable, not waiting.
 - **Priority** — where the README names `priority`: for a `high` entry, whether the evidence it names still holds; for a `parked` one, whether its `parked_until` now holds, with the evidence either way. A parked entry whose condition holds is unparked; a `high` one whose evidence no longer holds is stale.
-- **Waits for** — for an entry carrying `waits_for`, whether the condition now holds, with the evidence. One that holds makes the entry takeable once updated.
+- **Waits for** — for an entry carrying `waits_for`, whether the condition now holds, with the evidence. One that holds makes the entry takeable once updated. Where the README names `waits_for_type`, say whether the entry's `waits_for_type` states the kinds of wait the condition holds; where it has none, propose the types. Report a `waits_for_type` carried without `waits_for`.
+- **Need** — propose no `need`: it is the operator's judgement, not a fact you can verify.
 - **Names** — whether every name in the entry's `waits_on` and `design_with` is an entry or a change, open or archived. An unknown name, neither an entry nor a change, is a stale fact.
 - **Workstream** — where the README names `workstream`: whether the workstream the entry names is open, a file in `docs/workstreams/` and not under its `archive/`. An entry naming a workstream that is archived or absent is stale.
 - **Kind** — one of `fix`, `change` or `fix?`, with the reason: whether it owes a specification delta, whether it needs a decision from the operator, and whether it fits one review sitting. `fix?` is for an entry that owes no delta and no decision but whose size you cannot settle; say what makes it uncertain.
@@ -40,7 +41,7 @@ The skill merges every agent's return into one report, in these sections, each l
 
 1. **Done or obsolete**: proposed for deletion.
 2. **Recorded twice**: pairs (or more) that are one change, as duplicates proposed to merge into one entry under one name. An agent sees only its own range, so the skill compares across ranges for this.
-3. **Stale facts**: each with its correction, among them each `high` entry whose evidence no longer holds, its `priority` corrected as the README directs, each entry naming a workstream that is archived or absent, proposed re-pointed to an open workstream or set to the README's absent value (`none` in the seeded README), and each entry naming an unknown name in `waits_on` or `design_with`.
+3. **Stale facts**: each with its correction, among them each `high` entry whose evidence no longer holds, its `priority` corrected as the README directs, each entry naming a workstream that is archived or absent, proposed re-pointed to an open workstream or set to the README's absent value (`none` in the seeded README), each entry naming an unknown name in `waits_on` or `design_with`, each condition whose type is wrong or missing, with the types proposed, and each `waits_for_type` carried without `waits_for`.
 4. **Partly done**: each with what remains, proposed as a rewrite of the entry.
 5. **Now unblocked or unparked**: entries whose wait is satisfied, proposed with the archived names removed from `waits_on` and a `waits_for` that holds removed, and parked entries whose `parked_until` now holds, with the evidence that it holds and their `priority` proposed as the README directs.
 6. **Groups**: entries that share a design, proposed for `design_with`.
