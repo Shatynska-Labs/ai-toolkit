@@ -226,6 +226,8 @@ The dispatch names no shared test arrangement: this repository records no locati
 4. **`fenced_fm_keys`, `check_keys`** — declared in `backlog-dir-seeded-structured-keys-need-and-type`; **`fenced_fm_keys`, `fenced_item_line`, `check_list`** — declared in `backlog-dir-seeded-fields-are-a-list-with-need`. Stand in for: reading the seeded block's fenced example entry. Found in test modules: `tests/cases/backlog-dir-seeded-structured-keys.sh` and `tests/cases/backlog-dir-seeded-fields-are-a-list.sh`, revised here for the eleven keys and the four reasons. No near-miss outside the glob. Proposed home: none named.
 5. **`need_left_alone`** — declared in `backlog-skill-audit-waits-for-type`. Stands in for: holding that every line of a file naming `` `need` `` negates it. Not found elsewhere; no near-miss. Proposed home: none named.
 
+**Disposition (implementation, 2026-11-05):** every entry above is **kept** local. This repository's conventions record no location for a shared test arrangement (its backlog holds `record-this-repositorys-shared-test-arrangement`), so creating one or naming where it lives is a decision about the testing strategy, not a step of this change.
+
 ## Unresolved project questions
 
 1. **Where the shared test arrangement is.** Neither `AGENTS.md`, `tests/README.md` nor `tests/coverage.md` names a shared test arrangement or states there is none; `tests/README.md` describes `tests/lib.sh` and `tests/task-board-lib.sh` as helpers, and `tests/cases/lib/static-scan.sh` describes itself as "shared machinery". Assumption taken: the two files outside the glob may be sourced; `tests/cases/lib/*` may not, being inside the glob. Depending on it: every case in *Missing shared arrangement* entries 1, 3 and 4.
