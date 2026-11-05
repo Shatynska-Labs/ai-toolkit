@@ -2,7 +2,7 @@
 
 **Goal**: the operator sees all of one project's tasks on one board read from its repository, grouped by workstream with each step's status, with the tasks no workstream holds beside them, and with what is in work first, each change shown with its stage and against its workstream, so that the project's work stays findable without holding it in memory.
 
-**Done when**: this library ships a tool that, run in a project on the directory shape, writes one HTML file opening with every task in flight, its stage and the workstream it belongs to, then showing each open workstream with its steps in order and each step's status, a step with no backlog entry among them as planned, and the entries naming no workstream in a group of their own; and a step's status on the board matches what the `backlog` skill's **workstreams** operation reports for it; and every step is done, since reporting the board as JSON, summaries and grouping are wanted whatever the page shows.
+**Done when**: this library ships a tool that, run in a project on the directory shape, writes one HTML file opening with every task in flight, its stage and the workstream it belongs to, then showing each open workstream with its steps in order and each step's status, a step with no backlog entry among them as planned, and the entries naming no workstream in a group of their own; and a step's status on the board matches what the `backlog` skill's **workstreams** operation reports for it; and every step is done, since reporting the board as JSON, summaries, grouping, and a task's kind, need and wait are wanted whatever the page shows.
 
 **Steps**:
 
@@ -12,6 +12,7 @@
 4. `open-the-board-from-a-session` — asking in a session shows the board, through a `task-board` skill and an `--open` flag that finds the system's opener.
 5. `give-tasks-a-summary` — backlog entries and workstreams gain an optional one-line summary, expected of new ones, for a list to show.
 6. `group-tasks-into-workstreams` — the `backlog` skill groups entries that have no workstream into a new or existing workstream, and moves a task from one workstream to another, so the board's contents are changed by asking in a session.
+7. `report-a-tasks-kind-and-wait` — an entry states its need and the kind of each wait, and the tool reports a task's kind, need, wait and readiness, so a board shows whether a task is a fix, whether it is required, and whose move it waits on.
 
 - **Not in scope**: a board over several projects, a local server, any page that updates itself, and editing from the page, all of which belong to `dev-task-board`; workstreams nested in workstreams; a tracker outside the repository (ClickUp, Linear, GitHub Projects), two-way or not; storing status in an entry; migrating each consuming project, which each does in a pull request of its own.
 - **Open questions**: whether `open-the-board-from-a-session` is still wanted once `dev-task-board` exists; whether a checker refusing malformed frontmatter ships, and whether on its own or inside the board.
@@ -19,7 +20,7 @@
 
 ## Decisions
 
-**1. The entry model the board reads** is recorded in `one-file-per-backlog-entry`'s `design.md`.
+**1. The entry model the board reads** is recorded in `one-file-per-backlog-entry`'s `design.md`, extended by `report-a-tasks-kind-and-wait`'s, which adds `need` and `waits_for_type`; `rules/backlog.md` states the model as it stands.
 
 **2. This library's board is seen through workstreams, for one project.** Revised with `report-the-board-as-json`. The operator, 2026-11-01. Tasks are grouped by workstream, and the board covers the project it is run in rather than several. This replaces the plan for a board across projects and the name `see-the-backlog-across-projects`. Running it once per project still gives a view of each.
 
