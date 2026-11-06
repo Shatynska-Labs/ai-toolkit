@@ -922,6 +922,8 @@ The project root is excluded because its `README.md` is the project's own docume
 
 ### Requirement: The backlog's rules are written where none exist
 
+*Modified by `report-a-tasks-kind-and-wait`: the entry shape gains `need`, after `kind`, and `waits_for_type`, after `waits_for`, with their meanings, the absent `need` read as `should`, and **Need** among the body's reasons. Every scenario keeps its title; four are added.*
+
 *Modified by `match-backlog-entries-to-a-workstream`: the rule on `workstream` requires reading the open workstreams' Goals before `none` is written. Every scenario keeps its title; one is added.*
 
 *Replaces `A backlog is seeded where none exists`, removed by `list-what-a-project-receives`: the rules are a managed block in `docs/backlog/AGENTS.md`, read from the fragment `rules/backlog.md`, beside a `CLAUDE.md` importing it; a backlog holding them in a README is reported, not converted; a missing fragment blocks every run. The entry rules are carried over unchanged.*
@@ -942,16 +944,20 @@ The block SHALL state, as prose a session has loaded once it reads or writes a f
 - that an entry's file is deleted when its change is archived, when the operator takes it as a fix rather than a change, when a change makes it obsolete, or when the operator decides the change will not be made;
 - that when a change is archived, the entries it unblocked, unparked or made stale are updated and their `re_checked` date set;
 - that this file is kept when there are no entries;
-- the shape of an entry's frontmatter, its keys in this order, one per line: `priority`, `high`, `normal` or `parked`; `parked_until`, present only on a parked entry, the condition that can be checked under which it becomes worth taking; `kind`, `fix` or `change`; `waits_on`, a list of the names of entries or changes that must be archived first; `waits_for`, present only where the entry waits on something that is not a name, the condition that can be checked — a person's answer, an access grant, an event; `design_with`, a list of the entries that share a design with this one; `workstream`, the workstream the entry is a step of or serves, by name, or `none`; `recorded_by`, the change that identified it by name, or a double-quoted text where no change did; and `re_checked`, the date it was last verified against the repository, as `YYYY-MM-DD`;
+- the shape of an entry's frontmatter, its keys in this order, one per line: `priority`, `high`, `normal` or `parked`; `parked_until`, present only on a parked entry, the condition that can be checked under which it becomes worth taking; `kind`, `fix` or `change`; `need`, `must`, `should` or `could`, measured against the Goal of the entry's workstream — `must` where the Goal does not hold without it, `could` where the Goal holds without it and the operator would not keep it among the steps, `should` otherwise, being a step making no entry `must` even where the Done when requires every step to be done — or, for an entry naming no workstream, against the project — `must` where its absence does harm, `could` where it is an improvement only, `should` otherwise; `waits_on`, a list of the names of entries or changes that must be archived first; `waits_for`, present only where the entry waits on something that is not a name, the condition that can be checked — a person's answer, an access grant, an event — kept short, what is awaited and from whom, the reasons in the body; `waits_for_type`, present only beside `waits_for`, the kinds of wait it states, from `decision`, the operator's decision; `answer`, an answer from someone other than the operator; `access`, an access grant, a credential or a setting someone must enable; `release`, a release reaching an environment; and `event`, any other condition that can be checked; `design_with`, a list of the entries that share a design with this one; `workstream`, the workstream the entry is a step of or serves, by name, or `none`; `recorded_by`, the change that identified it by name, or a double-quoted text where no change did; and `re_checked`, the date it was last verified against the repository, as `YYYY-MM-DD`;
 - the frontmatter's form: a name, a value from a stated set or a date is written bare; free text is double-quoted, with `"` and `\` escaped by a backslash; a list is written inline as `[a, b]`, and empty as `[]`; nothing is nested, and no value spans more than one line;
-- the meaning of an absent key: an entry without `priority` is `normal`; without `waits_on` or `design_with`, the empty list; without `workstream`, `none`;
+- the meaning of an absent key: an entry without `priority` is `normal`; without `need`, `should`; with `waits_for` and without `waits_for_type`, untyped; without `waits_on` or `design_with`, the empty list; without `workstream`, `none`;
 - the rules on `priority`: that `high` needs evidence of harm happening now — an incident, a measurement, an observation; that a parked entry is not folded into another change before its condition holds; that a parked entry whose condition holds becomes `normal`, or `high` with evidence; and that a `high` entry whose evidence no longer holds becomes `normal`;
 - the rule on `workstream`: that an entry recorded by a change in a workstream takes that workstream unless it serves another goal or that workstream's Not in scope leaves it out; that otherwise it takes the open workstream whose Goal it serves, found by reading the Goal and Not in scope of every open workstream; and that `none` is written only after that read finds none, or on the operator's word;
-- the shape of an entry's body: what the change is and why, written for a session that has not seen the work that found it, followed by one list giving the reasons the frontmatter's values need — **Kind**, why it is a fix or a change; **Priority**, on a `high` or parked entry only, the evidence or why it is parked; **Recorded by**, why it was not done there — and that further items a project's own rules add to that list are kept as written.
+- the shape of an entry's body: what the change is and why, written for a session that has not seen the work that found it, followed by one list giving the reasons the frontmatter's values need — **Kind**, why it is a fix or a change; **Need**, on a `must` or `could` entry only, why; **Priority**, on a `high` or parked entry only, the evidence or why it is parked; **Recorded by**, why it was not done there — and that further items a project's own rules add to that list are kept as written.
 
 **Kind is `fix` only where the entry owes no specification delta, needs no decision from the operator, and is small enough to review in one sitting**; otherwise it is `change`. The size condition is the workflow's own: a fix is work too small to be a change, which skips `plan`, so an entry too large for one sitting is not one whatever it owes. The reason is stated because the label alone cannot be checked, and an entry's kind is the first thing a session picking work reads.
 
 **Waits on replaces a list of changes that must land first, and holds only names.** An entry that should precede another says so from the waiting side: the later entry names it in `waits_on`. A constraint stated on both sides is two statements that drift, and the waiting side is the one the pick and the archive re-read read. **A wait on something that is not a name is `waits_for`, apart from the names**, because a name is an edge a reader can follow and resolve — archived or not — and a sentence is not: mixed into one field, every reader has to guess which words are names. An entry may wait on both.
+
+**Need is apart from priority.** Priority says how urgent an entry is, need whether the goal it serves holds without it, and the two vary independently: a `could` may be urgent while an opportunity lasts, and a `must` may be parked until its precondition exists. It is measured against the Goal and not the Done when, because a Done when may require every step to be done, which would make every step `must`, and a `could` step is one the operator may remove and return to the backlog without failing the Goal. `must` and `could` are the operator's judgement, so each states its reason; there is no "won't", which is already a deletion ground.
+
+**A condition states its kind of wait beside it.** Whose move a wait is — the operator's decision, someone else's answer or grant, or nobody's yet — is what a reader of the backlog acts on, and a sentence makes every reader parse it. The type is a list because one condition may hold two waits, and a key of its own because the condition's words stay free text, valid without it.
 
 **Priority is `high` only with evidence of harm happening now**, and **`parked` only with a condition that can be checked**, under which the entry becomes worth taking. Both are stated so that a later reading can tell whether they still hold, which a bare label cannot show. There is no `low`: an entry not worth taking with no condition under which it would be is one the operator has decided will not be made, which is already a deletion ground. Parked is not a wait: a waiting entry cannot be taken, a parked one can and is deliberately deferred, and an entry may be both. The condition has a key of its own, `parked_until`, because it is what a later reading checks; the reason it was parked is prose, in the body.
 
@@ -989,7 +995,7 @@ The file is kept when there are no entries because the tool created it: deleting
 #### Scenario: The seeded entry shape carries the structured fields
 
 - **WHEN** the seeded block is written
-- **THEN** its entry shape names the keys `priority`, `parked_until`, `kind`, `waits_on`, `waits_for`, `design_with`, `workstream`, `recorded_by` and `re_checked`, in that order, and does not name Depends on
+- **THEN** its entry shape names the keys `priority`, `parked_until`, `kind`, `need`, `waits_on`, `waits_for`, `waits_for_type`, `design_with`, `workstream`, `recorded_by` and `re_checked`, in that order, and does not name Depends on
 
 #### Scenario: A fix is distinguished from a change by what it owes
 
@@ -1065,6 +1071,26 @@ The file is kept when there are no entries because the tool created it: deleting
 
 - **WHEN** the seeded block is written
 - **THEN** its entry shape states that the Goal and Not in scope of every open workstream are read, that the entry takes the one whose Goal it serves, and that `none` is written only after that read finds none or on the operator's word
+
+#### Scenario: Need's values and default are stated
+
+- **WHEN** the seeded block is written
+- **THEN** its entry shape states `need`'s three values `must`, `should` and `could`, each measured against the Goal of the entry's workstream or, naming none, against the project, and that an entry without the key is `should`
+
+#### Scenario: A condition's types are stated
+
+- **WHEN** the seeded block is written
+- **THEN** its entry shape states that `waits_for_type` is present only beside `waits_for`, and names its five values `decision`, `answer`, `access`, `release` and `event` with their meanings
+
+#### Scenario: A condition without a type stays valid
+
+- **WHEN** a session reads the seeded block for an entry carrying `waits_for` and no `waits_for_type`
+- **THEN** the block reads the entry as untyped, not as malformed
+
+#### Scenario: A step is not must for being a step
+
+- **WHEN** a session reads the seeded block for a step of a workstream whose Done when requires every step to be done, and the Goal holds without that step
+- **THEN** the block leaves `could` available to it, since being a step does not make an entry `must`
 
 ### Requirement: A project chooses its workflow when it is initialized
 

@@ -25,3 +25,7 @@
 - [x] 5.1 `bash tests/run.sh` passes
 - [x] 5.2 `shellcheck` is clean on every test this change adds or modifies
 - [x] 5.3 `openspec validate report-a-tasks-kind-and-wait --strict` passes
+
+## 6. Confirm
+
+- [x] 6.1 Observed on 2026-11-05, after #99 merged, by the session at the operator's request ("can you check it yourself"): `scripts/task-board --json` from `main` on commerce-ops gives every task the seven fields with `schema_version` 1; for all 133 entries `kind`, `need` (`should` by default), `waits_for`, `parked_until`, `waits_on` and `readiness` match their files on its trunk, with no mismatch; the 12 `blocked` tasks each wait on a name not done; no unchecked-wait warning under a full forge read; and the page shows `fix`, `Waits for …` and `Waits on …` on the matching rows. `waits_for_type` and a non-default `need` are absent there until commerce-ops takes the rules' `1.2.0`, which is its own work
