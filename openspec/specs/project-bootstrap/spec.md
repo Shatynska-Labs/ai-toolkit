@@ -639,6 +639,8 @@ The tool itself SHALL NOT configure a remote or push. The remote step is the wra
 
 ### Requirement: A workstream register is seeded where none exists
 
+*Modified by `propose-a-workstream-for-entries-sharing-a-goal`: a session that finds a goal no open workstream holds, shared by changes it proposes or by entries naming `none`, proposes a workstream to the operator, and detaching reads the entries it clears with those already naming `none` and ends in a value or a deletion, never a deferral. Every scenario keeps its title; two are added.*
+
 *Modified by `match-backlog-entries-to-a-workstream`: an entry is placed when it is recorded, or left for the archive with the reason said; detaching re-points before it clears, a workstream's archive included; and only a step's own name places anything. Every scenario keeps its title; one is added.*
 
 *Modified by `list-what-a-project-receives`: the rules are a managed block in `docs/workstreams/AGENTS.md`, read from the fragment `rules/workstreams.md`, beside a `CLAUDE.md` importing it, and a register holding them in a README is reported, not converted. Every scenario keeps its title.*
@@ -665,9 +667,9 @@ The block SHALL state, as prose a session has loaded once it reads or writes a f
 - that the order of the steps is the intended order of work and gates nothing, a step that cannot start before another saying so in its backlog entry's `waits_on`;
 - that a change is a step of one workstream only: another workstream whose goal also needs it does not list it among its steps, and a step of that workstream that cannot start before the change names it in its backlog entry's `waits_on`, an entry being recorded for that step where it has none;
 - that the file is edited only when the plan or what it holds changes — a step added, removed, reordered or renamed, what finishes it or what is out of scope revised, an open question added or answered, context or a decision added or revised, or the workstream archived;
-- that a workstream is opened when the operator decides a goal needs more than one change, and committed with the plan of the first change that advances it or as work too small to be a change;
+- that a workstream is opened when the operator decides a goal needs more than one change; that a session finding such a goal that no open workstream holds, shared by changes it proposes or by backlog entries naming `none`, proposes opening one to the operator, naming those changes and entries and a draft Goal, opens none unasked, and proposes none for a goal one change meets; and that it is committed with the plan of the first change that advances it or as work too small to be a change;
 - that a change or a backlog entry may name the workstream it serves before any step names it, that an entry is placed among the steps when it is recorded, or left for the archive with the reason said, and that each such change or entry is placed among the steps or detached at the next edit of the workstream other than one placing a recorded entry, and at the latest at the archive of a change in it;
-- that detaching re-points a change or an entry to another open workstream whose Goal it serves and whose Not in scope does not leave it out, and clears it to `none` only where there is none;
+- that detaching re-points a change or an entry to another open workstream whose Goal it serves and whose Not in scope does not leave it out, and clears it to `none` only where there is none, after reading it with the entries already naming `none` and the others detached in the same edit for a goal they share and proposing a workstream for it as above; and that each detached entry is re-pointed, cleared after that read, or deleted on a ground the backlog's rules give, a note deferring the read not detaching it;
 - that a step names a change or an entry only by its own name, the backticked name a numbered step begins with, and that a mention in a step's description, in Context or in Decisions places nothing;
 - that what finishes a workstream, its Done when, is an observable effect of its Goal — what to look at in the repository, the forge or production, what provokes it where something must, and the result that means the Goal holds — and that every step being done may stand beside that effect where it is wanted but never in its place, since it shows only that the step list was worked through, which a list missing a step satisfies as well;
 - that when what finishes a workstream holds, its file moves to `archive/<YYYY-MM-DD>-<name>.md`, dated the day it is archived, in the commit that carries the record of the change that completed it, after each step not done, other than the change whose record that commit carries, is removed from the steps, first recorded as a backlog entry detached from it where it is still wanted and not yet in flight, an in-flight one continuing as its own change, and every backlog entry still naming it is re-pointed or cleared by detaching it;
@@ -692,6 +694,8 @@ The block SHALL state, as prose a session has loaded once it reads or writes a f
 **Order gates nothing because precedence already has one authority.** `waits_on` is the side the pick and the archive re-read read, and the backlog dropped a second side because two statements of one constraint drift; a step's "comes after" in the workstream file would reintroduce it.
 
 **A finished or abandoned workstream is archived, not deleted** (operator, 2026-10-24), so its plan, context and decisions stay readable after its goal is met, as an archived change's record does.
+
+**A shared goal is proposed, not opened.** Every other rule choosing an entry's workstream reads the open workstreams only, so entries sharing a goal no workstream holds stay `none` until someone looks across them; in commerce-ops, 40 of 123 entries sat there until the operator asked twice. Opening stays the operator's judgement about their work, so the rule obliges putting the decision in front of them, not taking it. A goal one change meets is not proposed, so `none` stays a legitimate answer. **A deferral is not a detach** because an entry carrying a note to re-check later carries `none` without the read the rule requires.
 
 **This requirement owns the workstream rules**; `session-workflow` owns only when the fragment sends a session to the directory, and its fragment defers to the directory's `AGENTS.md` rather than restating them. `backlog-maintenance` reads them from that file.
 
@@ -791,6 +795,16 @@ The tool SHALL create no workstream.
 
 - **WHEN** the seeded block is written
 - **THEN** it states that an entry is placed when recorded or left for the archive with the reason said, that placing a recorded entry is not the edit at which the others fall due, that detaching re-points to another open workstream whose Goal is served and whose Not in scope admits it and clears only where there is none, and that only a step's own name places a change or an entry
+
+#### Scenario: The seeded block directs proposing a workstream
+
+- **WHEN** the seeded block is written
+- **THEN** it states that opening a workstream is the operator's decision, that a session finding a goal no open workstream holds, shared by changes or by entries naming `none`, proposes one with the changes, entries and a draft Goal and opens none unasked, and that a goal one change meets is not proposed
+
+#### Scenario: A detach is not a deferral
+
+- **WHEN** a session reads the seeded block to detach the entries of an abandoned workstream
+- **THEN** the block directs reading them with the entries already naming `none` for a shared goal, and re-pointing, clearing or deleting each, and states that a note deferring the read does not detach it
 
 ### Requirement: A project receives exactly the blocks the manifest lists
 
@@ -922,6 +936,8 @@ The project root is excluded because its `README.md` is the project's own docume
 
 ### Requirement: The backlog's rules are written where none exist
 
+*Modified by `propose-a-workstream-for-entries-sharing-a-goal`: before `none` is written, the other entries naming `none` are read for a goal shared with the new one, a workstream is proposed where they share one that takes more than one change, and `none` is written meanwhile. Every scenario keeps its title; one is added.*
+
 *Modified by `report-a-tasks-kind-and-wait`: the entry shape gains `need`, after `kind`, and `waits_for_type`, after `waits_for`, with their meanings, the absent `need` read as `should`, and **Need** among the body's reasons. Every scenario keeps its title; four are added.*
 
 *Modified by `match-backlog-entries-to-a-workstream`: the rule on `workstream` requires reading the open workstreams' Goals before `none` is written. Every scenario keeps its title; one is added.*
@@ -948,7 +964,7 @@ The block SHALL state, as prose a session has loaded once it reads or writes a f
 - the frontmatter's form: a name, a value from a stated set or a date is written bare; free text is double-quoted, with `"` and `\` escaped by a backslash; a list is written inline as `[a, b]`, and empty as `[]`; nothing is nested, and no value spans more than one line;
 - the meaning of an absent key: an entry without `priority` is `normal`; without `need`, `should`; with `waits_for` and without `waits_for_type`, untyped; without `waits_on` or `design_with`, the empty list; without `workstream`, `none`;
 - the rules on `priority`: that `high` needs evidence of harm happening now — an incident, a measurement, an observation; that a parked entry is not folded into another change before its condition holds; that a parked entry whose condition holds becomes `normal`, or `high` with evidence; and that a `high` entry whose evidence no longer holds becomes `normal`;
-- the rule on `workstream`: that an entry recorded by a change in a workstream takes that workstream unless it serves another goal or that workstream's Not in scope leaves it out; that otherwise it takes the open workstream whose Goal it serves, found by reading the Goal and Not in scope of every open workstream; and that `none` is written only after that read finds none, or on the operator's word;
+- the rule on `workstream`: that an entry recorded by a change in a workstream takes that workstream unless it serves another goal or that workstream's Not in scope leaves it out; that otherwise it takes the open workstream whose Goal it serves, found by reading the Goal and Not in scope of every open workstream; that `none` is written only after that read finds none, or on the operator's word; and that before `none` is written the other entries naming `none` are read for a goal they share with this one, a workstream being proposed for one that takes more than one change as `docs/workstreams/AGENTS.md` directs, and `none` written meanwhile;
 - the shape of an entry's body: what the change is and why, written for a session that has not seen the work that found it, followed by one list giving the reasons the frontmatter's values need — **Kind**, why it is a fix or a change; **Need**, on a `must` or `could` entry only, why; **Priority**, on a `high` or parked entry only, the evidence or why it is parked; **Recorded by**, why it was not done there — and that further items a project's own rules add to that list are kept as written.
 
 **Kind is `fix` only where the entry owes no specification delta, needs no decision from the operator, and is small enough to review in one sitting**; otherwise it is `change`. The size condition is the workflow's own: a fix is work too small to be a change, which skips `plan`, so an entry too large for one sitting is not one whatever it owes. The reason is stated because the label alone cannot be checked, and an entry's kind is the first thing a session picking work reads.
@@ -1091,6 +1107,11 @@ The file is kept when there are no entries because the tool created it: deleting
 
 - **WHEN** a session reads the seeded block for a step of a workstream whose Done when requires every step to be done, and the Goal holds without that step
 - **THEN** the block leaves `could` available to it, since being a step does not make an entry `must`
+
+#### Scenario: The seeded block reads the none entries before writing none
+
+- **WHEN** the seeded block is written
+- **THEN** its rule on `workstream` states that the other entries naming `none` are read for a shared goal before `none` is written, that a workstream is proposed as the workstreams rules direct where they share one, and that `none` is written meanwhile
 
 ### Requirement: A project chooses its workflow when it is initialized
 

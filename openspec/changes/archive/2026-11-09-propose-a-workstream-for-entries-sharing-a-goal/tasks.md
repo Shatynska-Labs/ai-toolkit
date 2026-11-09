@@ -24,3 +24,8 @@
 - [x] 4.1 `bash tests/run.sh` passes
 - [x] 4.2 `shellcheck` is clean on every test this change adds or modifies
 - [x] 4.3 `openspec validate propose-a-workstream-for-entries-sharing-a-goal --strict` passes
+
+## 5. Ship
+
+- [x] 5.1 Merged as Shatynska-Labs/ai-toolkit#101 (commit `cac89293`, 2026-11-09)
+- [x] 5.2 Confirmation waived by the operator on 2026-11-09, after PR #101 merged (no observation can actually be made): the proposed observation, a session in commerce-ops recording a related entry or auditing the backlog after `/plugin update` reaches 2.4.0, is conduct in another project that this session cannot provoke or see, and the operator waived it rather than run it now.
