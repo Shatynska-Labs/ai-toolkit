@@ -1,18 +1,19 @@
 # `complete-the-workstream-loop`
 
-**Goal**: a workstream is checked when it is opened, finished by an effect someone can observe, unambiguous about which changes are its own, and closed by a retrospective whose lessons reach the rules, so planning above a single change carries the same guarantees a change does. It answers the gaps a comparison with BMAD-METHOD's epics found: its readiness check, its retrospective, and one epic per story.
+**Goal**: a workstream is checked when it is opened, finished by an effect someone can observe, unambiguous about which changes are its own, with no change left outside a plan a goal it shares needs, and closed by a retrospective whose lessons reach the rules, so planning above a single change carries the same guarantees a change does. It answers the gaps a comparison with BMAD-METHOD's epics found: its readiness check, its retrospective, and one epic per story; and the gap commerce-ops showed on 2026-11-09, where entries naming no workstream shared goals no one proposed a workstream for.
 
-**Done when**: every step is done, and the agent that reviews a workstream, dispatched on one whose steps leave part of its Goal uncovered or whose Done when only restates its steps, returns `FIX REQUIRED` naming that gap.
+**Done when**: every step is done, and the agent that reviews a workstream, dispatched on one whose steps leave part of its Goal uncovered or whose Done when only restates its steps, returns `FIX REQUIRED` naming that gap; and a workstream archived after the retrospective step lands carries the `Retrospective` line Decision 4 records, naming where its lessons went.
 
 **Steps**:
 
 1. `define-what-a-step-is` — a step taken as a fix stops reading as planned, and a change is a step of one workstream only, so its status row and its placement have one answer.
 2. `observe-what-finishes-a-workstream` — `rules/workstreams.md` asks Done when for an observable effect, not "every step is archived".
 3. `match-backlog-entries-to-a-workstream` — an entry takes the workstream whose Goal it serves and is placed among its steps, so `none` follows a search and no entry stays outside the plan it names.
-4. `review-a-workstream-against-its-goal` — a workstream is reviewed when opened and when its steps change: the steps cover the Goal and agree with its Decisions.
-5. `run-a-workstream-retrospective` — archiving a workstream compares its plan with what happened and routes each lesson to a rule, a skill, a backlog entry, or nowhere.
+4. `propose-a-workstream-for-entries-sharing-a-goal` — entries naming `none` are read against each other when one is recorded, detached or audited, and a goal they share that takes more than one change is proposed to the operator as a workstream, so no change is left outside a plan only because no one asked whether one should exist.
+5. `review-a-workstream-against-its-goal` — a workstream is reviewed when opened and when its steps change: the steps cover the Goal and agree with its Decisions.
+6. `run-a-workstream-retrospective` — archiving a workstream compares its plan with what happened and routes each lesson to a rule, a skill, a backlog entry, or nowhere.
 
-The status lookups first, then the review, then the retrospective. The order is intended, not a wait.
+The rules a step and an entry are held to first, then the review, then the retrospective. The order is intended, not a wait.
 
 - **Not in scope**: planning before a goal is known — briefs, product requirements, UX — which BMAD covers and this library does not; storing a workstream's progress; building a workstream's steps unattended.
 - **Open questions**: none.
