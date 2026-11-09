@@ -209,6 +209,8 @@ The dispatch named `tests/lib.sh` and `tests/cases/lib/` as the shared arrangeme
 
 - **`seed_and_check`**, declared in `tests/cases/workstreams-block-proposes-a-workstream.sh`, `tests/cases/workstreams-block-detach-not-deferral.sh` and `tests/cases/backlog-block-reads-none-entries.sh` (once per file). Stands in for: "discriminate the scans on a fixture, run `scripts/project-init` in a fresh directory, hold the seeded file to the scans". Used by: `bash tests/run.sh workstreams-block-proposes-a-workstream`, `bash tests/run.sh workstreams-block-detach-not-deferral`, `bash tests/run.sh backlog-block-reads-none-entries`. Near-miss: `scan_run` in `tests/cases/lib/static-scan.sh` checks `$TOOLKIT_ROOT`, not a seeded project, so it would read the fragment, not what `project-init` writes. Found in test modules `tests/cases/workstreams-block-placing-settled.sh` and `tests/cases/backlog-block-none-ends-a-search.sh` (identical), copied, not imported. Proposed home: `tests/cases/lib/static-scan.sh`, as a `scan_run_seeded REL` beside `scan_run`.
 
+**Disposition: keep.** This repository's conventions record no shared arrangement's location (`record-this-repositorys-shared-test-arrangement` holds that decision), so `seed_and_check` stays local, as the identical copies it was taken from do; that entry names it.
+
 The five `backlog-skill-*` cases declare nothing locally: they take `scan`, `scan_run` from `tests/cases/lib/static-scan.sh` and `$TESTLIB` from `tests/lib.sh`.
 
 ## Unresolved project questions

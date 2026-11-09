@@ -37,3 +37,11 @@ changed: A workstream is reviewed by an independent reviewer before the commit t
 name: backlog
 version: 1.2.0
 changed: An entry may state its `need`, `must`, `should` or `could` against its workstream's Goal, absent read as `should`, and a `waits_for_type` beside its `waits_for`, from `decision`, `answer`, `access`, `release` and `event`; existing entries stay valid, and the `backlog` skill's audit proposes types for their conditions.
+---
+name: backlog
+version: 1.3.0
+changed: Before `none` is written, the other entries naming `none` are read for a goal they share with the new one, and a workstream is proposed for one that takes more than one change, `none` being written meanwhile.
+---
+name: workstreams
+version: 2.2.0
+changed: A session finding a goal that no open workstream holds, shared by changes it proposes or by entries naming `none`, proposes a workstream to the operator and opens none unasked; detaching reads the entries it clears with those already naming `none`, and a note deferring that read does not detach.

@@ -1,4 +1,4 @@
-<!-- ai-toolkit:backlog 1.2.0 sha256:85c08d6d63bb5512b5fbc50f1f1d122ca9f39a8bd77ef01e13b8bf052a32b9b4 -->
+<!-- ai-toolkit:backlog 1.3.0 sha256:7c5465a57a40398621d2264f6b85c5a216737589fbcd178517c95015cb7150f3 -->
 <!-- Generated. Do not edit inside this block — it is replaced on update.
      Project-specific conventions belong outside the markers. -->
 
@@ -24,7 +24,7 @@ An entry's values are frontmatter, its keys in this order, one per line:
 - `waits_for`: present only where the entry waits on something that is not a name, the condition that can be checked, such as a person's answer, an access grant or an event; a wait that is not a name goes in `waits_for`, never in `waits_on`. An entry may carry both. Keep it short, what is awaited and from whom; the reasons go in the body.
 - `waits_for_type`: present only beside `waits_for`, the kinds of wait it states, from `decision`, the operator's decision; `answer`, an answer from someone other than the operator; `access`, an access grant, a credential or a setting someone must enable; `release`, a release reaching an environment; and `event`, any other condition that can be checked. A `waits_for` without it is untyped, and still a wait.
 - `design_with`: the names of the entries that share a design with this one. An entry without `design_with` designs with the empty list.
-- `workstream`: the workstream the entry is a step of or serves, by name, or `none`. An entry recorded by a change in a workstream takes that workstream unless it serves another goal or that workstream's Not in scope leaves it out. Otherwise it takes the open workstream whose Goal it serves, found by reading the Goal and Not in scope of every open workstream; `none` is written only after that read finds none, or on the operator's word. An entry without `workstream` is `none`.
+- `workstream`: the workstream the entry is a step of or serves, by name, or `none`. An entry recorded by a change in a workstream takes that workstream unless it serves another goal or that workstream's Not in scope leaves it out. Otherwise it takes the open workstream whose Goal it serves, found by reading the Goal and Not in scope of every open workstream; `none` is written only after that read finds none, or on the operator's word. Before `none` is written, the other entries naming `none` are read for a goal they share with this one; where they share one that takes more than one change, a workstream is proposed for it as `docs/workstreams/AGENTS.md` directs, and `none` is written meanwhile. An entry without `workstream` is `none`.
 - `recorded_by`: the change that identified it, by name, or a double-quoted text where no change did.
 - `re_checked`: the date the entry was last verified against the repository, as `YYYY-MM-DD`.
 

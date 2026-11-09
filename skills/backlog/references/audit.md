@@ -45,7 +45,8 @@ The skill merges every agent's return into one report, in these sections, each l
 4. **Partly done**: each with what remains, proposed as a rewrite of the entry.
 5. **Now unblocked or unparked**: entries whose wait is satisfied, proposed with the archived names removed from `waits_on` and a `waits_for` that holds removed, and parked entries whose `parked_until` now holds, with the evidence that it holds and their `priority` proposed as the README directs.
 6. **Groups**: entries that share a design, proposed for `design_with`.
-7. **Fixes**: entries that can be taken as fixes, with the `fix?` ones listed apart with their reason.
-8. **Unverified**: verdicts that rest on a source an agent could not reach.
+7. **Shared goals**: groups of entries carrying the README's absent value (`none` in the seeded README) that share a goal taking more than one change, each with a draft Goal and the entries it would hold, proposed as workstreams to open. The skill reads them itself, from the entries' bodies, because no agent sees two ranges.
+8. **Fixes**: entries that can be taken as fixes, with the `fix?` ones listed apart with their reason.
+9. **Unverified**: verdicts that rest on a source an agent could not reach.
 
 Where the README names `re_checked`, every entry file the audit touches gets today's date in it when the cleanup is applied, as one edit across the entry files; approving the cleanup is not approving keys the README does not define. Nothing in this report is applied until the operator approves it.
