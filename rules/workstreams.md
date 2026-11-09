@@ -1,6 +1,6 @@
 ---
 kind: standing-constraint
-version: 2.1.0
+version: 2.2.0
 ---
 
 # Workstreams
@@ -13,9 +13,9 @@ The order of the steps is the intended order of work, and it gates nothing. A st
 
 A change is a step of one workstream only. Where another workstream's goal also needs it, that workstream does not list it among its steps: its step that cannot start before the change names the change in its backlog entry's `waits_on`, and where that step has no entry yet, one is recorded for it.
 
-Open a workstream when the operator decides a goal needs more than one change. Commit it with the plan of the first change that advances it, or as work too small to be a change.
+Open a workstream when the operator decides a goal needs more than one change. A session that finds such a goal that no open workstream holds, shared by changes it proposes or by backlog entries naming `none`, proposes opening one to the operator, naming those changes and entries and a draft Goal, and opens none unasked; a goal one change meets is not proposed. Commit it with the plan of the first change that advances it, or as work too small to be a change.
 
-A change or a backlog entry may name the workstream it serves before any step names it. Place an entry among the steps when it is recorded, or say that it is left for the archive and why. Place each such change or entry among the steps, or detach it, at the next edit of the workstream other than one placing a recorded entry, and at the latest at the archive of a change in it. Detaching re-points it to another open workstream whose Goal it serves and whose Not in scope does not leave it out, and clears it to `none` only where there is none. A step names a change or an entry only by its own name, the backticked name a numbered step begins with; a mention in a step's description, in Context or in Decisions places nothing.
+A change or a backlog entry may name the workstream it serves before any step names it. Place an entry among the steps when it is recorded, or say that it is left for the archive and why. Place each such change or entry among the steps, or detach it, at the next edit of the workstream other than one placing a recorded entry, and at the latest at the archive of a change in it. Detaching re-points it to another open workstream whose Goal it serves and whose Not in scope does not leave it out, and clears it to `none` only where there is none. Before clearing one, read it together with the entries already naming `none`, and with the others detached in the same edit, for a goal they share, proposing a workstream for it as above. Each detached entry is re-pointed, cleared after that read, or deleted on a ground the backlog's rules give; a note deferring the read does not detach it. A step names a change or an entry only by its own name, the backticked name a numbered step begins with; a mention in a step's description, in Context or in Decisions places nothing.
 
 What finishes a workstream is an effect of its Goal that someone can observe: what to look at in the repository, the forge or production, what provokes it where something must, and what result means the Goal holds. "Every step is done" shows only that the step list was worked through, and a list missing a step meets it all the same. It may stand beside the effect where every step is wanted whatever the effect shows, never in its place.
 

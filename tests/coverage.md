@@ -445,3 +445,12 @@ Not covered: the seven `change-review` scenarios the MODIFIED requirements keep 
 - **The page** — `task-board-entry-kind-and-need.sh`, `task-board-entry-waits-on-done.sh`, `task-board-entry-typed-condition.sh` and `task-board-entry-unchecked-wait-warned.sh`.
 
 Not covered: whether a session really proposes `need` only with the operator's word, types a condition as its wording states, and orders pick by need. The scans show only that the rules and the skill direct those acts.
+
+## propose-a-workstream-for-entries-sharing-a-goal (86 delta scenarios)
+
+`propose-a-workstream-for-entries-sharing-a-goal` modifies three `backlog-maintenance` requirements and two `project-bootstrap` requirements. 8 scenarios are added and take the cases below; the 78 unchanged scenarios stay with the cases that already covered them, as the change's `test-plan.md` records.
+
+- **The seeded blocks** — `workstreams-block-proposes-a-workstream.sh`, `workstreams-block-detach-not-deferral.sh` and `backlog-block-reads-none-entries.sh`.
+- **Record, sweep and audit** — `backlog-skill-record-shared-goal-proposed.sh`, `backlog-skill-record-no-shared-goal-said.sh`, `backlog-skill-record-one-change-goal-not-proposed.sh`, `backlog-skill-sweep-detached-share-a-goal.sh` and `backlog-skill-audit-shared-goals.sh`.
+
+Not covered: whether a session really reads the entries naming `none` against each other, judges a shared goal and proposes a workstream rather than opening one. The scans show only that the rules and the skill direct those acts.
