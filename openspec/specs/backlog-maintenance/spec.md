@@ -75,6 +75,8 @@ The entry rules and the workstream rules are owned by `project-bootstrap` and st
 
 ### Requirement: Record writes an entry the file can be relied on for
 
+*Modified by `propose-a-workstream-for-entries-sharing-a-goal`: before writing the absent value, record reads the other entries carrying it for a goal they share with the new one, proposes a workstream where they share one that takes more than one change, and says what it proposed or that none was found. Every scenario keeps its title; three are added.*
+
 *Modified by `report-a-tasks-kind-and-wait`: record writes `need` at the README's default unless the operator confirms `must` or `could` with its reason, and writes beside each `waits_for` the types it states. Every scenario keeps its title; three are added.*
 
 *Modified by `match-backlog-entries-to-a-workstream`: before setting `workstream`, record reads every open workstream's Goal and Not in scope, writes the absent value only once that read finds none, says what it chose and why, and places the entry among the steps or says why not. *Record carries the change's workstream* and *Record writes one file* keep their titles; four scenarios are added.*
@@ -83,7 +85,7 @@ The entry rules and the workstream rules are owned by `project-bootstrap` and st
 
 *Modified by `one-file-per-backlog-entry`: record writes one entry file, its values as frontmatter in the README's form and its reasons in the body, and keeps names and conditions apart. Every scenario keeps its title.*
 
-The **record** operation SHALL write one entry as its own file, `docs/backlog/<name>.md`, in the shape the README states: its values as frontmatter in the README's form, and its prose and reasons as the body. Where the session invoking it is in a change, record SHALL first test the work against the fold-in rule the project's workflow states, where it states one, taking the test from the workflow rather than stating it; where the work meets it, record SHALL say so and write no entry. It SHALL offer no override the workflow does not state. Before writing, it SHALL check the entry's name against the entry files in `docs/backlog/`, the project's open and archived change directories, and its branches, and SHALL not write a name already used by any of them, nor `readme`, `agents` or `claude` in any case, which would collide with `README.md`, `AGENTS.md` or `CLAUDE.md` on a filesystem that ignores case, overwriting the directory's rules or their import. It SHALL set `kind` by the README's own definition and state the reason in the body. Where the README's shape names `need`, it SHALL set it to the README's default — `should` in the seeded README — unless the session or the operator states why the entry is `must` or `could`, SHALL propose either with that reason, read from the Goal of the entry's workstream or, for an entry naming no workstream, from the harm its absence does to the project, and SHALL write it only once the operator confirms it. It SHALL write into `waits_on` only names of entries or changes, and SHALL write a wait on anything else — an answer, an access grant, an event — as a condition in `waits_for`. Where the README's shape names `waits_for_type`, it SHALL write beside each `waits_for` the types the condition states, from the README's set. It SHALL search the existing entries for ones touching the same files, specifications or capabilities and present each as a Design with candidate, writing into `design_with` only the candidates the session or operator confirms share a design, or the README's empty value — `[]` in the seeded README. A shared pointer is evidence of a shared design, not the same thing. Where the README's shape names `priority`, it SHALL set it to the README's default — `normal` in the seeded README — unless the session or the operator states the evidence or the condition the README requires for another value, and SHALL write `high`, or `parked` with its `parked_until`, only once the operator confirms it. Where the README's shape names `workstream`, it SHALL read the Goal and Not in scope of every open workstream in `docs/workstreams/` before setting it. It SHALL set it to the workstream of the change the session is in where the entry serves that workstream's Goal and falls inside its scope; otherwise to the open workstream whose Goal the entry serves, asking the operator where more than one is served; and to the README's absent value — `none` in the seeded README — only once that read finds none. What the operator states the entry serves SHALL be taken over that reading. It SHALL write only a name an open workstream in `docs/workstreams/` carries, or that absent value, and SHALL say in its answer the workstream chosen for each entry and why, so the operator need not ask where an entry belongs. Where it writes an open workstream's name, it SHALL add the entry to that workstream's steps in the same edit, asking the operator where in the order, or SHALL say that the entry is left for the archive and why. Where `docs/workstreams/README.md` exists, its name check SHALL also cover the names of workstreams, open and archived. It SHALL set `re_checked` to the day the entry is written. It SHALL write the frontmatter in the form the README states — bare names, set values and dates, double-quoted free text with `"` and `\` escaped, inline lists — and SHALL write no key the README does not define.
+The **record** operation SHALL write one entry as its own file, `docs/backlog/<name>.md`, in the shape the README states: its values as frontmatter in the README's form, and its prose and reasons as the body. Where the session invoking it is in a change, record SHALL first test the work against the fold-in rule the project's workflow states, where it states one, taking the test from the workflow rather than stating it; where the work meets it, record SHALL say so and write no entry. It SHALL offer no override the workflow does not state. Before writing, it SHALL check the entry's name against the entry files in `docs/backlog/`, the project's open and archived change directories, and its branches, and SHALL not write a name already used by any of them, nor `readme`, `agents` or `claude` in any case, which would collide with `README.md`, `AGENTS.md` or `CLAUDE.md` on a filesystem that ignores case, overwriting the directory's rules or their import. It SHALL set `kind` by the README's own definition and state the reason in the body. Where the README's shape names `need`, it SHALL set it to the README's default — `should` in the seeded README — unless the session or the operator states why the entry is `must` or `could`, SHALL propose either with that reason, read from the Goal of the entry's workstream or, for an entry naming no workstream, from the harm its absence does to the project, and SHALL write it only once the operator confirms it. It SHALL write into `waits_on` only names of entries or changes, and SHALL write a wait on anything else — an answer, an access grant, an event — as a condition in `waits_for`. Where the README's shape names `waits_for_type`, it SHALL write beside each `waits_for` the types the condition states, from the README's set. It SHALL search the existing entries for ones touching the same files, specifications or capabilities and present each as a Design with candidate, writing into `design_with` only the candidates the session or operator confirms share a design, or the README's empty value — `[]` in the seeded README. A shared pointer is evidence of a shared design, not the same thing. Where the README's shape names `priority`, it SHALL set it to the README's default — `normal` in the seeded README — unless the session or the operator states the evidence or the condition the README requires for another value, and SHALL write `high`, or `parked` with its `parked_until`, only once the operator confirms it. Where the README's shape names `workstream`, it SHALL read the Goal and Not in scope of every open workstream in `docs/workstreams/` before setting it. It SHALL set it to the workstream of the change the session is in where the entry serves that workstream's Goal and falls inside its scope; otherwise to the open workstream whose Goal the entry serves, asking the operator where more than one is served; and to the README's absent value — `none` in the seeded README — only once that read finds none. What the operator states the entry serves SHALL be taken over that reading. It SHALL write only a name an open workstream in `docs/workstreams/` carries, or that absent value, and SHALL say in its answer the workstream chosen for each entry and why, so the operator need not ask where an entry belongs. Before writing that absent value, it SHALL read the bodies of the other entries carrying it, not the repository, for a goal they share with the entry; where they share one that takes more than one change, it SHALL propose to the operator opening a workstream for it, naming the entries and a draft Goal, as `docs/workstreams/AGENTS.md` directs, SHALL write the absent value meanwhile, and SHALL say in its answer what it proposed or that no shared goal was found. Where it writes an open workstream's name, it SHALL add the entry to that workstream's steps in the same edit, asking the operator where in the order, or SHALL say that the entry is left for the archive and why. Where `docs/workstreams/README.md` exists, its name check SHALL also cover the names of workstreams, open and archived. It SHALL set `re_checked` to the day the entry is written. It SHALL write the frontmatter in the form the README states — bare names, set values and dates, double-quoted free text with `"` and `\` escaped, inline lists — and SHALL write no key the README does not define.
 
 Urgency, deferral and need are the operator's judgements about the project's work, not facts a session can verify alone, which is why record proposes them and does not set them on its own. A condition's type is a fact of its wording, which the operator already gave, so record sets it.
 
@@ -173,6 +175,21 @@ The fold-in test, the name check, the overlap search and the way the open workst
 
 - **WHEN** record writes an entry waiting for the operator's choice and for a team's answer
 - **THEN** the entry carries both as its `waits_for` condition and `waits_for_type: [decision, answer]`
+
+#### Scenario: Entries sharing a goal are proposed a workstream
+
+- **WHEN** record is about to write the absent value on an entry, and two entries already carrying it share with it a goal that takes more than one change
+- **THEN** it writes the absent value, and its answer proposes opening a workstream for that goal, naming the three entries and a draft Goal, and no workstream file is created
+
+#### Scenario: No shared goal is said
+
+- **WHEN** record writes the absent value on an entry that shares no goal with the other entries carrying it
+- **THEN** its answer says that no shared goal was found
+
+#### Scenario: A goal one change meets earns no proposal
+
+- **WHEN** record writes the absent value on an entry that shares with one other entry carrying it a goal one change would meet
+- **THEN** it proposes no workstream for that goal
 
 ### Requirement: Pick lists what can be taken now
 
@@ -272,6 +289,8 @@ The **close** operation SHALL delete the file of the entry it is given and, in t
 
 ### Requirement: Sweep performs the archive step's re-read
 
+*Modified by `propose-a-workstream-for-entries-sharing-a-goal`: an entry sweep sets to the absent value is first read with the entries already carrying it, and with the others it detaches, for a shared goal, as record reads them. Every scenario keeps its title; one is added.*
+
 *Modified by `match-backlog-entries-to-a-workstream`: sweep also gathers the entries unplaced in the change's open workstream, the change's own among them, and detaches an entry, here and where a workstream is archived, by reading the open workstreams' Goals. Every scenario keeps its title; three are added.*
 
 *Modified by `one-file-per-backlog-entry`: sweep reads the entry files and their `waits_on`, `parked_until` and `workstream`, and edits entry files as the README directs. Every scenario keeps its title.*
@@ -282,7 +301,7 @@ It SHALL take what the change touched from the change's merged pull requests on 
 
 Run before the archive commit, it SHALL update each entry's file as the README directs and leave the edit for that commit. Run after the change's record is on the trunk, it SHALL make the same edit and say that it is to be delivered as the workflow delivers work too small to be a change.
 
-It SHALL present each unplaced entry to be placed among the steps, the position asked of the operator, or detached. An entry that does not serve its workstream's Goal, or that its workstream's Not in scope leaves out, is detached by the same read of the open workstreams' Goals record makes, not set to the README's absent value without it. Editing the workstream's steps is the one edit sweep makes outside the entry files, and it SHALL go in the same commit as the entry edits.
+It SHALL present each unplaced entry to be placed among the steps, the position asked of the operator, or detached. An entry that does not serve its workstream's Goal, or that its workstream's Not in scope leaves out, is detached by the same read of the open workstreams' Goals record makes, not set to the README's absent value without it. An entry to be set to that absent value SHALL first be read with the entries already carrying it, and with the others the same sweep detaches, for a goal they share, as record reads them, and a workstream SHALL be proposed where they share one that takes more than one change. Editing the workstream's steps is the one edit sweep makes outside the entry files, and it SHALL go in the same commit as the entry edits.
 
 Searching by what the change touched, and not only by name, is required because a change that finishes an entry's work seldom names the entry.
 
@@ -336,7 +355,14 @@ Searching by what the change touched, and not only by name, is required because 
 - **WHEN** sweep runs for a change whose branch holds an entry naming the change's open workstream, no step names it, and the entry has not reached the trunk
 - **THEN** sweep presents it as it presents any unplaced entry
 
+#### Scenario: Entries detached together share a goal
+
+- **WHEN** sweep detaches the entries of a workstream being archived, the read of the open workstreams finds none for three of them, and those three share a goal that takes more than one change
+- **THEN** sweep proposes them with the README's absent value and proposes a workstream for that goal, naming the three and a draft Goal
+
 ### Requirement: Audit verifies every entry independently and changes nothing without the operator
+
+*Modified by `propose-a-workstream-for-entries-sharing-a-goal`: after merging the agents' verdicts, the skill reads every entry carrying the absent value together, across ranges, and the report gains the groups that share a goal, proposed as workstreams. Every scenario keeps its title; one is added.*
 
 *Modified by `report-a-tasks-kind-and-wait`: for an entry carrying `waits_for`, an agent also says whether its `waits_for_type` states the kinds the condition holds, and proposes them where it has none; the report lists a wrong or missing type, and a type without a condition, among the stale facts. Audit proposes no `need`. Every scenario keeps its title; three are added.*
 
@@ -346,7 +372,7 @@ The **audit** operation SHALL divide the entry files into ranges and give each r
 
 The archived changes and merged pull requests are named because an entry is most often completed by a change that never mentions it, and an agent checking the code alone reads such an entry as live.
 
-The skill SHALL merge the agents' results into one report naming: the entries done or obsolete, the entries that are one change recorded twice, the entries whose facts are stale — among them each `high` entry whose evidence no longer holds, with its `priority` corrected as the README directs, each entry naming a workstream that is archived or absent, each entry naming an unknown name, each condition whose type is wrong or missing, with the types proposed, and each `waits_for_type` carried without `waits_for` —, the groups that share a design, the entries now unblocked or unparked, and the entries that can be taken as fixes. It SHALL apply none of it until the operator says so, and SHALL then apply it as one edit across the entry files, delivered as the workflow delivers work too small to be a change.
+The skill SHALL merge the agents' results into one report naming: the entries done or obsolete, the entries that are one change recorded twice, the entries whose facts are stale — among them each `high` entry whose evidence no longer holds, with its `priority` corrected as the README directs, each entry naming a workstream that is archived or absent, each entry naming an unknown name, each condition whose type is wrong or missing, with the types proposed, and each `waits_for_type` carried without `waits_for` —, the groups that share a design, the groups of entries carrying the README's absent value that share a goal taking more than one change, each with a draft Goal, proposed as workstreams, the entries now unblocked or unparked, and the entries that can be taken as fixes. The skill SHALL find those groups itself, reading the bodies of every entry carrying the absent value together after the agents return, because no agent sees two ranges. It SHALL apply none of it until the operator says so, SHALL open a workstream the operator approves as `docs/workstreams/AGENTS.md` and the workflow direct, its entries re-pointed to it, and SHALL then apply it as one edit across the entry files and the workstream files it opens, delivered as the workflow delivers work too small to be a change.
 
 The agents SHALL write nothing. Each is given the entries, the paths to check and the verdict vocabulary, and returns its verdicts; only the skill edits the entry files, and only after the operator's word.
 
@@ -394,6 +420,11 @@ The agents SHALL write nothing. Each is given the entries, the paths to check an
 
 - **WHEN** audit checks an entry without `need`
 - **THEN** the report proposes no `need` for it
+
+#### Scenario: Entries in two ranges share a goal
+
+- **WHEN** two entries carrying the absent value, given to different agents, share a goal that takes more than one change
+- **THEN** the report names them as one group under a draft Goal, proposed as a workstream, and no workstream file is created until the operator approves
 
 ### Requirement: Entries in an older shape are reported, not rewritten
 
