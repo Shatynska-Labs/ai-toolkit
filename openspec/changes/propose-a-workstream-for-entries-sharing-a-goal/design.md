@@ -41,7 +41,7 @@ It applies on the operator's word too: the operator ruled out the open workstrea
 
 Reading bodies only keeps the read cheap and bounded, as the handoff requires. "Never open it unasked" is the rule's, so the skill does not restate it.
 
-**5. Sweep.** Step 2's group for an archived workstream, "re-pointed by the same read, or set to the README's absent value only where it finds none", gains: ", those to be set to it read together with the entries already carrying it for a shared goal, as **record** reads them". The words `backlog-skill-sweep-workstream.sh` and `backlog-skill-sweep-absent-value.sh` pin stay. Unplaced entries sweep detaches from an open workstream go through the same read, since it is record's read they already take.
+**5. Sweep.** Step 2's group for an archived workstream, "re-pointed by the same read, or set to the README's absent value only where it finds none", gains: ", those to be set to it read together with the entries already carrying it for a shared goal, as **record** reads them, and with each other where several are detached at once". The batch is named in the skill as well as the rule because the commerce-ops abandonment is the case where a goal is shared only within the detached batch. The words `backlog-skill-sweep-workstream.sh` and `backlog-skill-sweep-absent-value.sh` pin stay. Unplaced entries sweep detaches from an open workstream go through the same read, since it is record's read they already take.
 
 **6. Audit.** Step 4 gains: "Then read every entry carrying the README's absent value together, across ranges, for goals they share, and add what you find to the report." `references/audit.md`'s merged report gains, after **Groups**:
 
